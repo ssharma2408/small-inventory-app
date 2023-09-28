@@ -38,6 +38,9 @@
                             {{ trans('cruds.inventory.fields.price') }}
                         </th>
                         <th>
+                            {{ trans('cruds.inventory.fields.discount_type') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.inventory.fields.discount') }}
                         </th>
                         <th>
@@ -71,6 +74,9 @@
                             </td>
                             <td>
                                 {{ $inventory->price ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Inventory::DISCOUNT_TYPE_RADIO[$inventory->discount_type] ?? '' }}
                             </td>
                             <td>
                                 {{ $inventory->discount ?? '' }}

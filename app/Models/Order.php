@@ -26,9 +26,22 @@ class Order extends Model
         'comments',
         'delivery_note',
         'customer_sign',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at',
+    ];
+
+    public const STATUS_SELECT = [
+        '0' => 'Declined',
+        '1' => 'Completed',
+        '2' => 'Pending',
+        '3' => 'Awaiting Payment',
+        '4' => 'Awaiting Shipment',
+        '5' => 'Hold',
+        '6' => 'Disputed',
+        '7' => 'Review',
+        '8' => 'Confirm',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

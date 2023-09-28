@@ -71,6 +71,14 @@
                             {{ $order->customer_sign }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.order.fields.status') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

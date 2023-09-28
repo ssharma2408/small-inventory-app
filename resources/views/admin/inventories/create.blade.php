@@ -46,8 +46,21 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.price_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>
+                @foreach(App\Models\Inventory::DISCOUNT_TYPE_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('discount_type') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="discount_type_{{ $key }}" name="discount_type" value="{{ $key }}" {{ old('discount_type', '0') === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="discount_type_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('discount_type'))
+                    <span class="text-danger">{{ $errors->first('discount_type') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.discount_type_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="discount">{{ trans('cruds.inventory.fields.discount') }}</label>
-                <input class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number" name="discount" id="discount" value="{{ old('discount', '') }}" step="0.01">
+                <input class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number" name="discount" id="discount" value="{{ old('discount', '0') }}" step="0.01">
                 @if($errors->has('discount'))
                     <span class="text-danger">{{ $errors->first('discount') }}</span>
                 @endif

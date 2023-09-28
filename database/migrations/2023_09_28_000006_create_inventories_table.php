@@ -13,6 +13,7 @@ class CreateInventoriesTable extends Migration
             $table->string('product_name');
             $table->integer('stock');
             $table->float('price', 15, 2);
+            $table->string('discount_type');
             $table->float('discount', 15, 2)->nullable();
             $table->float('tax', 15, 2);
             $table->float('final_price', 15, 2);
