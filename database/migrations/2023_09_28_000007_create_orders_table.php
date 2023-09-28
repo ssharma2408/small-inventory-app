@@ -14,6 +14,7 @@ class CreateOrdersTable extends Migration
             $table->longText('comments')->nullable();
             $table->longText('delivery_note')->nullable();
             $table->longText('customer_sign')->nullable();
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });

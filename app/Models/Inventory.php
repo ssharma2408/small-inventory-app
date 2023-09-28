@@ -19,11 +19,17 @@ class Inventory extends Model
         'deleted_at',
     ];
 
+    public const DISCOUNT_TYPE_RADIO = [
+        '0' => 'Fixed',
+        '1' => 'Percentage',
+    ];
+
     protected $fillable = [
         'supplier_id',
         'product_name',
         'stock',
         'price',
+        'discount_type',
         'discount',
         'tax',
         'final_price',

@@ -44,6 +44,9 @@
                             {{ trans('cruds.order.fields.customer_sign') }}
                         </th>
                         <th>
+                            {{ trans('cruds.order.fields.status') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -74,6 +77,9 @@
                             </td>
                             <td>
                                 {{ $order->customer_sign ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
                             </td>
                             <td>
                                 @can('order_show')

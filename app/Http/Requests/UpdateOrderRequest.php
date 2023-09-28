@@ -29,6 +29,9 @@ class UpdateOrderRequest extends FormRequest
                 'numeric',
                 'required',
             ],
+            'status' => [
+                'required',
+            ],
         ];
     }
 }

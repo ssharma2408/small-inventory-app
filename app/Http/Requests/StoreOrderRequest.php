@@ -29,6 +29,9 @@ class StoreOrderRequest extends FormRequest
                 'numeric',
                 'required',
             ],
+            'status' => [
+                'required',
+            ],
         ];
     }
 }

@@ -31,6 +31,9 @@ class UpdateInventoryRequest extends FormRequest
                 'numeric',
                 'required',
             ],
+            'discount_type' => [
+                'required',
+            ],
             'discount' => [
                 'numeric',
             ],
