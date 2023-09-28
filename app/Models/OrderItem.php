@@ -24,6 +24,8 @@ class OrderItem extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'order_id',
+        'quantity',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

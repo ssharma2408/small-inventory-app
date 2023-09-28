@@ -38,7 +38,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('inventories', 'InventoryController');
 
     // Orders
-    Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
+    Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');	
+	Route::get('orders/get_product_detail/{id}', 'OrdersController@get_product_detail')->name('orders.get_product_detail');
     Route::resource('orders', 'OrdersController');
 
     // Order Items
