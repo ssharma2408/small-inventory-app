@@ -74,13 +74,11 @@ class OrdersController extends Controller
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
-		$products = Inventory::select('id', 'product_name')->get();
-		
-		//$order_items = OrderItem::select('id', 'product_id', 'quantity')->get();
+		$products = Inventory::select('id', 'product_name')->get();		
 
 		$order_items =DB::table('order_items')
                 ->join('inventories','order_items.product_id', '=', 'inventories.id')               
-                ->select('order_items.id','order_items.product_id','order_items.quantity','inventories.stock', 'inventories.price')
+                ->select('order_items.product_id','order_items.quantity','inventories.stock', 'inventories.price')
                 ->get();
 		
         $order->load('sales_manager', 'customer');
@@ -91,6 +89,24 @@ class OrdersController extends Controller
     public function update(UpdateOrderRequest $request, Order $order)
     {
         $order->update($request->all());
+		
+		DB::table('order_items')->where('order_id', $order->id)->delete();
+		
+		$data = [];
+		for($i=0; $i < count($request['item_name']); $i++){			
+			if(!empty($request['item_name']) && !empty($request['item_quantity'])){
+				$item = [];
+				$item['product_id'] = $request['item_name'][$i];
+				$item['order_id'] = $order->id;
+				$item['quantity'] = $request['item_quantity'][$i];			
+				$data[] = $item;
+			}
+						
+		}
+
+		if(!empty($data)){
+			OrderItem::insert($data);
+		}
 
         return redirect()->route('admin.orders.index');
     }

@@ -192,7 +192,7 @@
 			var stock = $(this).parent().next().find('input');
 			var qty = $(this).parent().next().next().find('input');
 			$.ajax({
-                    url: 'get_product_detail/'+$(this).val(),
+                    url: '/admin/orders/get_product_detail/'+$(this).val(),
                     type: 'GET',
 					success: function(data) {
 						if (data.success) {

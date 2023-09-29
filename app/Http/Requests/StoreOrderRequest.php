@@ -26,7 +26,7 @@ class StoreOrderRequest extends FormRequest
                 'integer',
             ],
 			'item_name' => [
-                'required',                
+                'required',
             ],
             'order_total' => [
                 'numeric',
