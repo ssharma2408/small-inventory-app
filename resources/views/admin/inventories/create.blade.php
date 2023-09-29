@@ -94,3 +94,46 @@
 
 
 @endsection
+
+@section('scripts')
+	<script>
+		
+		$(document).on("change", "#discount_type_0, #discount_type_1", function () {
+			calculate_total();
+		});
+		
+		$(document).on("keyup", "#stock, #price, #tax, #discount", function () {			
+			calculate_total();
+		});
+		
+		function calculate_total(){
+			var order_total = 0, stock, price, tax, discount;		
+			stock = $("#stock").val();
+			price = $("#price").val();
+			tax = $("#tax").val();
+			discount = $("#discount").val();
+			
+			if(stock > 0 && price > 0){
+				order_total = stock * price;				
+				
+				if(discount > 0){
+					if($("#discount_type_0").is(":checked")){
+						if(discount < order_total){
+							order_total = order_total - discount;
+						}
+					}else{
+						if(((order_total * discount) / 100) < order_total){
+							order_total = order_total - (order_total * discount) / 100;
+						}
+					}
+				}
+				
+				if(tax > 0){
+					order_total = order_total + parseFloat(tax);
+				}
+			}
+			$("#final_price").val(order_total);
+		}
+		
+	</script>
+@endsection
