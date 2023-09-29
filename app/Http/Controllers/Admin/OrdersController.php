@@ -79,6 +79,7 @@ class OrdersController extends Controller
 		$order_items =DB::table('order_items')
                 ->join('inventories','order_items.product_id', '=', 'inventories.id')               
                 ->select('order_items.product_id','order_items.quantity','inventories.stock', 'inventories.price')
+				->where('order_items.order_id', $order->id)
                 ->get();
 		
         $order->load('sales_manager', 'customer');

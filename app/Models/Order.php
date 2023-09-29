@@ -27,6 +27,7 @@ class Order extends Model
         'delivery_note',
         'customer_sign',
         'status',
+        'extra_discount',
         'created_at',
         'updated_at',
         'deleted_at',

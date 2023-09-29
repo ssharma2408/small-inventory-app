@@ -94,6 +94,15 @@
 				</div>
             </div>
 			
+			<div class="form-group">
+                <label for="extra_discount">{{ trans('cruds.order.fields.extra_discount') }}</label>
+                <input class="form-control {{ $errors->has('extra_discount') ? 'is-invalid' : '' }}" type="number" name="extra_discount" id="extra_discount" value="{{ old('extra_discount', '') }}" step="0.01">
+                @if($errors->has('extra_discount'))
+                    <span class="text-danger">{{ $errors->first('extra_discount') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.extra_discount_helper') }}</span>
+            </div>
+			
             <div class="form-group">
                 <label class="required" for="order_total">{{ trans('cruds.order.fields.order_total') }}</label>
                 <input class="form-control {{ $errors->has('order_total') ? 'is-invalid' : '' }}" type="number" name="order_total" id="order_total" value="{{ old('order_total', '') }}" step="0.01" required>
@@ -179,7 +188,7 @@
 					
 		});
 		
-		$(document).on("keyup", ".quantity", function () {
+		$(document).on("keyup", ".quantity, #extra_discount", function () {
 			var price = $(this).parent().prev().find('input').val();
 			$(this).parent().next().find('input').val($(this).val() * price);
 			calculate_total();
@@ -193,7 +202,9 @@
 			
 				order_total += parseFloat($(this).val());
 			});
-			
+			if($("#extra_discount").val() > 0){
+				order_total = order_total - $("#extra_discount").val();
+			}
 			$("#order_total").val(order_total);
 		}
 	</script>
