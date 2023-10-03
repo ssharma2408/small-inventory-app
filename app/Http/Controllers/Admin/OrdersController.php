@@ -48,7 +48,7 @@ class OrdersController extends Controller
 								'roles', function($q){
 									$q->where('title', 'Sales Manager');
 								}
-							)->where('id', $role['id'])->pluck('name', 'id');
+							)->where('id', $user->id)->pluck('name', 'id');
 		}else{
 			$sales_managers = User::whereHas(
 								'roles', function($q){
@@ -104,7 +104,7 @@ class OrdersController extends Controller
 								'roles', function($q){
 									$q->where('title', 'Sales Manager');
 								}
-							)->where('id', $role['id'])->pluck('name', 'id');
+							)->where('id', $user->id)->pluck('name', 'id');
 		}else{
 			$sales_managers = User::whereHas(
 								'roles', function($q){
