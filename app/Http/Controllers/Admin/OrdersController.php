@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use DB;
+use Auth;
 
 class OrdersController extends Controller
 {
@@ -23,16 +24,38 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $orders = Order::with(['sales_manager', 'customer'])->get();
+        $user = \Auth::user();
+        $role=$user->roles()->first()->toArray();		
+		
+		if($role['title'] == 'Sales Manager'){
+			$orders = Order::where('sales_manager_id', $user->id)->with(['sales_manager', 'customer'])->get();
+		}else{
+			$orders = Order::with(['sales_manager', 'customer'])->get();
+		}
 
         return view('admin.orders.index', compact('orders'));
     }
 
     public function create()
     {
-        abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $sales_managers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');		
+		
+		$user = \Auth::user();
+        $role=$user->roles()->first()->toArray();		
+        
+		if($role['title'] == 'Sales Manager'){
+			$sales_managers = User::whereHas(
+								'roles', function($q){
+									$q->where('title', 'Sales Manager');
+								}
+							)->where('id', $role['id'])->pluck('name', 'id');
+		}else{
+			$sales_managers = User::whereHas(
+								'roles', function($q){
+									$q->where('title', 'Sales Manager');
+								}
+							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+		}
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
@@ -43,8 +66,11 @@ class OrdersController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        		
-		$order = Order::create($request->all());		
+        $params = 	$request->all();
+		
+		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+		
+		$order = Order::create($params);
 		
 		$data = [];
 		for($i=0; $i < count($request['item_name']); $i++){			
@@ -70,7 +96,22 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sales_managers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $user = \Auth::user();
+        $role=$user->roles()->first()->toArray();		
+        
+		if($role['title'] == 'Sales Manager'){
+			$sales_managers = User::whereHas(
+								'roles', function($q){
+									$q->where('title', 'Sales Manager');
+								}
+							)->where('id', $role['id'])->pluck('name', 'id');
+		}else{
+			$sales_managers = User::whereHas(
+								'roles', function($q){
+									$q->where('title', 'Sales Manager');
+								}
+							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+		}
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
