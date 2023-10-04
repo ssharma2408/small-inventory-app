@@ -15,7 +15,7 @@ class CustomersApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new CustomerResource(Customer::all());
     }
@@ -31,7 +31,7 @@ class CustomersApiController extends Controller
 
     public function show(Customer $customer)
     {
-        abort_if(Gate::denies('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new CustomerResource($customer);
     }
@@ -47,7 +47,7 @@ class CustomersApiController extends Controller
 
     public function destroy(Customer $customer)
     {
-        abort_if(Gate::denies('customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $customer->delete();
 

@@ -11,7 +11,8 @@ class StoreInventoryRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('inventory_create');
+        //return Gate::allows('inventory_create');
+        return true;
     }
 
     public function rules()

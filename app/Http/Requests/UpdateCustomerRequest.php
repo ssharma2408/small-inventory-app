@@ -11,7 +11,8 @@ class UpdateCustomerRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('customer_edit');
+        //return Gate::allows('customer_edit');
+        return true;
     }
 
     public function rules()

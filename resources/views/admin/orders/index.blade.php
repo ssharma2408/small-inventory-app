@@ -88,19 +88,21 @@
                                     </a>
                                 @endcan
 
-                                @can('order_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.orders.edit', $order->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
+                                @if($order->sales_manager_id === \Auth::user()->id || $is_admin)
+									@can('order_edit')
+										<a class="btn btn-xs btn-info" href="{{ route('admin.orders.edit', $order->id) }}">
+											{{ trans('global.edit') }}
+										</a>
+									@endcan
 
-                                @can('order_delete')
-                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+									@can('order_delete')
+										<form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+											<input type="hidden" name="_method" value="DELETE">
+											<input type="hidden" name="_token" value="{{ csrf_token() }}">
+											<input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+										</form>
+									@endcan
+								@endif
 
                             </td>
 

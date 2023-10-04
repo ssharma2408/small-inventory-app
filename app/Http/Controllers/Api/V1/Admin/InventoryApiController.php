@@ -18,7 +18,7 @@ class InventoryApiController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new InventoryResource(Inventory::with(['supplier', 'product'])->get());
     }
@@ -38,7 +38,7 @@ class InventoryApiController extends Controller
 
     public function show(Inventory $inventory)
     {
-        abort_if(Gate::denies('inventory_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('inventory_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new InventoryResource($inventory->load(['supplier', 'product']));
     }
@@ -65,7 +65,7 @@ class InventoryApiController extends Controller
 
     public function destroy(Inventory $inventory)
     {
-        abort_if(Gate::denies('inventory_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('inventory_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $inventory->delete();
 

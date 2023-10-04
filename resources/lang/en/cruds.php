@@ -149,6 +149,8 @@ return [
             'sales_manager_helper' => ' ',
             'customer'             => 'Customer',
             'customer_helper'      => ' ',
+			'extra_discount'      => 'Extra Discount',
+			'extra_discount_helper'   => ' ',
             'order_total'          => 'Order Total',
             'order_total_helper'   => ' ',
             'comments'             => 'Comments',

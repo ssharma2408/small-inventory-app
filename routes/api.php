@@ -17,3 +17,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Product
     Route::apiResource('products', 'ProductApiController');
 });
+
+Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	
+    Route::post('login', 'login');
+});

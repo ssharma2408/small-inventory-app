@@ -15,7 +15,7 @@ class SupplierApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new SupplierResource(Supplier::all());
     }
@@ -31,7 +31,7 @@ class SupplierApiController extends Controller
 
     public function show(Supplier $supplier)
     {
-        abort_if(Gate::denies('supplier_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('supplier_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new SupplierResource($supplier);
     }
@@ -47,7 +47,7 @@ class SupplierApiController extends Controller
 
     public function destroy(Supplier $supplier)
     {
-        abort_if(Gate::denies('supplier_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('supplier_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $supplier->delete();
 
