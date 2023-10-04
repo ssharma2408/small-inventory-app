@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Customer;
+use App\Models\Product;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 
-class UpdateCustomerRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('customer_edit');
+        return Gate::allows('product_edit');
     }
 
     public function rules()
@@ -21,12 +21,15 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'required',
             ],
-            'address' => [
+            'selling_price' => [
+                'numeric',
                 'required',
             ],
-            'phone_number' => [
-                'string',
+            'stock' => [
                 'required',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
             ],
         ];
     }

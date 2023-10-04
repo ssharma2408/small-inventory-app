@@ -11,8 +11,7 @@ class UpdateOrderRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('order_edit');
-        return true;
+        return Gate::allows('order_edit');
     }
 
     public function rules()
@@ -25,9 +24,6 @@ class UpdateOrderRequest extends FormRequest
             'customer_id' => [
                 'required',
                 'integer',
-            ],
-			'item_name' => [
-                'required',
             ],
             'order_total' => [
                 'numeric',

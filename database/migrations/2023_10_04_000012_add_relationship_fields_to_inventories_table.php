@@ -11,6 +11,8 @@ class AddRelationshipFieldsToInventoriesTable extends Migration
         Schema::table('inventories', function (Blueprint $table) {
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id', 'supplier_fk_9044315')->references('id')->on('suppliers');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id', 'product_fk_9073917')->references('id')->on('products');
         });
     }
 }

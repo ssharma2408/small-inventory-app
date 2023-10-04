@@ -10,9 +10,8 @@ class CreateInventoriesTable extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('product_name');
             $table->integer('stock');
-            $table->float('price', 15, 2);
+            $table->float('purchase_price', 15, 2);
             $table->string('discount_type');
             $table->float('discount', 15, 2)->nullable();
             $table->float('tax', 15, 2);

@@ -11,8 +11,7 @@ class UpdateSupplierRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('supplier_edit');
-        return true;
+        return Gate::allows('supplier_edit');
     }
 
     public function rules()

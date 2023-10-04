@@ -9,14 +9,9 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
-use App\Models\Inventory;
-use App\Models\OrderItem;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use DB;
-use Auth;
 
 class OrdersController extends Controller
 {
@@ -24,73 +19,26 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = \Auth::user();
-        $role=$user->roles()->first()->toArray();		
-		
-		$is_admin = false;
-		
-		if($role['title'] == 'Admin'){
-			$is_admin = true;
-		}
-		
-		$orders = Order::with(['sales_manager', 'customer'])->get();
+        $orders = Order::with(['sales_manager', 'customer'])->get();
 
-        return view('admin.orders.index', compact('orders', 'is_admin'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function create()
     {
-        abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');		
-		
-		$user = \Auth::user();
-        $role=$user->roles()->first()->toArray();		
-        
-		if($role['title'] == 'Sales Manager'){
-			$sales_managers = User::whereHas(
-								'roles', function($q){
-									$q->where('title', 'Sales Manager');
-								}
-							)->where('id', $user->id)->pluck('name', 'id');
-		}else{
-			$sales_managers = User::whereHas(
-								'roles', function($q){
-									$q->where('title', 'Sales Manager');
-								}
-							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-		}
+        abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $sales_managers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-		
-		$products = Inventory::select('id', 'product_name')->get();
 
-        return view('admin.orders.create', compact('customers', 'sales_managers', 'products'));
+        return view('admin.orders.create', compact('customers', 'sales_managers'));
     }
 
     public function store(StoreOrderRequest $request)
     {
-        $params = 	$request->all();
-		
-		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
-		
-		$order = Order::create($params);
-		
-		$data = [];
-		for($i=0; $i < count($request['item_name']); $i++){			
-			if(!empty($request['item_name']) && !empty($request['item_quantity'])){
-				$item = [];
-				$item['product_id'] = $request['item_name'][$i];
-				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];			
-				$data[] = $item;
-			}
-						
-		}
+        $order = Order::create($request->all());
 
-		if(!empty($data)){
-			OrderItem::insert($data);
-		}
-		
-		
         return redirect()->route('admin.orders.index');
     }
 
@@ -98,68 +46,18 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = \Auth::user();
-        $role=$user->roles()->first()->toArray();		
-        
-		if($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id){
-		
-			if($role['title'] == 'Sales Manager'){
-				$sales_managers = User::whereHas(
-									'roles', function($q){
-										$q->where('title', 'Sales Manager');
-									}
-								)->where('id', $user->id)->pluck('name', 'id');
-			}else{
-				$sales_managers = User::whereHas(
-									'roles', function($q){
-										$q->where('title', 'Sales Manager');
-									}
-								)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-			}
+        $sales_managers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-			
-			$products = Inventory::select('id', 'product_name')->get();		
+        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$order_items =DB::table('order_items')
-					->join('inventories','order_items.product_id', '=', 'inventories.id')               
-					->select('order_items.product_id','order_items.quantity','inventories.stock', 'inventories.price')
-					->where('order_items.order_id', $order->id)
-					->get();
-			
-			$order->load('sales_manager', 'customer');
+        $order->load('sales_manager', 'customer');
 
-			return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'products', 'order_items'));
-		}else{
-			return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
-		}
+        return view('admin.orders.edit', compact('customers', 'order', 'sales_managers'));
     }
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        $params = 	$request->all();
-		
-		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
-		
-		$order->update($params);
-		
-		DB::table('order_items')->where('order_id', $order->id)->delete();
-		
-		$data = [];
-		for($i=0; $i < count($request['item_name']); $i++){			
-			if(!empty($request['item_name']) && !empty($request['item_quantity'])){
-				$item = [];
-				$item['product_id'] = $request['item_name'][$i];
-				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];			
-				$data[] = $item;
-			}
-						
-		}
-
-		if(!empty($data)){
-			OrderItem::insert($data);
-		}
+        $order->update($request->all());
 
         return redirect()->route('admin.orders.index');
     }
@@ -177,15 +75,7 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = \Auth::user();
-        $role=$user->roles()->first()->toArray();		
-        
-		if($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id){
-			
-			$order->delete();
-		}else{
-			return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
-		}
+        $order->delete();
 
         return back();
     }
@@ -200,10 +90,4 @@ class OrdersController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-	
-	public function get_product_detail($id){
-		$product = Inventory::select('id', 'product_name', 'stock', 'price')->where('id', $id)->first();
-		
-		return response()->json(array('success'=>1, 'product'=>$product), 200);
-	}
 }

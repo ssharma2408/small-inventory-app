@@ -35,16 +35,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Inventory
     Route::delete('inventories/destroy', 'InventoryController@massDestroy')->name('inventories.massDestroy');
+    Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
+    Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
     Route::resource('inventories', 'InventoryController');
 
     // Orders
-    Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');	
-	Route::get('orders/get_product_detail/{id}', 'OrdersController@get_product_detail')->name('orders.get_product_detail');
+    Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
     Route::resource('orders', 'OrdersController');
 
-    // Order Items
-    Route::delete('order-items/destroy', 'OrderItemsController@massDestroy')->name('order-items.massDestroy');
-    Route::resource('order-items', 'OrderItemsController');
+    // Product
+    Route::delete('products/destroy', 'ProductController@massDestroy')->name('products.massDestroy');
+    Route::resource('products', 'ProductController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
