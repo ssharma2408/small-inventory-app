@@ -23,12 +23,16 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.supplier_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="product_name">{{ trans('cruds.inventory.fields.product_name') }}</label>
-                <input class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}" type="text" name="product_name" id="product_name" value="{{ old('product_name', $inventory->product_name) }}" required>
-                @if($errors->has('product_name'))
-                    <span class="text-danger">{{ $errors->first('product_name') }}</span>
+                <label class="required" for="product_id">{{ trans('cruds.inventory.fields.product') }}</label>
+                <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
+                    @foreach($products as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('product_id') ? old('product_id') : $inventory->product->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('product'))
+                    <span class="text-danger">{{ $errors->first('product') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.product_name_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.inventory.fields.product_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="stock">{{ trans('cruds.inventory.fields.stock') }}</label>
@@ -39,12 +43,12 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.stock_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="price">{{ trans('cruds.inventory.fields.price') }}</label>
-                <input class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" type="number" name="price" id="price" value="{{ old('price', $inventory->price) }}" step="0.01" required>
-                @if($errors->has('price'))
-                    <span class="text-danger">{{ $errors->first('price') }}</span>
+                <label class="required" for="purchase_price">{{ trans('cruds.inventory.fields.purchase_price') }}</label>
+                <input class="form-control {{ $errors->has('purchase_price') ? 'is-invalid' : '' }}" type="number" name="purchase_price" id="purchase_price" value="{{ old('purchase_price', $inventory->purchase_price) }}" step="0.01" required>
+                @if($errors->has('purchase_price'))
+                    <span class="text-danger">{{ $errors->first('purchase_price') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.price_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.inventory.fields.purchase_price_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>
@@ -84,6 +88,15 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.final_price_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
+                <div class="needsclick dropzone {{ $errors->has('po_file') ? 'is-invalid' : '' }}" id="po_file-dropzone">
+                </div>
+                @if($errors->has('po_file'))
+                    <span class="text-danger">{{ $errors->first('po_file') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.po_file_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
@@ -97,44 +110,54 @@
 @endsection
 
 @section('scripts')
-	<script>
-		$(document).on("change", "#discount_type_0, #discount_type_1", function () {
-			calculate_total();
-		});
-		
-		$(document).on("keyup", "#stock, #price, #tax, #discount", function () {			
-			calculate_total();
-		});
-		
-		function calculate_total(){
-			var order_total = 0, stock, price, tax, discount;		
-			stock = $("#stock").val();
-			price = $("#price").val();
-			tax = $("#tax").val();
-			discount = $("#discount").val();
-			
-			if(stock > 0 && price > 0){
-				order_total = stock * price;				
-				
-				if(discount > 0){
-					if($("#discount_type_0").is(":checked")){
-						if(discount < order_total){
-							order_total = order_total - discount;
-						}
-					}else{
-						if(((order_total * discount) / 100) < order_total){
-							order_total = order_total - (order_total * discount) / 100;
-						}
-					}
-				}
-				
-				if(tax > 0){
-					order_total = order_total + parseFloat(tax);
-				}
-			}
-			$("#final_price").val(order_total);
-		}
-		
-		
-	</script>
+<script>
+    Dropzone.options.poFileDropzone = {
+    url: '{{ route('admin.inventories.storeMedia') }}',
+    maxFilesize: 2, // MB
+    maxFiles: 1,
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    params: {
+      size: 2
+    },
+    success: function (file, response) {
+      $('form').find('input[name="po_file"]').remove()
+      $('form').append('<input type="hidden" name="po_file" value="' + response.name + '">')
+    },
+    removedfile: function (file) {
+      file.previewElement.remove()
+      if (file.status !== 'error') {
+        $('form').find('input[name="po_file"]').remove()
+        this.options.maxFiles = this.options.maxFiles + 1
+      }
+    },
+    init: function () {
+@if(isset($inventory) && $inventory->po_file)
+      var file = {!! json_encode($inventory->po_file) !!}
+          this.options.addedfile.call(this, file)
+      file.previewElement.classList.add('dz-complete')
+      $('form').append('<input type="hidden" name="po_file" value="' + file.file_name + '">')
+      this.options.maxFiles = this.options.maxFiles - 1
+@endif
+    },
+     error: function (file, response) {
+         if ($.type(response) === 'string') {
+             var message = response //dropzone sends it's own error messages in string
+         } else {
+             var message = response.errors.file
+         }
+         file.previewElement.classList.add('dz-error')
+         _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
+         _results = []
+         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+             node = _ref[_i]
+             _results.push(node.textContent = message)
+         }
+
+         return _results
+     }
+}
+</script>
 @endsection

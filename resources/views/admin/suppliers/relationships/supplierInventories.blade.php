@@ -28,13 +28,13 @@
                                 {{ trans('cruds.inventory.fields.supplier') }}
                             </th>
                             <th>
-                                {{ trans('cruds.inventory.fields.product_name') }}
+                                {{ trans('cruds.inventory.fields.product') }}
                             </th>
                             <th>
                                 {{ trans('cruds.inventory.fields.stock') }}
                             </th>
                             <th>
-                                {{ trans('cruds.inventory.fields.price') }}
+                                {{ trans('cruds.inventory.fields.purchase_price') }}
                             </th>
                             <th>
                                 {{ trans('cruds.inventory.fields.discount_type') }}
@@ -47,6 +47,9 @@
                             </th>
                             <th>
                                 {{ trans('cruds.inventory.fields.final_price') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.inventory.fields.po_file') }}
                             </th>
                             <th>
                                 &nbsp;
@@ -66,13 +69,13 @@
                                     {{ $inventory->supplier->supplier_name ?? '' }}
                                 </td>
                                 <td>
-                                    {{ $inventory->product_name ?? '' }}
+                                    {{ $inventory->product->name ?? '' }}
                                 </td>
                                 <td>
                                     {{ $inventory->stock ?? '' }}
                                 </td>
                                 <td>
-                                    {{ $inventory->price ?? '' }}
+                                    {{ $inventory->purchase_price ?? '' }}
                                 </td>
                                 <td>
                                     {{ App\Models\Inventory::DISCOUNT_TYPE_RADIO[$inventory->discount_type] ?? '' }}
@@ -85,6 +88,13 @@
                                 </td>
                                 <td>
                                     {{ $inventory->final_price ?? '' }}
+                                </td>
+                                <td>
+                                    @if($inventory->po_file)
+                                        <a href="{{ $inventory->po_file->getUrl() }}" target="_blank">
+                                            {{ trans('global.view_file') }}
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>
                                     @can('inventory_show')

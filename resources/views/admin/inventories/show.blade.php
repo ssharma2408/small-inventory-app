@@ -33,10 +33,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.inventory.fields.product_name') }}
+                            {{ trans('cruds.inventory.fields.product') }}
                         </th>
                         <td>
-                            {{ $inventory->product_name }}
+                            {{ $inventory->product->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -49,10 +49,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.inventory.fields.price') }}
+                            {{ trans('cruds.inventory.fields.purchase_price') }}
                         </th>
                         <td>
-                            {{ $inventory->price }}
+                            {{ $inventory->purchase_price }}
                         </td>
                     </tr>
                     <tr>
@@ -85,6 +85,18 @@
                         </th>
                         <td>
                             {{ $inventory->final_price }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.inventory.fields.po_file') }}
+                        </th>
+                        <td>
+                            @if($inventory->po_file)
+                                <a href="{{ $inventory->po_file->getUrl() }}" target="_blank">
+                                    {{ trans('global.view_file') }}
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 </tbody>

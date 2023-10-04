@@ -11,16 +11,15 @@ class UpdateInventoryRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('inventory_edit');
-        return true;
+        return Gate::allows('inventory_edit');
     }
 
     public function rules()
     {
         return [
-            'product_name' => [
-                'string',
+            'product_id' => [
                 'required',
+                'integer',
             ],
             'stock' => [
                 'required',
@@ -28,7 +27,7 @@ class UpdateInventoryRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'price' => [
+            'purchase_price' => [
                 'numeric',
                 'required',
             ],
@@ -44,6 +43,9 @@ class UpdateInventoryRequest extends FormRequest
             ],
             'final_price' => [
                 'numeric',
+                'required',
+            ],
+            'po_file' => [
                 'required',
             ],
         ];

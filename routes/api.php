@@ -8,15 +8,12 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('customers', 'CustomersApiController');
 
     // Inventory
+    Route::post('inventories/media', 'InventoryApiController@storeMedia')->name('inventories.storeMedia');
     Route::apiResource('inventories', 'InventoryApiController');
 
     // Orders
     Route::apiResource('orders', 'OrdersApiController');
 
-    // Order Items
-    Route::apiResource('order-items', 'OrderItemsApiController');
-});
-
-Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	
-    Route::post('login', 'login');	
+    // Product
+    Route::apiResource('products', 'ProductApiController');
 });

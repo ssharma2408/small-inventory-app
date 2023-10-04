@@ -95,6 +95,18 @@
                         </a>
                     </li>
                 @endcan
+                @can('product_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.products.index") }}" class="nav-link {{ request()->is("admin/products") || request()->is("admin/products/*") ? "active" : "" }}">
+                            <i class="fa-fw nav-icon fas fa-cogs">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.product.title') }}
+                            </p>
+                        </a>
+                    </li>
+                @endcan
                 @can('inventory_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.inventories.index") }}" class="nav-link {{ request()->is("admin/inventories") || request()->is("admin/inventories/*") ? "active" : "" }}">
@@ -115,18 +127,6 @@
                             </i>
                             <p>
                                 {{ trans('cruds.order.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('order_item_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.order-items.index") }}" class="nav-link {{ request()->is("admin/order-items") || request()->is("admin/order-items/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.orderItem.title') }}
                             </p>
                         </a>
                     </li>
