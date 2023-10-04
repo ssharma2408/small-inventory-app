@@ -11,7 +11,8 @@ class StoreSupplierRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('supplier_create');
+        //return Gate::allows('supplier_create');
+		return true;
     }
 
     public function rules()

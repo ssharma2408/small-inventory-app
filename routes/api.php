@@ -16,3 +16,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Order Items
     Route::apiResource('order-items', 'OrderItemsApiController');
 });
+
+Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	
+    Route::post('login', 'login');	
+});

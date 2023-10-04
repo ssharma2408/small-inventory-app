@@ -11,7 +11,8 @@ class StoreCustomerRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('customer_create');
+        //return Gate::allows('customer_create');
+		return true;
     }
 
     public function rules()

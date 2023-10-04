@@ -137,7 +137,11 @@ class OrdersController extends Controller
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        $order->update($request->all());
+        $params = 	$request->all();
+		
+		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+		
+		$order->update($params);
 		
 		DB::table('order_items')->where('order_id', $order->id)->delete();
 		
