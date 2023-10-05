@@ -39,10 +39,7 @@
                         </th>
                         <th>
                             {{ trans('cruds.order.fields.delivery_note') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.order.fields.customer_sign') }}
-                        </th>
+                        </th>                        
                         <th>
                             {{ trans('cruds.order.fields.status') }}
                         </th>
@@ -74,10 +71,7 @@
                             </td>
                             <td>
                                 {{ $order->delivery_note ?? '' }}
-                            </td>
-                            <td>
-                                {{ $order->customer_sign ?? '' }}
-                            </td>
+                            </td>                            
                             <td>
                                 {{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
                             </td>
