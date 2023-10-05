@@ -7,7 +7,7 @@
 		$ddl_html = '<select class="form-control select2 order_item" name="item_name[]" required>';
 			$ddl_html .= '<option value="">-- Select Product --</option>';
 			foreach($products as $product){
-				$ddl_html .= '<option value="'.$product['id'].'">'.$product['product_name'].'</option>';
+				$ddl_html .= '<option value="'.$product['id'].'">'.$product['name'].'</option>';
 			}
 		$ddl_html .= '</select>';
 	}
@@ -84,7 +84,7 @@
 											if($product['id'] == $order_item->product_id){
 												$selected = "selected";
 											}
-											echo '<option value="'.$product['id'].'" '.$selected.'>'.$product['product_name'].'</option>';
+											echo '<option value="'.$product['id'].'" '.$selected.'>'.$product['name'].'</option>';
 										}
 									echo '</select>';
 										 															
@@ -93,13 +93,13 @@
 										<input class="form-control" type="number" name="item_stock[]" disabled value="'.$order_item->stock.'" />
 									</div>
 									<div class="col-md-2">
-										<input class="form-control" type="text" name="item_price[]" disabled value="'.$order_item->price.'" />
+										<input class="form-control" type="text" name="item_price[]" disabled value="'.$order_item->selling_price.'" />
 									</div>
 									<div class="col-md-2">
 										<input class="form-control quantity" type="number" name="item_quantity[]" min="1" value="'.$order_item->quantity.'"/>
 									</div>
 									<div class="col-md-2">
-										<input class="form-control amount" type="text" name="item_amount[]" disabled value="'.$order_item->price * $order_item->quantity.'" />
+										<input class="form-control amount" type="text" name="item_amount[]" disabled value="'.$order_item->selling_price * $order_item->quantity.'" />
 									</div>
 									<div class="col-md-1">';
 										if(!$cnt){
@@ -207,7 +207,7 @@
 					success: function(data) {
 						if (data.success) {
 							stock.val(data.product.stock);
-							qty.val(data.product.price);							
+							qty.val(data.product.selling_price);							
 						}
 					}
 				 });

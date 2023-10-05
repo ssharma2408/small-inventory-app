@@ -7,7 +7,7 @@
 		$ddl_html = '<select class="form-control select2 order_item" name="item_name[]" required>';
 			$ddl_html .= '<option value="">-- Select Product --</option>';
 			foreach($products as $product){
-				$ddl_html .= '<option value="'.$product['id'].'">'.$product['product_name'].'</option>';
+				$ddl_html .= '<option value="'.$product['id'].'">'.$product['name'].'</option>';
 			}
 		$ddl_html .= '</select>';
 	}
@@ -182,7 +182,7 @@
 					success: function(data) {
 						if (data.success) {
 							stock.val(data.product.stock);
-							qty.val(data.product.price);							
+							qty.val(data.product.selling_price);							
 						}
 					}
 				 });

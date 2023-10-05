@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Inventory;
+use App\Models\Product;
 use App\Models\OrderItem;
 use Gate;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class OrdersController extends Controller
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
-		$products = Inventory::select('id', 'product_name')->get();
+		$products = Product::select('id', 'name')->get();
 
         return view('admin.orders.create', compact('customers', 'sales_managers', 'products'));
     }
@@ -118,11 +119,11 @@ class OrdersController extends Controller
 
 			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$products = Inventory::select('id', 'product_name')->get();		
+			$products = Product::select('id', 'name')->get();
 
 			$order_items =DB::table('order_items')
-					->join('inventories','order_items.product_id', '=', 'inventories.id')               
-					->select('order_items.product_id','order_items.quantity','inventories.stock', 'inventories.price')
+					->join('products','order_items.product_id', '=', 'products.id')               
+					->select('order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
 					->where('order_items.order_id', $order->id)
 					->get();
 
@@ -201,7 +202,7 @@ class OrdersController extends Controller
     }
 	
 	public function get_product_detail($id){
-		$product = Inventory::select('id', 'product_name', 'stock', 'price')->where('id', $id)->first();
+		$product = Product::select('id', 'name', 'stock', 'selling_price')->where('id', $id)->first();
 
 		return response()->json(array('success'=>1, 'product'=>$product), 200);
 	}
