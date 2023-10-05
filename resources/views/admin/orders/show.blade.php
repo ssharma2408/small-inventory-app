@@ -119,15 +119,7 @@
 							<td>
 								{{ $order->delivery_note }}
 							</td>
-						</tr>
-						<tr>
-							<th>
-								{{ trans('cruds.order.fields.customer_sign') }}
-							</th>
-							<td>
-								{{ $order->customer_sign }}
-							</td>
-						</tr>
+						</tr>						
 						<tr>
 							<th>
 								{{ trans('cruds.order.fields.status') }}
