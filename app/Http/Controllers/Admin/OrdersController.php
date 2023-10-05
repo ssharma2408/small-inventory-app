@@ -102,7 +102,7 @@ class OrdersController extends Controller
         $user = \Auth::user();
         $role=$user->roles()->first()->toArray();		
 
-		if($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id){
+		if($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id ||  $order->delivery_agent_id === \Auth::user()->id){
 
 			if($role['title'] == 'Sales Manager'){
 				$sales_managers = User::whereHas(

@@ -88,7 +88,7 @@
                                     </a>
                                 @endcan
 
-                                @if($order->sales_manager_id === \Auth::user()->id || $is_admin)
+                                @if($order->sales_manager_id === \Auth::user()->id || $is_admin || $order->delivery_agent_id === \Auth::user()->id)
 									@can('order_edit')
 										<a class="btn btn-xs btn-info" href="{{ route('admin.orders.edit', $order->id) }}">
 											{{ trans('global.edit') }}
