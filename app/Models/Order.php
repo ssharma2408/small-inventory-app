@@ -28,6 +28,7 @@ class Order extends Model
         'customer_sign',
         'status',
 		'extra_discount',
+		'delivery_agent_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -35,14 +36,9 @@ class Order extends Model
 
     public const STATUS_SELECT = [
         '0' => 'Declined',
-        '1' => 'Completed',
-        '2' => 'Pending',
-        '3' => 'Awaiting Payment',
-        '4' => 'Awaiting Shipment',
-        '5' => 'Hold',
-        '6' => 'Disputed',
-        '7' => 'Review',
-        '8' => 'Confirm',
+        '1' => 'Completed',        
+        '3' => 'Review',
+        '4' => 'Accepted',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

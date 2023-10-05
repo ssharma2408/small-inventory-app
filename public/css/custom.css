@@ -103,3 +103,7 @@ div.dt-button-collection {
     background-color: rgba(128, 128, 128, 0.1);
     font-weight: bolder;
 }
+
+.buttons-copy, .buttons-csv, .buttons-excel, .buttons-pdf, .buttons-print, .buttons-collection{
+	display:none;
+}

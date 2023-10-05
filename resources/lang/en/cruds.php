@@ -167,6 +167,8 @@ return [
             'deleted_at_helper'    => ' ',
             'status'               => 'Status',
             'status_helper'        => ' ',
+			'delivery_agent'        => 'Delivery Agent',
+            'delivery_agent_helper' => ' ',
         ],
     ],
     'product' => [

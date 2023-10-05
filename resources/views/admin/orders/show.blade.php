@@ -39,6 +39,61 @@
                             {{ $order->customer->name ?? '' }}
                         </td>
                     </tr>
+					<tr>
+						<th>
+                            Order Items
+                        </th>
+                        <td>
+                            <table class="table table-bordered table-striped">
+								<tbody>
+									<tr>
+										<th>
+											Product Name
+										</th>
+										<th>
+											Price
+										</th>
+										<th>
+											Stock
+										</th>
+										<th>
+											Ordered Quantity
+										</th>
+										<th>
+											Amount
+										</th>
+									</tr>
+									@foreach($order->	order_item as $item)
+										<tr>
+											<td>
+											{{ $item->name }}
+											</td>
+											<td>
+											{{ $item->selling_price }}
+											</td>
+											<td>
+											{{ $item->stock }}
+											</td>
+											<td>
+											{{ $item->quantity }}
+											</td>
+											<td>
+											{{ $item->quantity * $item->selling_price }}
+											</td>
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+                        </td>
+					</tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.order.fields.extra_discount') }}
+                        </th>
+                        <td>
+                            {{ $order->extra_discount }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.order.fields.order_total') }}

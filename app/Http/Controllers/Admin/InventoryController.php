@@ -41,7 +41,10 @@ class InventoryController extends Controller
 
     public function store(StoreInventoryRequest $request)
     {
-        $inventory = Inventory::create($request->all());
+        $inventory = Inventory::create($request->all());		
+		
+		$product = Product::find($request->product_id);
+		$product->increment('stock', $request->stock);
 
         if ($request->input('po_file', false)) {
             $inventory->addMedia(storage_path('tmp/uploads/' . basename($request->input('po_file'))))->toMediaCollection('po_file');
@@ -69,7 +72,14 @@ class InventoryController extends Controller
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
-        $inventory->update($request->all());
+       	$product = Product::find($request->product_id);
+		
+		if($inventory->stock != $request->stock){
+			$product->decrement('stock', $inventory->stock);
+			$product->increment('stock', $request->stock);			
+		}
+		
+		$inventory->update($request->all());		
 
         if ($request->input('po_file', false)) {
             if (! $inventory->po_file || $request->input('po_file') !== $inventory->po_file->file_name) {

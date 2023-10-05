@@ -72,6 +72,7 @@ class OrdersController extends Controller
         $params = 	$request->all();
 
 		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+		$params['delivery_agent_id'] = null;
 
 		$order = Order::create($params);
 
@@ -116,12 +117,18 @@ class OrdersController extends Controller
 									}
 								)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 			}
+			
+			$delivery_agents = User::whereHas(
+									'roles', function($q){
+										$q->where('title', 'Delivery Agent');
+									}
+								)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
 			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
 			$products = Product::select('id', 'name')->get();
 
-			$order_items =DB::table('order_items')
+			$order_items = DB::table('order_items')
 					->join('products','order_items.product_id', '=', 'products.id')               
 					->select('order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
 					->where('order_items.order_id', $order->id)
@@ -129,7 +136,7 @@ class OrdersController extends Controller
 
 			$order->load('sales_manager', 'customer');
 
-			return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'products', 'order_items'));
+			return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'products', 'order_items', 'delivery_agents'));
 		}else{
 			return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
 		}
@@ -140,8 +147,9 @@ class OrdersController extends Controller
         $params = 	$request->all();
 
 		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+		$params['delivery_agent_id'] = ($params['status'] == 4) ? $params['delivery_agent_id'] : null;
 
-		$order->update($params);
+		$order->update($params);		
 
 		DB::table('order_items')->where('order_id', $order->id)->delete();
 
@@ -160,6 +168,14 @@ class OrdersController extends Controller
 		if(!empty($data)){
 			OrderItem::insert($data);
 		}
+		
+		//If order is accepted by Admin then decrease the stock
+		if($params['status'] == 4){
+			foreach($data as $ord_item){
+				$product = Product::find($ord_item['product_id']);
+				$product->decrement('stock', $ord_item['quantity']);
+			}
+		}
 
         return redirect()->route('admin.orders.index');
     }
@@ -168,7 +184,13 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $order->load('sales_manager', 'customer');
+        $order = $order->load('sales_manager', 'customer');		
+		
+		$order['order_item'] = DB::table('order_items')
+					->join('products','order_items.product_id', '=', 'products.id')               
+					->select('order_items.quantity','products.stock', 'products.selling_price', 'products.name')
+					->where('order_items.order_id', $order->id)
+					->get()->toArray();	
 
         return view('admin.orders.show', compact('order'));
     }

@@ -173,6 +173,20 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.status_helper') }}</span>
             </div>
+			
+			<div class="form-group delivery_agent">
+                <label class="required" for="delivery_agent_id">{{ trans('cruds.order.fields.delivery_agent') }}</label>
+                <select class="form-control select2 {{ $errors->has('delivery_agent') ? 'is-invalid' : '' }}" name="delivery_agent_id" id="delivery_agent_id">
+                    @foreach($delivery_agents as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('delivery_agent_id') ? old('delivery_agent_id') : $order->delivery_agent_id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('delivery_agent'))
+                    <span class="text-danger">{{ $errors->first('delivery_agent') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.delivery_agent_helper') }}</span>
+            </div>
+			
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
@@ -185,7 +199,18 @@
 @endsection
 
 @section('scripts')
-	<script>	
+	<script>
+	
+		$(function() {			
+			<?php
+				if($order->status ==4){
+					echo '$(".delivery_agent").show();';
+				}else{
+					echo '$(".delivery_agent").hide();$(".delivery_agent").val("");';
+				}
+			?>
+		});
+
 		$(".add_row").click(function(){
 			$(this).parent().parent().parent().append(row_html());
 		});
@@ -235,5 +260,16 @@
 			
 			$("#order_total").val(order_total);
 		}
+		
+		$("#status").change(function(){
+			if($(this).val() ==4){
+				$("#delivery_agent_id").prop('required', true);
+				$(".delivery_agent").show();
+			}else{
+				$("#delivery_agent_id").prop('required', false);
+				$(".delivery_agent").hide();
+				$(".delivery_agent").val("");
+			}
+		});
 	</script>
 @endsection
