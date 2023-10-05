@@ -100,7 +100,7 @@ class OrdersController extends Controller
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = \Auth::user();
-        $role=$user->roles()->first()->toArray();		
+        $role=$user->roles()->first()->toArray();
 
 		if($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id ||  $order->delivery_agent_id === \Auth::user()->id){
 
@@ -183,6 +183,9 @@ class OrdersController extends Controller
     public function show(Order $order)
     {
         abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$user = \Auth::user();
+        $role=$user->roles()->first()->toArray();		
 
         $order = $order->load('sales_manager', 'customer');		
 		
@@ -192,7 +195,7 @@ class OrdersController extends Controller
 					->where('order_items.order_id', $order->id)
 					->get()->toArray();	
 
-        return view('admin.orders.show', compact('order'));
+        return view('admin.orders.show', compact('order', 'role'));
     }
 
     public function destroy(Order $order)
@@ -227,5 +230,19 @@ class OrdersController extends Controller
 		$product = Product::select('id', 'name', 'stock', 'selling_price')->where('id', $id)->first();
 
 		return response()->json(array('success'=>1, 'product'=>$product), 200);
+	}
+	
+	public function complete_order(Request $request){
+		if($request->signature == ""){
+			return false;
+		}
+		
+		Order::where('id', $request->id)
+       ->update([
+           'status' => 1,
+		   'customer_sign' => $request->signature
+        ]);
+		
+		return back();
 	}
 }
