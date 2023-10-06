@@ -16,6 +16,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Product
     Route::apiResource('products', 'ProductApiController');
+	
+	// Category
+    Route::apiResource('categories', 'CategoryApiController');
 });
 
 Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	

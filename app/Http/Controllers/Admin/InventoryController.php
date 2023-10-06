@@ -9,6 +9,7 @@ use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
 use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Supplier;
 use Gate;
 use Illuminate\Http\Request;
@@ -35,8 +36,11 @@ class InventoryController extends Controller
         $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $products = Product::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+		
+		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
 
-        return view('admin.inventories.create', compact('products', 'suppliers'));
+        return view('admin.inventories.create', compact('products', 'suppliers', 'categories'));
     }
 
     public function store(StoreInventoryRequest $request)
@@ -66,8 +70,12 @@ class InventoryController extends Controller
         $products = Product::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $inventory->load('supplier', 'product');
+		
+		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.inventories.edit', compact('inventory', 'products', 'suppliers'));
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+
+        return view('admin.inventories.edit', compact('inventory', 'products', 'suppliers', 'categories'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)

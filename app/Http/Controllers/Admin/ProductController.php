@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyProductRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\Category;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +26,11 @@ class ProductController extends Controller
     public function create()
     {
         abort_if(Gate::denies('product_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
 
-        return view('admin.products.create');
+        return view('admin.products.create', compact('categories'));
     }
 
     public function store(StoreProductRequest $request)
@@ -39,8 +43,12 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         abort_if(Gate::denies('product_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.products.edit', compact('product'));
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function update(UpdateProductRequest $request, Product $product)

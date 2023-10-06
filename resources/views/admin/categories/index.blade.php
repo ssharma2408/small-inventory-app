@@ -1,41 +1,38 @@
 @extends('layouts.admin')
 @section('content')
-@can('product_create')
+@can('category_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.products.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.product.title_singular') }}
+            <a class="btn btn-success" href="{{ route('admin.categories.create') }}">
+                {{ trans('global.add') }} {{ trans('cruds.category.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.product.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.category.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Product">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-Category">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.product.fields.id') }}
+                            {{ trans('cruds.category.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.product.fields.name') }}
+                            {{ trans('cruds.category.fields.name') }}
                         </th>
 						<th>
-                            {{ trans('cruds.category.fields.category') }}
-                        </th>
+							{{ trans('cruds.category.fields.category') }}
+						</th>
                         <th>
-                            {{ trans('cruds.product.fields.selling_price') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.stock') }}
+                            {{ trans('cruds.category.fields.category_order') }}
                         </th>
                         <th>
                             &nbsp;
@@ -43,41 +40,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $key => $product)
-                        <tr data-entry-id="{{ $product->id }}">
+                    @foreach($categories as $key => $category)
+                        <tr data-entry-id="{{ $category->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $product->id ?? '' }}
+                                {{ $category->id ?? '' }}
                             </td>
                             <td>
-                                {{ $product->name ?? '' }}
+                                {{ $category->name ?? '' }}
                             </td>
-							<td>
-                                {{ $product->category->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $product->selling_price ?? '' }}
+							 <td>
+                                {{ $category->category->name ?? '' }}
                             </td>
                             <td>
-                                {{ $product->stock ?? '' }}
+                                {{ $category->category_order ?? '' }}
                             </td>
                             <td>
-                                @can('product_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.products.show', $product->id) }}">
+                                @can('category_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.categories.show', $category->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
-                                @can('product_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.products.edit', $product->id) }}">
+                                @can('category_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.categories.edit', $category->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
-                                @can('product_delete')
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                @can('category_delete')
+                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -102,11 +96,11 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('product_delete')
+@can('category_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.products.massDestroy') }}",
+    url: "{{ route('admin.categories.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -137,7 +131,7 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Product:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-Category:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

@@ -3,13 +3,13 @@
 
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.product.title') }}
+        {{ trans('global.show') }} {{ trans('cruds.category.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.products.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.categories.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
@@ -17,18 +17,18 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.product.fields.id') }}
+                            {{ trans('cruds.category.fields.id') }}
                         </th>
                         <td>
-                            {{ $product->id }}
+                            {{ $category->id }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.product.fields.name') }}
+                            {{ trans('cruds.category.fields.name') }}
                         </th>
                         <td>
-                            {{ $product->name }}
+                            {{ $category->name }}
                         </td>
                     </tr>
 					<tr>
@@ -36,29 +36,21 @@
                             {{ trans('cruds.category.fields.category') }}
                         </th>
                         <td>
-                            {{ $product->category->name }}
+                            {{ $category->category->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.product.fields.selling_price') }}
+                            {{ trans('cruds.category.fields.category_order') }}
                         </th>
                         <td>
-                            {{ $product->selling_price }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.product.fields.stock') }}
-                        </th>
-                        <td>
-                            {{ $product->stock }}
+                            {{ $category->category_order }}
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.products.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.categories.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>

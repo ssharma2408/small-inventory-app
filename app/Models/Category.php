@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Category extends Model
 {
     use SoftDeletes, HasFactory;
 
-    public $table = 'products';
+    public $table = 'categories';
 
     protected $dates = [
         'created_at',
@@ -21,8 +21,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'selling_price',
-        'stock',
+        'category_order',
         'category_id',
         'created_at',
         'updated_at',
@@ -38,4 +37,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+    
+
+    public function childCategories(){
+       return $this->hasMany(Category::class, 'category_id');
+
+     }
 }

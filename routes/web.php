@@ -48,6 +48,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Product
     Route::delete('products/destroy', 'ProductController@massDestroy')->name('products.massDestroy');
     Route::resource('products', 'ProductController');
+
+    // Category
+    Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
+    Route::resource('categories', 'CategoryController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

@@ -11,6 +11,28 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+                <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>
+                <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
+
+                    <option value="">Select Option</option>
+                    @foreach($categories as $id => $entry)
+                    @php $level=1; @endphp
+                    <option value="{{ $entry->id }}" {{ (old('category_id') ? old('category_id') : $product->category_id ?? '') == $entry->id ? 'selected' : '' }}>{{ $entry->name }}</option>
+
+                    @if(count($entry->childCategories) > 0)
+                    @include('admin.categories.subcategories', ['category' => $entry,'selected'=>isset($product->category_id)?$product->category_id:"" ]);
+                    @endif
+
+                    @endforeach
+                </select>
+                @if($errors->has('category'))
+                <div class="invalid-feedback">
+                    {{ $errors->first('category') }}
+                </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
+            </div>
+			<div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.product.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $product->name) }}" required>
                 @if($errors->has('name'))
