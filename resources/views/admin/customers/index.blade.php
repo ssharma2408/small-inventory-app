@@ -25,11 +25,17 @@
                         <th>
                             {{ trans('cruds.customer.fields.id') }}
                         </th>
+						 <th>
+                            {{ trans('cruds.customer.fields.company_name') }}
+                        </th>
                         <th>
                             {{ trans('cruds.customer.fields.name') }}
                         </th>
                         <th>
                             {{ trans('cruds.customer.fields.address') }}
+                        </th>
+						 <th>
+                            {{ trans('cruds.customer.fields.pincode') }}
                         </th>
                         <th>
                             {{ trans('cruds.customer.fields.phone_number') }}
@@ -51,11 +57,17 @@
                             <td>
                                 {{ $customer->id ?? '' }}
                             </td>
+							<td>
+                                {{ $customer->company_name ?? '' }}
+                            </td>
                             <td>
                                 {{ $customer->name ?? '' }}
                             </td>
                             <td>
                                 {{ $customer->address ?? '' }}
+                            </td>
+							<td>
+                                {{ $customer->pincode ?? '' }}
                             </td>
                             <td>
                                 {{ $customer->phone_number ?? '' }}

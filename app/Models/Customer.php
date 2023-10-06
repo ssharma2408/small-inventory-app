@@ -24,6 +24,8 @@ class Customer extends Model
         'address',
         'phone_number',
         'email',
+        'pincode',
+        'company_name',
         'created_at',
         'updated_at',
         'deleted_at',

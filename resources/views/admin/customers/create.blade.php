@@ -10,6 +10,14 @@
         <form method="POST" action="{{ route("admin.customers.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
+                <label class="required" for="company_name">{{ trans('cruds.customer.fields.company_name') }}</label>
+                <input class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}" type="text" name="company_name" id="company_name" value="{{ old('company_name', '') }}" required>
+                @if($errors->has('company_name'))
+                    <span class="text-danger">{{ $errors->first('company_name') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.customer.fields.company_name_helper') }}</span>
+            </div>
+			<div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.customer.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
                 @if($errors->has('name'))
@@ -24,6 +32,14 @@
                     <span class="text-danger">{{ $errors->first('address') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.customer.fields.address_helper') }}</span>
+            </div>
+			<div class="form-group">
+                <label class="required" for="pincode">{{ trans('cruds.customer.fields.pincode') }}</label>
+                <input class="form-control {{ $errors->has('pincode') ? 'is-invalid' : '' }}" type="text" name="pincode" id="pincode" value="{{ old('pincode', '') }}" required>
+                @if($errors->has('pincode'))
+                    <span class="text-danger">{{ $errors->first('pincode') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.customer.fields.pincode_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="phone_number">{{ trans('cruds.customer.fields.phone_number') }}</label>

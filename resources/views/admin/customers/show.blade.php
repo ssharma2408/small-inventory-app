@@ -23,6 +23,14 @@
                             {{ $customer->id }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.customer.fields.company_name') }}
+                        </th>
+                        <td>
+                            {{ $customer->company_name }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.customer.fields.name') }}
@@ -37,6 +45,14 @@
                         </th>
                         <td>
                             {{ $customer->address }}
+                        </td>
+                    </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.customer.fields.pincode') }}
+                        </th>
+                        <td>
+                            {{ $customer->pincode }}
                         </td>
                     </tr>
                     <tr>
