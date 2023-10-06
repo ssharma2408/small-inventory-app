@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Library\ApiHelpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
@@ -13,10 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CustomersApiController extends Controller
 {
-    public function index()
-    {
-        //abort_if(Gate::denies('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+    use ApiHelpers;
+	
+	public function index()
+    {       
+		abort_if($this->can('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return new CustomerResource(Customer::all());
     }
 
@@ -31,8 +33,8 @@ class CustomersApiController extends Controller
 
     public function show(Customer $customer)
     {
-        //abort_if(Gate::denies('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        abort_if($this->can('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
         return new CustomerResource($customer);
     }
 
@@ -47,10 +49,10 @@ class CustomersApiController extends Controller
 
     public function destroy(Customer $customer)
     {
-        //abort_if(Gate::denies('customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if($this->can('customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $customer->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
-    }
+    }	
 }
