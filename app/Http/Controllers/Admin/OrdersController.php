@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\OrderItem;
 use Gate;
 use Illuminate\Http\Request;
@@ -60,11 +61,11 @@ class OrdersController extends Controller
 							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		}
 
-        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');		
 		
-		$products = Product::select('id', 'name')->get();
+		$categories = $this->buildTree(Category::select('name', 'id', 'category_id')->get()->toArray());
 
-        return view('admin.orders.create', compact('customers', 'sales_managers', 'products'));
+        return view('admin.orders.create', compact('customers', 'sales_managers', 'categories'));
     }
 
     public function store(StoreOrderRequest $request)
@@ -82,7 +83,8 @@ class OrdersController extends Controller
 				$item = [];
 				$item['product_id'] = $request['item_name'][$i];
 				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];			
+				$item['quantity'] = $request['item_quantity'][$i];
+				$item['category_id'] = $request['item_category'][$i];
 				$data[] = $item;
 			}
 
@@ -126,17 +128,18 @@ class OrdersController extends Controller
 
 			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$products = Product::select('id', 'name')->get();
+			$categories = $this->buildTree(Category::select('name', 'id', 'category_id')->get()->toArray());
 
 			$order_items = DB::table('order_items')
-					->join('products','order_items.product_id', '=', 'products.id')               
-					->select('order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
+					->join('products','order_items.product_id', '=', 'products.id')
+					->join('categories','order_items.category_id', '=', 'categories.id')
+					->select('categories.name as category_name', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
 					->where('order_items.order_id', $order->id)
 					->get();
 
 			$order->load('sales_manager', 'customer');
 
-			return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'products', 'order_items', 'delivery_agents'));
+			return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'categories', 'order_items', 'delivery_agents'));
 		}else{
 			return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
 		}
@@ -154,12 +157,13 @@ class OrdersController extends Controller
 		DB::table('order_items')->where('order_id', $order->id)->delete();
 
 		$data = [];
-		for($i=0; $i < count($request['item_name']); $i++){			
+		for($i=0; $i < count($request['item_name']); $i++){
 			if(!empty($request['item_name']) && !empty($request['item_quantity'])){
 				$item = [];
 				$item['product_id'] = $request['item_name'][$i];
 				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];			
+				$item['quantity'] = $request['item_quantity'][$i];
+				$item['category_id'] = $request['item_category'][$i];
 				$data[] = $item;
 			}
 
@@ -245,4 +249,22 @@ class OrdersController extends Controller
 		
 		return back();
 	}
+	
+	public function buildTree(array $elements, $parentId = ""){
+		$branch = array();
+
+		foreach ($elements as $elementobj) {
+			$element = (array) $elementobj;
+			if ($element['category_id'] == $parentId) {
+				$children = $this->buildTree($elements, $element['id']);
+				if ($children) {
+					$element['children'] = $children;
+				}
+				$branch[] = $element;
+			}
+		}
+
+		return $branch;
+	}
+
 }

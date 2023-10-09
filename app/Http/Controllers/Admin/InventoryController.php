@@ -33,14 +33,12 @@ class InventoryController extends Controller
     {
         abort_if(Gate::denies('inventory_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $products = Product::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 		
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
 
-        return view('admin.inventories.create', compact('products', 'suppliers', 'categories'));
+        return view('admin.inventories.create', compact('suppliers', 'categories'));
     }
 
     public function store(StoreInventoryRequest $request)
@@ -65,17 +63,15 @@ class InventoryController extends Controller
     {
         abort_if(Gate::denies('inventory_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 
-        $products = Product::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $inventory->load('supplier', 'product');
+        $inventory->load('supplier', 'product');		
 		
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();		
 
-        return view('admin.inventories.edit', compact('inventory', 'products', 'suppliers', 'categories'));
+        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
@@ -143,4 +139,14 @@ class InventoryController extends Controller
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
+	
+	public function get_products($cat_id){
+		
+		if($cat_id == ""){
+			return false;
+		}
+		$products = Product::select('id', 'name')->where('category_id', $cat_id)->get();
+		
+		return response()->json(array('success'=>1, 'products'=>$products), 200);
+	}
 }

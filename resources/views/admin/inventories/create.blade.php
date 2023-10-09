@@ -44,10 +44,8 @@
             <div class="form-group">
                 <label class="required" for="product_id">{{ trans('cruds.inventory.fields.product') }}</label>
                 <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
-                    @foreach($products as $id => $entry)
-                        <option value="{{ $id }}" {{ old('product_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
+					<option value="">Please select</option>
+				</select>
                 @if($errors->has('product'))
                     <span class="text-danger">{{ $errors->first('product') }}</span>
                 @endif
@@ -215,5 +213,25 @@ function calculate_total(){
 	}
 	$("#final_price").val(order_total);
 }
+
+$("#category_id").change(function (){
+	$.ajax({
+			url: 'get_products/'+$(this).val(),
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					if(data.products.length > 0){
+						var html = '<option value="">Please select</option>';
+						$.each(data.products, function (key, val) {
+							html += '<option value="'+val.id+'">'+val.name+'</option>';
+						});
+						$("#product_id").html(html);
+					}else{
+						//
+					}
+				}
+			}
+		 });
+});
 </script>
 @endsection

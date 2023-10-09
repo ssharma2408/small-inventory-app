@@ -40,6 +40,7 @@ class Inventory extends Model implements HasMedia
         'discount',
         'tax',
         'final_price',
+		'category_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -69,5 +70,10 @@ class Inventory extends Model implements HasMedia
     public function getPoFileAttribute()
     {
         return $this->getMedia('po_file')->last();
+    }
+	
+	public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }

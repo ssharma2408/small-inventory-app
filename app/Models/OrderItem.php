@@ -25,6 +25,7 @@ class OrderItem extends Model
         'updated_at',
         'deleted_at',
         'order_id',
+        'category_id',
         'quantity',
     ];
 

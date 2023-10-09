@@ -28,6 +28,9 @@
                         <th>
                             {{ trans('cruds.inventory.fields.supplier') }}
                         </th>
+						<th>
+                            {{ trans('cruds.category.fields.category') }}
+                        </th>
                         <th>
                             {{ trans('cruds.inventory.fields.product') }}
                         </th>
@@ -68,6 +71,9 @@
                             </td>
                             <td>
                                 {{ $inventory->supplier->supplier_name ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->category->name ?? '' }}
                             </td>
                             <td>
                                 {{ $inventory->product->name ?? '' }}

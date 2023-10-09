@@ -2,12 +2,36 @@
 @section('content')
 
 <?php
-	$ddl_html = "No Product Found";
-	if(!empty($products)){
-		$ddl_html = '<select class="form-control select2 order_item" name="item_name[]" required>';
-			$ddl_html .= '<option value="">-- Select Product --</option>';
-			foreach($products as $product){
-				$ddl_html .= '<option value="'.$product['id'].'">'.$product['name'].'</option>';
+	$ddl_html = "No Category Found";
+	if(!empty($categories)){
+		$ddl_html = '<select class="category form-control select2" name="item_category[]" required>';
+			$ddl_html .= '<option value="" >Select Option</option>';
+			foreach($categories as $cat_lvl1){
+				$ddl_html .= '<option value="'.$cat_lvl1['id'].'">'.$cat_lvl1['name'].'</option>';
+				
+				if(isset($cat_lvl1['children'])){
+					foreach($cat_lvl1['children'] as $cat_lvl2){
+						$ddl_html .= '<option value="'.$cat_lvl2['id'].'">- '.$cat_lvl2['name'].'</option>';
+						
+						if(isset($cat_lvl2['children'])){
+							foreach($cat_lvl2['children'] as $cat_lvl3){
+								$ddl_html .= '<option value="'.$cat_lvl3['id'].'">- - '.$cat_lvl3['name'].'</option>';
+								
+								if(isset($cat_lvl3['children'])){
+									foreach($cat_lvl3['children'] as $cat_lvl4){
+										$ddl_html .= '<option value="'.$cat_lvl4['id'].'">- - - '.$cat_lvl4['name'].'</option>';
+										
+										if(isset($cat_lvl4['children'])){
+										foreach($cat_lvl4['children'] as $cat_lvl5){
+											$ddl_html .= '<option value="'.$cat_lvl5['id'].'">- - - - '.$cat_lvl5['name'].'</option>';
+										}
+									}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		$ddl_html .= '</select>';
 	}
@@ -49,19 +73,22 @@
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
+					<div class="col-md-4">
+						<b>Category Name</b>
+					</div>
 					<div class="col-md-3">
 						<b>Product Name</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Stock</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Price</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Quantity</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Amount</b>
 					</div>
 					<div class="col-md-1">
@@ -70,21 +97,28 @@
 				</div>
 				<div class="item_container">
 					<div class="row mb-3">
-						<div class="col-md-3">						
-							<?php 
-								echo $ddl_html;
-							?>						
+						<div class="cat_container col-md-4">
+							<div class="form-group">								
+								<?php
+									echo $ddl_html;
+								?>
+							</div>				
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-3">
+							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
+								<option value="">Please select</option>
+							</select>			
+						</div>
+						<div class="col-md-1">
 							<input class="form-control" type="number" name="item_stock[]" disabled />
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<input class="form-control" type="text" name="item_price[]" disabled />
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<input class="form-control quantity" type="number" name="item_quantity[]" min="1" />
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<input class="form-control amount" type="text" name="item_amount[]" disabled />
 						</div>
 						<div class="col-md-1">
@@ -170,7 +204,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="col-md-3"><?php echo $ddl_html; ?></div><div class="col-md-2"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-2"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-2"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-2"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
+			return '<div class="row mb-3"><div class="cat_container col-md-4"><?php echo $ddl_html;?></div><div class="col-md-3"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
 		}
 		
 		$(document).on("change", ".order_item", function () {			
@@ -182,7 +216,7 @@
 					success: function(data) {
 						if (data.success) {
 							stock.val(data.product.stock);
-							qty.val(data.product.selling_price);							
+							qty.val(data.product.selling_price);
 						}
 					}
 				 });
@@ -208,5 +242,29 @@
 			}
 			$("#order_total").val(order_total);
 		}
+
+		$(document).on("change", ".category", function () {
+			
+			var product_ddl =$(this).closest('.cat_container').next('div').find(".order_item");
+			
+			$.ajax({
+				url: '/admin/inventories/get_products/'+$(this).val(),
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {
+						if(data.products.length > 0){
+							var html = '<option value="">Please select</option>';
+							$.each(data.products, function (key, val) {
+								html += '<option value="'+val.id+'">'+val.name+'</option>';
+							});
+							product_ddl.html(html);
+						}else{
+							//
+						}
+					}
+				}
+			 });
+	});
+		
 	</script>
 @endsection

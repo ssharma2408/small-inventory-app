@@ -29,10 +29,10 @@
                     <option value="">Select Option</option>
                     @foreach($categories as $id => $entry)
                     @php $level=1; @endphp
-                    <option value="{{ $entry->id }}" {{ (old('category_id') ? old('category_id') : $product->category_id ?? '') == $entry->id ? 'selected' : '' }}>{{ $entry->name }}</option>
+                    <option value="{{ $entry->id }}" {{ (old('category_id') ? old('category_id') : $inventory->category_id ?? '') == $entry->id ? 'selected' : '' }}>{{ $entry->name }}</option>
 
                     @if(count($entry->childCategories) > 0)
-                    @include('admin.categories.subcategories', ['category' => $entry,'selected'=>isset($product->category_id)?$product->category_id:"" ]);
+                    @include('admin.categories.subcategories', ['category' => $entry,'selected'=>isset($inventory->category_id)?$inventory->category_id:"" ]);
                     @endif
 
                     @endforeach
@@ -47,9 +47,7 @@
             <div class="form-group">
                 <label class="required" for="product_id">{{ trans('cruds.inventory.fields.product') }}</label>
                 <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
-                    @foreach($products as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('product_id') ? old('product_id') : $inventory->product->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
+                   <option value="">Please select</option>
                 </select>
                 @if($errors->has('product'))
                     <span class="text-danger">{{ $errors->first('product') }}</span>
@@ -218,5 +216,39 @@ function calculate_total(){
 	}
 	$("#final_price").val(order_total);
 }
+
+$(function() {
+    populate_products($("#category_id").val());
+});
+
+function populate_products(cat_id){
+	$.ajax({
+			url: '/admin/inventories/get_products/'+cat_id,
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					if(data.products.length > 0){
+						var html = '<option value="">Please select</option>';
+						$.each(data.products, function (key, val) {
+							var selected = "";
+							if(val.id === <?php echo $inventory->product_id; ?>){
+								selected = "selected";
+							}
+							
+							
+							html += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
+						});
+						$("#product_id").html(html);
+					}else{
+						//
+					}
+				}
+			}
+		 });
+}
+
+$("#category_id").change(function (){
+	populate_products($(this).val());
+});
 </script>
 @endsection
