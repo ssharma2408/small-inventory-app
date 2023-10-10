@@ -50,6 +50,9 @@
 									<tbody>
 										<tr>
 											<th>
+												Category Name
+											</th>
+											<th>
 												Product Name
 											</th>
 											<th>
@@ -67,6 +70,9 @@
 										</tr>
 										@foreach($order->	order_item as $item)
 											<tr>
+												<td>
+												{{ $item->category_name }}
+												</td>
 												<td>
 												{{ $item->name }}
 												</td>

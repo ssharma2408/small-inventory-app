@@ -103,9 +103,9 @@
 						foreach($order_items as $order_item){
 							echo '<div class="row mb-3">
 									
-									<div class="col-md-4"><input class="form-control" type="text" name="item_category[]" disabled value="'.$order_item->category_name.'" /></div>
+									<div class="col-md-4"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
 									
-									<div class="col-md-3"><input class="form-control" type="text" name="item_name[]" disabled value="'.$order_item->name.'" /></div>
+									<div class="col-md-3"><select class="form-control select2" name="item_name[]" required><option value="'.$order_item->product_id.'">'.$order_item->name.'</option></select></div>
 									<div class="col-md-1">
 										<input class="form-control" type="number" name="item_stock[]" disabled value="'.$order_item->stock.'" />
 									</div>

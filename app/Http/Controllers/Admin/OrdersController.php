@@ -133,7 +133,7 @@ class OrdersController extends Controller
 			$order_items = DB::table('order_items')
 					->join('products','order_items.product_id', '=', 'products.id')
 					->join('categories','order_items.category_id', '=', 'categories.id')
-					->select('categories.name as category_name', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
+					->select('categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price')
 					->where('order_items.order_id', $order->id)
 					->get();
 
@@ -194,8 +194,9 @@ class OrdersController extends Controller
         $order = $order->load('sales_manager', 'customer');		
 		
 		$order['order_item'] = DB::table('order_items')
-					->join('products','order_items.product_id', '=', 'products.id')               
-					->select('order_items.quantity','products.stock', 'products.selling_price', 'products.name')
+					->join('products','order_items.product_id', '=', 'products.id')
+					->join('categories','order_items.category_id', '=', 'categories.id')
+					->select('categories.name as category_name', 'categories.id as category_id','order_items.quantity','products.stock', 'products.selling_price', 'products.name')
 					->where('order_items.order_id', $order->id)
 					->get()->toArray();	
 
