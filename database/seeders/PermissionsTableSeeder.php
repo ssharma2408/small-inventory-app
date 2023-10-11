@@ -196,6 +196,106 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 47,
+                'title' => 'tax_create',
+            ],
+            [
+                'id'    => 48,
+                'title' => 'tax_edit',
+            ],
+            [
+                'id'    => 49,
+                'title' => 'tax_show',
+            ],
+            [
+                'id'    => 50,
+                'title' => 'tax_delete',
+            ],
+            [
+                'id'    => 51,
+                'title' => 'tax_access',
+            ],
+            [
+                'id'    => 52,
+                'title' => 'shrinkage_create',
+            ],
+            [
+                'id'    => 53,
+                'title' => 'shrinkage_edit',
+            ],
+            [
+                'id'    => 54,
+                'title' => 'shrinkage_show',
+            ],
+            [
+                'id'    => 55,
+                'title' => 'shrinkage_delete',
+            ],
+            [
+                'id'    => 56,
+                'title' => 'shrinkage_access',
+            ],
+            [
+                'id'    => 57,
+                'title' => 'order_payment_create',
+            ],
+            [
+                'id'    => 58,
+                'title' => 'order_payment_edit',
+            ],
+            [
+                'id'    => 59,
+                'title' => 'order_payment_show',
+            ],
+            [
+                'id'    => 60,
+                'title' => 'order_payment_delete',
+            ],
+            [
+                'id'    => 61,
+                'title' => 'order_payment_access',
+            ],
+            [
+                'id'    => 62,
+                'title' => 'payment_method_create',
+            ],
+            [
+                'id'    => 63,
+                'title' => 'payment_method_edit',
+            ],
+            [
+                'id'    => 64,
+                'title' => 'payment_method_show',
+            ],
+            [
+                'id'    => 65,
+                'title' => 'payment_method_delete',
+            ],
+            [
+                'id'    => 66,
+                'title' => 'payment_method_access',
+            ],
+            [
+                'id'    => 67,
+                'title' => 'expense_payment_create',
+            ],
+            [
+                'id'    => 68,
+                'title' => 'expense_payment_edit',
+            ],
+            [
+                'id'    => 69,
+                'title' => 'expense_payment_show',
+            ],
+            [
+                'id'    => 70,
+                'title' => 'expense_payment_delete',
+            ],
+            [
+                'id'    => 71,
+                'title' => 'expense_payment_access',
+            ],
+            [
+                'id'    => 72,
                 'title' => 'profile_password_edit',
             ],
         ];

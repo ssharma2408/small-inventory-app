@@ -53,6 +53,28 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Category
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoryController');
+
+    // Tax
+    Route::delete('taxes/destroy', 'TaxController@massDestroy')->name('taxes.massDestroy');
+    Route::resource('taxes', 'TaxController');
+
+    // Shrinkage
+    Route::delete('shrinkages/destroy', 'ShrinkageController@massDestroy')->name('shrinkages.massDestroy');
+    Route::post('shrinkages/media', 'ShrinkageController@storeMedia')->name('shrinkages.storeMedia');
+    Route::post('shrinkages/ckmedia', 'ShrinkageController@storeCKEditorImages')->name('shrinkages.storeCKEditorImages');
+    Route::resource('shrinkages', 'ShrinkageController');
+
+    // Order Payment
+    Route::delete('order-payments/destroy', 'OrderPaymentController@massDestroy')->name('order-payments.massDestroy');
+    Route::resource('order-payments', 'OrderPaymentController');
+
+    // Payment Method
+    Route::delete('payment-methods/destroy', 'PaymentMethodController@massDestroy')->name('payment-methods.massDestroy');
+    Route::resource('payment-methods', 'PaymentMethodController');
+
+    // Expense Payment
+    Route::delete('expense-payments/destroy', 'ExpensePaymentController@massDestroy')->name('expense-payments.massDestroy');
+    Route::resource('expense-payments', 'ExpensePaymentController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

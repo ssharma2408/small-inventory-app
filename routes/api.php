@@ -16,9 +16,22 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Product
     Route::apiResource('products', 'ProductApiController');
-	
-	// Category
+
+    // Category
     Route::apiResource('categories', 'CategoryApiController');
+
+    // Tax
+    Route::apiResource('taxes', 'TaxApiController');
+
+    // Shrinkage
+    Route::post('shrinkages/media', 'ShrinkageApiController@storeMedia')->name('shrinkages.storeMedia');
+    Route::apiResource('shrinkages', 'ShrinkageApiController');
+
+    // Order Payment
+    Route::apiResource('order-payments', 'OrderPaymentApiController');
+
+    // Expense Payment
+    Route::apiResource('expense-payments', 'ExpensePaymentApiController');
 });
 
 Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	

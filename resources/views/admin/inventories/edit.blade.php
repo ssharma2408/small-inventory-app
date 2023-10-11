@@ -211,7 +211,7 @@ function calculate_total(){
 		}
 		
 		if(tax > 0){
-			order_total = order_total - (order_total * parseFloat(tax)) / 100;
+			order_total = order_total + (order_total * parseFloat(tax)) / 100;
 		}
 	}
 	$("#final_price").val(order_total);
