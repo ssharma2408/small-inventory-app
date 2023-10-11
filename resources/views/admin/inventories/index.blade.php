@@ -16,7 +16,11 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Inventory">
+            <p id="date_filter">
+    <span id="date-label-from" class="date-label">From: </span><input class="date_range_filter date" type="text" id="datepicker_from" />
+    <span id="date-label-to" class="date-label">To:<input class="date_range_filter date" type="text" id="datepicker_to" />
+</p>
+			<table class=" table table-bordered table-striped table-hover datatable datatable-Inventory">
                 <thead>
                     <tr>
                         <th width="10">
@@ -54,6 +58,9 @@
                         </th>
                         <th>
                             {{ trans('cruds.inventory.fields.po_file') }}
+                        </th>
+						<th>
+                            Date
                         </th>
                         <th>
                             &nbsp;
@@ -102,6 +109,9 @@
                                         {{ trans('global.view_file') }}
                                     </a>
                                 @endif
+                            </td>
+							<td>
+                                {{ $inventory->created_at ?? '' }}
                             </td>
                             <td>
                                 @can('inventory_show')
@@ -177,13 +187,76 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Inventory:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  //let table = $('.datatable-Inventory:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
   
+    var oTable = $('.datatable-Inventory:not(.ajaxTable)').DataTable({
+    "oLanguage": {
+      "sSearch": "Filter Data"
+    },
+    "iDisplayLength": -1,
+    "sPaginationType": "full_numbers",
+	buttons: dtButtons,
+
+  });
+
+  $("#datepicker_from").datepicker({
+    showOn: "button",
+    //buttonImage: "images/calendar.gif",
+    buttonImageOnly: false,
+    "onSelect": function(date) {
+      minDateFilter = new Date(date).getTime();
+      oTable.draw();
+    }
+  }).keyup(function() {
+    minDateFilter = new Date(this.value).getTime();
+    oTable.draw();
+  });
+
+  $("#datepicker_to").datepicker({
+    showOn: "button",
+    //buttonImage: "images/calendar.gif",
+    buttonImageOnly: false,
+    "onSelect": function(date) {
+      maxDateFilter = new Date(date).getTime();
+      oTable.draw();
+    }
+  }).keyup(function() {
+    maxDateFilter = new Date(this.value).getTime();
+    oTable.draw();
+  });
+
 })
+
+// Date range filter
+minDateFilter = "";
+maxDateFilter = "";
+
+$.fn.dataTableExt.afnFiltering.push(
+  function(oSettings, aData, iDataIndex) {
+
+    if (typeof aData._date == 'undefined') {
+      aData._date = new Date(aData[12]).getTime();
+    }
+
+    if (minDateFilter && !isNaN(minDateFilter)) {
+      if (aData._date < minDateFilter) {
+        return false;
+      }
+    }
+
+    if (maxDateFilter && !isNaN(maxDateFilter)) {
+      if (aData._date > maxDateFilter) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+);
 
 </script>
 @endsection

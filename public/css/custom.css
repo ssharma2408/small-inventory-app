@@ -104,6 +104,6 @@ div.dt-button-collection {
     font-weight: bolder;
 }
 
-.buttons-copy, .buttons-csv, .buttons-excel, .buttons-pdf, .buttons-print, .buttons-collection{
+.buttons-copy, .buttons-csv, .buttons-print, .buttons-collection{
 	display:none;
 }
