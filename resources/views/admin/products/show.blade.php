@@ -31,12 +31,20 @@
                             {{ $product->name }}
                         </td>
                     </tr>
-					<tr>
+                    <tr>
                         <th>
                             {{ trans('cruds.category.fields.category') }}
                         </th>
                         <td>
                             {{ $product->category->name }}
+                        </td>
+                    </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.product.fields.maximum_selling_price') }}
+                        </th>
+                        <td>
+                            {{ $product->maximum_selling_price }}
                         </td>
                     </tr>
                     <tr>
@@ -53,6 +61,26 @@
                         </th>
                         <td>
                             {{ $product->stock }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.product.fields.product_image') }}
+                        </th>
+                        <td>
+                            @if($product->product_image)
+                                <a href="{{ $product->product_image->getUrl() }}" target="_blank" style="display: inline-block">
+                                    <img src="{{ $product->product_image->getUrl('thumb') }}">
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.product.fields.box_size') }}
+                        </th>
+                        <td>
+                            {{ $product->box_size }}
                         </td>
                     </tr>
                 </tbody>

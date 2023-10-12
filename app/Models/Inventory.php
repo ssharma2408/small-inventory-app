@@ -20,6 +20,11 @@ class Inventory extends Model implements HasMedia
         'po_file',
     ];
 
+    public const BOX_OR_UNIT_RADIO = [
+        '0' => 'Box',
+        '1' => 'Unit',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -31,16 +36,25 @@ class Inventory extends Model implements HasMedia
         '1' => 'Percentage',
     ];
 
+    public const DAYS_PAYABLE_OUTSTANDING_SELECT = [
+        '0' => '15 Days',
+        '1' => '30 Days',
+        '2' => '45 Days',
+        '4' => '60 Days',
+    ];
+
     protected $fillable = [
         'supplier_id',
         'product_id',
+        'box_or_unit',
         'stock',
         'purchase_price',
         'discount_type',
         'discount',
-        'tax',
+        'tax_id',
         'final_price',
 		'category_id',
+		'days_payable_outstanding',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -65,6 +79,11 @@ class Inventory extends Model implements HasMedia
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id');
     }
 
     public function getPoFileAttribute()

@@ -11,6 +11,7 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\Tax;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -24,7 +25,7 @@ class InventoryController extends Controller
     {
         abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $inventories = Inventory::with(['supplier', 'product', 'media'])->get();
+        $inventories = Inventory::with(['supplier', 'product', 'tax', 'media'])->get();
 
         return view('admin.inventories.index', compact('inventories'));
     }
@@ -37,8 +38,10 @@ class InventoryController extends Controller
 		
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.inventories.create', compact('suppliers', 'categories'));
+        return view('admin.inventories.create', compact('suppliers', 'categories', 'taxes'));
     }
 
     public function store(StoreInventoryRequest $request)
@@ -65,13 +68,15 @@ class InventoryController extends Controller
 
         $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 
-        $inventory->load('supplier', 'product');		
+        $inventory->load('supplier', 'product', 'tax');		
 		
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();		
+        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories'));
+        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories', 'taxes'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
@@ -103,7 +108,7 @@ class InventoryController extends Controller
     {
         abort_if(Gate::denies('inventory_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $inventory->load('supplier', 'product');
+        $inventory->load('supplier', 'product', 'tax');
 
         return view('admin.inventories.show', compact('inventory'));
     }

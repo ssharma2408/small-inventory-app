@@ -39,6 +39,9 @@
                             {{ trans('cruds.inventory.fields.product') }}
                         </th>
                         <th>
+                            {{ trans('cruds.inventory.fields.box_or_unit') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.inventory.fields.stock') }}
                         </th>
                         <th>
@@ -55,6 +58,9 @@
                         </th>
                         <th>
                             {{ trans('cruds.inventory.fields.final_price') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.inventory.fields.days_payable_outstanding') }}
                         </th>
                         <th>
                             {{ trans('cruds.inventory.fields.po_file') }}
@@ -86,6 +92,9 @@
                                 {{ $inventory->product->name ?? '' }}
                             </td>
                             <td>
+                                {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
+                            </td>
+                            <td>
                                 {{ $inventory->stock ?? '' }}
                             </td>
                             <td>
@@ -98,10 +107,13 @@
                                 {{ $inventory->discount ?? '' }}
                             </td>
                             <td>
-                                {{ $inventory->tax ?? '' }}
+                                {{ $inventory->tax->title ?? '' }}
                             </td>
                             <td>
                                 {{ $inventory->final_price ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT[$inventory->days_payable_outstanding] ?? '' }}
                             </td>
                             <td>
                                 @if($inventory->po_file)

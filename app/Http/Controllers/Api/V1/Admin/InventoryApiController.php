@@ -20,7 +20,7 @@ class InventoryApiController extends Controller
     {
         //abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new InventoryResource(Inventory::with(['supplier', 'product'])->get());
+        return new InventoryResource(Inventory::with(['supplier', 'product', 'tax'])->get());
     }
 
     public function store(StoreInventoryRequest $request)
@@ -40,7 +40,7 @@ class InventoryApiController extends Controller
     {
         //abort_if(Gate::denies('inventory_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new InventoryResource($inventory->load(['supplier', 'product']));
+        return new InventoryResource($inventory->load(['supplier', 'product', 'tax']));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)

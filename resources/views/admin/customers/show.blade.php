@@ -31,6 +31,14 @@
                             {{ $customer->company_name }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.customer.fields.contact_name') }}
+                        </th>
+                        <td>
+                            {{ $customer->contact_name }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.customer.fields.name') }}

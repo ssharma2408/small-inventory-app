@@ -22,6 +22,9 @@ class StoreInventoryRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'box_or_unit' => [
+                'required',
+            ],
             'stock' => [
                 'required',
                 'integer',
@@ -38,12 +41,15 @@ class StoreInventoryRequest extends FormRequest
             'discount' => [
                 'numeric',
             ],
-            'tax' => [
-                'numeric',
+            'tax_id' => [
                 'required',
+                'integer',
             ],
             'final_price' => [
                 'numeric',
+                'required',
+            ],
+            'days_payable_outstanding' => [
                 'required',
             ],
             'po_file' => [

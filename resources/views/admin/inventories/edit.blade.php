@@ -55,6 +55,19 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.product_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required">{{ trans('cruds.inventory.fields.box_or_unit') }}</label>
+                @foreach(App\Models\Inventory::BOX_OR_UNIT_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('box_or_unit') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="box_or_unit_{{ $key }}" name="box_or_unit" value="{{ $key }}" {{ old('box_or_unit', $inventory->box_or_unit) === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="box_or_unit_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('box_or_unit'))
+                    <span class="text-danger">{{ $errors->first('box_or_unit') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.box_or_unit_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="stock">{{ trans('cruds.inventory.fields.stock') }}</label>
                 <input class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" type="number" name="stock" id="stock" value="{{ old('stock', $inventory->stock) }}" step="1" required>
                 @if($errors->has('stock'))
@@ -92,8 +105,12 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.discount_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="tax">{{ trans('cruds.inventory.fields.tax') }}</label>
-                <input class="form-control {{ $errors->has('tax') ? 'is-invalid' : '' }}" type="number" name="tax" id="tax" value="{{ old('tax', $inventory->tax) }}" step="0.01" required>
+                <label class="required" for="tax_id">{{ trans('cruds.inventory.fields.tax') }}</label>
+                <select class="form-control select2 {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id" required>
+                    @foreach($taxes as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('tax_id') ? old('tax_id') : $inventory->tax->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
                 @if($errors->has('tax'))
                     <span class="text-danger">{{ $errors->first('tax') }}</span>
                 @endif
@@ -106,6 +123,19 @@
                     <span class="text-danger">{{ $errors->first('final_price') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.inventory.fields.final_price_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required">{{ trans('cruds.inventory.fields.days_payable_outstanding') }}</label>
+                <select class="form-control {{ $errors->has('days_payable_outstanding') ? 'is-invalid' : '' }}" name="days_payable_outstanding" id="days_payable_outstanding" required>
+                    <option value disabled {{ old('days_payable_outstanding', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('days_payable_outstanding', $inventory->days_payable_outstanding) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('days_payable_outstanding'))
+                    <span class="text-danger">{{ $errors->first('days_payable_outstanding') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.days_payable_outstanding_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>

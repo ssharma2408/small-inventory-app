@@ -26,6 +26,9 @@
                             {{ trans('cruds.tax.fields.id') }}
                         </th>
                         <th>
+                            {{ trans('cruds.tax.fields.title') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.tax.fields.tax') }}
                         </th>
                         <th>
@@ -41,6 +44,9 @@
                             </td>
                             <td>
                                 {{ $tax->id ?? '' }}
+                            </td>
+                            <td>
+                                {{ $tax->title ?? '' }}
                             </td>
                             <td>
                                 {{ $tax->tax ?? '' }}

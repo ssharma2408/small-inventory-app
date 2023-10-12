@@ -17,10 +17,14 @@ class UpdateTaxRequest extends FormRequest
     public function rules()
     {
         return [
+            'title' => [
+                'string',
+                'required',
+                'unique:taxes,title,' . request()->route('tax')->id,
+            ],
             'tax' => [
                 'numeric',
                 'required',
-                'unique:taxes,tax,' . request()->route('tax')->id,
             ],
         ];
     }

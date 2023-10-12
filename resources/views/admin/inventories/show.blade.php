@@ -31,7 +31,7 @@
                             {{ $inventory->supplier->supplier_name ?? '' }}
                         </td>
                     </tr>
-					<tr>
+                    <tr>
                         <th>
                             {{ trans('cruds.category.fields.category') }}
                         </th>
@@ -45,6 +45,14 @@
                         </th>
                         <td>
                             {{ $inventory->product->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.inventory.fields.box_or_unit') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -84,7 +92,7 @@
                             {{ trans('cruds.inventory.fields.tax') }}
                         </th>
                         <td>
-                            {{ $inventory->tax }}
+                            {{ $inventory->tax->title ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -93,6 +101,14 @@
                         </th>
                         <td>
                             {{ $inventory->final_price }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.inventory.fields.days_payable_outstanding') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT[$inventory->days_payable_outstanding] ?? '' }}
                         </td>
                     </tr>
                     <tr>

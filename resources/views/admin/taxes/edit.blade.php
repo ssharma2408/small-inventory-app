@@ -11,6 +11,14 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+                <label class="required" for="title">{{ trans('cruds.tax.fields.title') }}</label>
+                <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $tax->title) }}" required>
+                @if($errors->has('title'))
+                    <span class="text-danger">{{ $errors->first('title') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.tax.fields.title_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="tax">{{ trans('cruds.tax.fields.tax') }}</label>
                 <input class="form-control {{ $errors->has('tax') ? 'is-invalid' : '' }}" type="number" name="tax" id="tax" value="{{ old('tax', $tax->tax) }}" step="0.01" required>
                 @if($errors->has('tax'))

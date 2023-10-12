@@ -10,7 +10,8 @@ class CreateTaxesTable extends Migration
     {
         Schema::create('taxes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->float('tax', 15, 2)->unique();
+            $table->string('title')->unique();
+            $table->float('tax', 15, 2);
             $table->timestamps();
             $table->softDeletes();
         });

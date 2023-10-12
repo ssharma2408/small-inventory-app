@@ -18,6 +18,10 @@ class UpdateCustomerRequest extends FormRequest
     public function rules()
     {
         return [
+            'contact_name' => [
+                'string',
+                'required',
+            ],
             'name' => [
                 'string',
                 'required',

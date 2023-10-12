@@ -20,6 +20,7 @@ class Tax extends Model
     ];
 
     protected $fillable = [
+        'title',
         'tax',
         'created_at',
         'updated_at',

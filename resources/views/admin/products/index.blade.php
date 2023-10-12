@@ -31,11 +31,20 @@
 						<th>
                             {{ trans('cruds.category.fields.category') }}
                         </th>
+						<th>
+                            {{ trans('cruds.product.fields.maximum_selling_price') }}
+                        </th>
                         <th>
                             {{ trans('cruds.product.fields.selling_price') }}
                         </th>
                         <th>
                             {{ trans('cruds.product.fields.stock') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.product.fields.product_image') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.product.fields.box_size') }}
                         </th>
                         <th>
                             &nbsp;
@@ -57,11 +66,24 @@
 							<td>
                                 {{ $product->category->name ?? '' }}
                             </td>
+							<td>
+                                {{ $product->maximum_selling_price ?? '' }}
+                            </td>
                             <td>
                                 {{ $product->selling_price ?? '' }}
                             </td>
                             <td>
                                 {{ $product->stock ?? '' }}
+                            </td>
+                            <td>
+                                @if($product->product_image)
+                                    <a href="{{ $product->product_image->getUrl() }}" target="_blank" style="display: inline-block">
+                                        <img src="{{ $product->product_image->getUrl('thumb') }}">
+                                    </a>
+                                @endif
+                            </td>
+                            <td>
+                                {{ $product->box_size ?? '' }}
                             </td>
                             <td>
                                 @can('product_show')

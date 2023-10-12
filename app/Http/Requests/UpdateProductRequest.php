@@ -21,11 +21,24 @@ class UpdateProductRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'maximum_selling_price' => [
+                'numeric',
+                'required',
+            ],
             'selling_price' => [
                 'numeric',
                 'required',
             ],
             'stock' => [
+                'required',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'product_image' => [
+                'required',
+            ],
+            'box_size' => [
                 'required',
                 'integer',
                 'min:-2147483648',
