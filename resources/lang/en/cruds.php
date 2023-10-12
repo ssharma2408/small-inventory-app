@@ -65,6 +65,10 @@ return [
             'deleted_at_helper'        => ' ',
         ],
     ],
+	'expenseManagement' => [
+        'title'          => 'Expense management',
+        'title_singular' => 'Expense management',
+    ],
     'supplier' => [
         'title'          => 'Supplier',
         'title_singular' => 'Supplier',
@@ -84,6 +88,10 @@ return [
             'deleted_at'             => 'Deleted at',
             'deleted_at_helper'      => ' ',
         ],
+    ],
+	'orderManagement' => [
+        'title'          => 'Order management',
+        'title_singular' => 'Order management',
     ],
     'customer' => [
         'title'          => 'Customers',

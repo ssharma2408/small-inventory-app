@@ -36,7 +36,7 @@ class StoreProductRequest extends FormRequest
                 'max:2147483647',
             ],
             'product_image' => [
-                'required',
+                'required',				
             ],
             'box_size' => [
                 'required',

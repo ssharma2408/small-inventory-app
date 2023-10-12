@@ -71,55 +71,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('supplier_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.suppliers.index") }}" class="nav-link {{ request()->is("admin/suppliers") || request()->is("admin/suppliers/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.supplier.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('customer_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.customers.index") }}" class="nav-link {{ request()->is("admin/customers") || request()->is("admin/customers/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.customer.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('tax_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.taxes.index") }}" class="nav-link {{ request()->is("admin/taxes") || request()->is("admin/taxes/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.tax.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('payment_method_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.payment-methods.index") }}" class="nav-link {{ request()->is("admin/payment-methods") || request()->is("admin/payment-methods/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.paymentMethod.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('category_access')
+				 @can('category_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.categories.index") }}" class="nav-link {{ request()->is("admin/categories") || request()->is("admin/categories/*") ? "active" : "" }}">
                             <i class="fa-fw nav-icon fas fa-cogs">
@@ -143,7 +95,31 @@
                         </a>
                     </li>
                 @endcan
-                @can('shrinkage_access')
+				@can('tax_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.taxes.index") }}" class="nav-link {{ request()->is("admin/taxes") || request()->is("admin/taxes/*") ? "active" : "" }}">
+                            <i class="fa-fw nav-icon fas fa-cogs">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.tax.title') }}
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('payment_method_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.payment-methods.index") }}" class="nav-link {{ request()->is("admin/payment-methods") || request()->is("admin/payment-methods/*") ? "active" : "" }}">
+                            <i class="fa-fw nav-icon fas fa-cogs">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.paymentMethod.title') }}
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+				 @can('shrinkage_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.shrinkages.index") }}" class="nav-link {{ request()->is("admin/shrinkages") || request()->is("admin/shrinkages/*") ? "active" : "" }}">
                             <i class="fa-fw nav-icon fas fa-cogs">
@@ -155,54 +131,109 @@
                         </a>
                     </li>
                 @endcan
-                @can('inventory_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.inventories.index") }}" class="nav-link {{ request()->is("admin/inventories") || request()->is("admin/inventories/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+				@can('expense_management_access')
+					<li class="nav-item has-treeview {{ request()->is("admin/suppliers*") ? "menu-open" : "" }} {{ request()->is("admin/inventories*") ? "menu-open" : "" }} {{ request()->is("admin/expense-payments*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/suppliers*") ? "active" : "" }} {{ request()->is("admin/inventories*") ? "active" : "" }} {{ request()->is("admin/expense-payments*") ? "active" : "" }}" href="#">
+                            <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
                             <p>
-                                {{ trans('cruds.inventory.title') }}
+                                {{ trans('cruds.expenseManagement.title') }}
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
                             </p>
                         </a>
-                    </li>
-                @endcan
-                @can('expense_payment_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.expense-payments.index") }}" class="nav-link {{ request()->is("admin/expense-payments") || request()->is("admin/expense-payments/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                        <ul class="nav nav-treeview">
+							@can('supplier_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.suppliers.index") }}" class="nav-link {{ request()->is("admin/suppliers") || request()->is("admin/suppliers/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.supplier.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+							@can('inventory_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.inventories.index") }}" class="nav-link {{ request()->is("admin/inventories") || request()->is("admin/inventories/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.inventory.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+							@can('expense_payment_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.expense-payments.index") }}" class="nav-link {{ request()->is("admin/expense-payments") || request()->is("admin/expense-payments/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.expensePayment.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+						</ul>
+					</li>
+				@endcan
+				@can('order_management_access')
+					<li class="nav-item has-treeview {{ request()->is("admin/customers*") ? "menu-open" : "" }} {{ request()->is("admin/orders*") ? "menu-open" : "" }} {{ request()->is("admin/order-payments*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/customers*") ? "active" : "" }} {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }}" href="#">
+                            <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
                             <p>
-                                {{ trans('cruds.expensePayment.title') }}
+                                {{ trans('cruds.orderManagement.title') }}
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
                             </p>
                         </a>
-                    </li>
-                @endcan
-                @can('order_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.orders.index") }}" class="nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                        <ul class="nav nav-treeview">
+							@can('customer_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.customers.index") }}" class="nav-link {{ request()->is("admin/customers") || request()->is("admin/customers/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
 
-                            </i>
-                            <p>
-                                {{ trans('cruds.order.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('order_payment_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.order-payments.index") }}" class="nav-link {{ request()->is("admin/order-payments") || request()->is("admin/order-payments/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+										</i>
+										<p>
+											{{ trans('cruds.customer.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+							@can('order_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.orders.index") }}" class="nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
 
-                            </i>
-                            <p>
-                                {{ trans('cruds.orderPayment.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan
+										</i>
+										<p>
+											{{ trans('cruds.order.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+							@can('order_payment_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.order-payments.index") }}" class="nav-link {{ request()->is("admin/order-payments") || request()->is("admin/order-payments/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.orderPayment.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+						</ul>
+					</li>				
+				@endcan			
+                
                 @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
                     @can('profile_password_edit')
                         <li class="nav-item">

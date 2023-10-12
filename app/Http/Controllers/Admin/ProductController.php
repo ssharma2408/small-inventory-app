@@ -10,6 +10,8 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Category;
 use Gate;
+use Str;
+use Storage;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,8 +43,18 @@ class ProductController extends Controller
     {
         $product = Product::create($request->all());
 
-        if ($request->input('product_image', false)) {
-            $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('product_image'))))->toMediaCollection('product_image');
+		if ($request->input('product_image', false)) {			
+			
+			$file = storage_path('tmp/uploads/' . basename($request->input('product_image')));
+			$fileName = (string) Str::uuid();
+			$folder = config('filesystems.disks.do.folder');
+
+			$obj = Storage::disk('do')->put(
+				"{$folder}/{$fileName}",
+				file_get_contents($file)
+			);
+			
+			$product->addMedia(storage_path('tmp/uploads/' . basename($request->input('product_image'))))->toMediaCollection('product_image');
         }
 
         if ($media = $request->input('ck-media', false)) {
