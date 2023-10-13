@@ -65,9 +65,8 @@
                 <span class="help-block">{{ trans('cruds.product.fields.stock_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="product_image">{{ trans('cruds.product.fields.product_image') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('product_image') ? 'is-invalid' : '' }}" id="product_image-dropzone">
-                </div>
+                <label class="" for="product_image">{{ trans('cruds.product.fields.product_image') }}</label>
+                <input class="form-control {{ $errors->has('product_image') ? 'is-invalid' : '' }}" type="file" name="product_image" id="product_image" value="{{ old('product_image', $product->product_image) }}" />
                 @if($errors->has('product_image'))
                     <span class="text-danger">{{ $errors->first('product_image') }}</span>
                 @endif
@@ -85,6 +84,7 @@
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
+				<input type="hidden" name="image_url" value="{{$product->image_url}}">
             </div>
         </form>
     </div>

@@ -33,6 +33,7 @@ class Product extends Model implements HasMedia
         'stock',
 		'box_size',
         'category_id',
+        'image_url',
         'created_at',
         'updated_at',
         'deleted_at',

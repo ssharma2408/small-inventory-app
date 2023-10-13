@@ -76,11 +76,7 @@
                                 {{ $product->stock ?? '' }}
                             </td>
                             <td>
-                                @if($product->product_image)
-                                    <a href="{{ $product->product_image->getUrl() }}" target="_blank" style="display: inline-block">
-                                        <img src="{{ $product->product_image->getUrl('thumb') }}">
-                                    </a>
-                                @endif
+                                <img width = "100" height="100" src="{{ $product->image_url }}">
                             </td>
                             <td>
                                 {{ $product->box_size ?? '' }}

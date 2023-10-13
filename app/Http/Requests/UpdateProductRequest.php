@@ -35,7 +35,7 @@ class UpdateProductRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'product_image' => [
+            'image_url' => [
                 'required',
             ],
             'box_size' => [

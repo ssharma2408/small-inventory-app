@@ -10,7 +10,6 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Category;
 use Gate;
-use Str;
 use Storage;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -40,28 +39,31 @@ class ProductController extends Controller
     }
 
     public function store(StoreProductRequest $request)
-    {
-        $product = Product::create($request->all());
-
-		if ($request->input('product_image', false)) {			
+    {		
+		if($request->hasFile('product_image')){
+			$file = $request->file('product_image');
 			
-			$file = storage_path('tmp/uploads/' . basename($request->input('product_image')));
-			$fileName = (string) Str::uuid();
-			$folder = config('filesystems.disks.do.folder');
-
-			$obj = Storage::disk('do')->put(
-				"{$folder}/{$fileName}",
-				file_get_contents($file)
+			$name = $file->getClientOriginalName();
+			
+			$store = Storage::disk('do')->put(
+			'/'.$_ENV['DO_FOLDER'].'/'.$name,
+			file_get_contents($request->file('product_image')->getRealPath()),
+			'public'
 			);
 			
-			$product->addMedia(storage_path('tmp/uploads/' . basename($request->input('product_image'))))->toMediaCollection('product_image');
-        }
+			$url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
+			
+			$cdn_url = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url);
+			
+			$product_detail = $request->all();
+			
+			$product_detail['image_url'] = $cdn_url;
 
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $product->id]);
-        }
+			$product = Product::create($product_detail);			
 
-        return redirect()->route('admin.products.index');
+			return redirect()->route('admin.products.index');
+		}
+		
     }
 
     public function edit(Product $product)
@@ -77,18 +79,25 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->all());
-
-        if ($request->input('product_image', false)) {
-            if (! $product->product_image || $request->input('product_image') !== $product->product_image->file_name) {
-                if ($product->product_image) {
-                    $product->product_image->delete();
-                }
-                $product->addMedia(storage_path('tmp/uploads/' . basename($request->input('product_image'))))->toMediaCollection('product_image');
-            }
-        } elseif ($product->product_image) {
-            $product->product_image->delete();
-        }
+        $product_detail = $request->all();
+		
+		if($request->hasFile('product_image')){
+			$file = $request->file('product_image');
+			
+			$name = $file->getClientOriginalName();
+			
+			$store = Storage::disk('do')->put(
+			'/'.$_ENV['DO_FOLDER'].'/'.$name,
+			file_get_contents($request->file('product_image')->getRealPath()),
+			'public'
+			);
+			
+			$url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
+			
+			$product_detail['image_url'] = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url);
+		}		
+		
+		$product->update($product_detail);  
 
         return redirect()->route('admin.products.index');
     }
