@@ -76,7 +76,7 @@
                                 {{ $product->stock ?? '' }}
                             </td>
                             <td>
-                                <img width = "100" height="100" src="{{ $product->image_url }}">
+                                <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$product->image_url }}">
                             </td>
                             <td>
                                 {{ $product->box_size ?? '' }}

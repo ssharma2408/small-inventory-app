@@ -43,21 +43,22 @@ class ProductController extends Controller
 		if($request->hasFile('product_image')){
 			$file = $request->file('product_image');
 			
-			$name = $file->getClientOriginalName();
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() .'_' . str_replace(" ", "_", $request->name) . '.' . $extension;
 			
 			$store = Storage::disk('do')->put(
-			'/'.$_ENV['DO_FOLDER'].'/'.$name,
-			file_get_contents($request->file('product_image')->getRealPath()),
-			'public'
-			);
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('product_image')->getRealPath()),
+				'public'
+				);
 			
-			$url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
+			/* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
 			
-			$cdn_url = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url);
+			$cdn_url = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url); */
 			
 			$product_detail = $request->all();
 			
-			$product_detail['image_url'] = $cdn_url;
+			$product_detail['image_url'] = $name;
 
 			$product = Product::create($product_detail);			
 
@@ -84,17 +85,20 @@ class ProductController extends Controller
 		if($request->hasFile('product_image')){
 			$file = $request->file('product_image');
 			
-			$name = $file->getClientOriginalName();
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() .'_' . str_replace(" ", "_", $request->name) . '.' . $extension;
 			
 			$store = Storage::disk('do')->put(
-			'/'.$_ENV['DO_FOLDER'].'/'.$name,
-			file_get_contents($request->file('product_image')->getRealPath()),
-			'public'
-			);
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('product_image')->getRealPath()),
+				'public'
+				);
 			
-			$url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
+			/* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
 			
-			$product_detail['image_url'] = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url);
+			$product_detail['image_url'] = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url); */
+			
+			$product_detail['image_url'] = $name;
 		}		
 		
 		$product->update($product_detail);  
