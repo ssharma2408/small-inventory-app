@@ -76,4 +76,14 @@ class TaxController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function get_tax($tax_id){
+		
+		if($tax_id == ""){
+			return false;
+		}
+		$tax = Tax::select('tax')->where('id', $tax_id)->first();
+		
+		return response()->json(array('success'=>1, 'tax'=>$tax), 200);
+	}
 }

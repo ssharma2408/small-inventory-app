@@ -146,6 +146,8 @@
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
+				<input type="hidden" id="tax_val" value="" />
+				<input type="hidden" id="package_val" value="" />
             </div>
         </form>
     </div>
@@ -206,23 +208,31 @@
      }
 }
 
-$(document).on("change", "#discount_type_0, #discount_type_1", function () {
+$(document).on("change", "#discount_type_0, #discount_type_1, #box_or_unit_0, #box_or_unit_1", function () {
 	calculate_total();
 });
 
-$(document).on("keyup", "#stock, #purchase_price, #tax, #discount", function () {			
+$(document).on("keyup", "#stock, #purchase_price, #discount", function () {			
 	calculate_total();
 });
 
 function calculate_total(){
+	
 	var order_total = 0, stock, price, tax, discount;		
 	stock = $("#stock").val();
 	price = $("#purchase_price").val();
-	tax = $("#tax").val();
+	tax = $("#tax_val").val();
 	discount = $("#discount").val();
-	
+
 	if(stock > 0 && price > 0){
-		order_total = stock * price;				
+
+		if($("#box_or_unit_0").is(":checked")){
+			stock = stock * $("#package_val").val();
+		}else{
+			stock = stock;
+		}
+		
+		order_total = stock * price;
 		
 		if(discount > 0){
 			if($("#discount_type_0").is(":checked")){
@@ -236,7 +246,9 @@ function calculate_total(){
 			}
 		}
 		
-		if(tax > 0){
+		if(tax != ""){			
+			console.log("code")
+			console.log(order_total * parseFloat(tax))
 			order_total = order_total + (order_total * parseFloat(tax)) / 100;
 		}
 	}
@@ -261,6 +273,38 @@ $("#category_id").change(function (){
 				}
 			}
 		 });
+});
+
+$(document).on("change", "#product_id", function () {
+	var prod_id;
+	prod_id = $(this).val();
+	if(prod_id != ""){
+	$.ajax({
+			url: '/admin/products/get_package_size/'+prod_id,
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {					
+					$("#package_val").val(data.product.box_size);
+				}
+			}
+		 });
+	}
+});
+$(document).on("change", "#tax_id", function () {
+	var tax_id;
+	tax_id = $(this).val();
+	if(tax_id != ""){
+		$.ajax({
+				url: '/admin/taxes/get_tax/'+tax_id,
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {					
+						$("#tax_val").val(data.tax.tax);
+						calculate_total();
+					}
+				}
+			 });
+	}
 });
 </script>
 @endsection

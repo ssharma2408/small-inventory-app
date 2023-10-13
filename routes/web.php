@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 Route::redirect('/', '/login');
 Route::get('/home', function () {
@@ -35,7 +35,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Inventory
     Route::delete('inventories/destroy', 'InventoryController@massDestroy')->name('inventories.massDestroy');
-	Route::get('inventories/get_products/{id}', 'InventoryController@get_products')->name('inventories.get_products');
+	Route::get('inventories/get_products/{id}', 'InventoryController@get_products')->name('inventories.get_products');	
     Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
     Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
     Route::resource('inventories', 'InventoryController');
@@ -48,6 +48,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Product
     Route::delete('products/destroy', 'ProductController@massDestroy')->name('products.massDestroy');
+	Route::get('products/get_package_size/{id}', 'ProductController@get_package_size')->name('products.get_package_size');
     Route::post('products/media', 'ProductController@storeMedia')->name('products.storeMedia');
     Route::post('products/ckmedia', 'ProductController@storeCKEditorImages')->name('products.storeCKEditorImages');
     Route::resource('products', 'ProductController');
@@ -58,6 +59,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Tax
     Route::delete('taxes/destroy', 'TaxController@massDestroy')->name('taxes.massDestroy');
+	Route::get('taxes/get_tax/{id}', 'TaxController@get_tax')->name('taxes.get_tax');
     Route::resource('taxes', 'TaxController');
 
     // Shrinkage

@@ -171,4 +171,5 @@ class InventoryController extends Controller
 		
 		return response()->json(array('success'=>1, 'products'=>$products), 200);
 	}
+	
 }

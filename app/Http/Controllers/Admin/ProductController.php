@@ -144,4 +144,14 @@ class ProductController extends Controller
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
+	
+	public function get_package_size($prod_id){
+		
+		if($prod_id == ""){
+			return false;
+		}
+		$product = Product::select('box_size')->where('id', $prod_id)->first();
+		
+		return response()->json(array('success'=>1, 'product'=>$product), 200);
+	}
 }
