@@ -116,11 +116,7 @@
                             {{ trans('cruds.inventory.fields.po_file') }}
                         </th>
                         <td>
-                            @if($inventory->po_file)
-                                <a href="{{ $inventory->po_file->getUrl() }}" target="_blank">
-                                    {{ trans('global.view_file') }}
-                                </a>
-                            @endif
+                            <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$inventory->image_url }}">
                         </td>
                     </tr>
                 </tbody>

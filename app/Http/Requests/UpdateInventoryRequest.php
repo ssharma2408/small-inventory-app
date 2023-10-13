@@ -52,7 +52,7 @@ class UpdateInventoryRequest extends FormRequest
             'days_payable_outstanding' => [
                 'required',
             ],
-            'po_file' => [
+            'image_url' => [
                 'required',
             ],
         ];

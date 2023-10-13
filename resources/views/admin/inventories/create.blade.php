@@ -136,8 +136,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('po_file') ? 'is-invalid' : '' }}" id="po_file-dropzone">
-                </div>
+               <input class="form-control" type="file" name="po_file" id="po_file" required />
                 @if($errors->has('po_file'))
                     <span class="text-danger">{{ $errors->first('po_file') }}</span>
                 @endif

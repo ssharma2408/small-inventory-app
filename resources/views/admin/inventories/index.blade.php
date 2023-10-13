@@ -116,11 +116,7 @@
                                 {{ App\Models\Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT[$inventory->days_payable_outstanding] ?? '' }}
                             </td>
                             <td>
-                                @if($inventory->po_file)
-                                    <a href="{{ $inventory->po_file->getUrl() }}" target="_blank">
-                                        {{ trans('global.view_file') }}
-                                    </a>
-                                @endif
+                               <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$inventory->image_url }}">
                             </td>
 							<td>
                                 {{ $inventory->created_at ?? '' }}

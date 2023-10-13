@@ -139,8 +139,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('po_file') ? 'is-invalid' : '' }}" id="po_file-dropzone">
-                </div>
+                <input class="form-control {{ $errors->has('po_file') ? 'is-invalid' : '' }}" type="file" name="po_file" id="po_file" value="{{ old('po_file', $inventory->po_file) }}" />
                 @if($errors->has('po_file'))
                     <span class="text-danger">{{ $errors->first('po_file') }}</span>
                 @endif
@@ -150,6 +149,7 @@
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
+				<input type="hidden" name="image_url" value="{{$inventory->image_url}}">
             </div>
         </form>
     </div>

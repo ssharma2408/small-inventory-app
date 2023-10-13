@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\Tax;
 use Gate;
+use Storage;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,20 +47,29 @@ class InventoryController extends Controller
 
     public function store(StoreInventoryRequest $request)
     {
-        $inventory = Inventory::create($request->all());		
+        if($request->hasFile('po_file')){
+			$file = $request->file('po_file');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('po_file')->getRealPath()),
+				'public'
+				);
+				
+			$expense_detail = $request->all();
+			
+			$expense_detail['image_url'] = $name;
+			
+			$inventory = Inventory::create($expense_detail);		
 		
-		$product = Product::find($request->product_id);
-		$product->increment('stock', $request->stock);
+			$product = Product::find($request->product_id);
+			$product->increment('stock', $request->stock);       
 
-        if ($request->input('po_file', false)) {
-            $inventory->addMedia(storage_path('tmp/uploads/' . basename($request->input('po_file'))))->toMediaCollection('po_file');
-        }
-
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $inventory->id]);
-        }
-
-        return redirect()->route('admin.inventories.index');
+			return redirect()->route('admin.inventories.index');
+		}		
     }
 
     public function edit(Inventory $inventory)
@@ -81,25 +91,32 @@ class InventoryController extends Controller
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
-       	$product = Product::find($request->product_id);
+       	
+		$product = Product::find($request->product_id);
 		
 		if($inventory->stock != $request->stock){
 			$product->decrement('stock', $inventory->stock);
 			$product->increment('stock', $request->stock);			
 		}
 		
-		$inventory->update($request->all());		
-
-        if ($request->input('po_file', false)) {
-            if (! $inventory->po_file || $request->input('po_file') !== $inventory->po_file->file_name) {
-                if ($inventory->po_file) {
-                    $inventory->po_file->delete();
-                }
-                $inventory->addMedia(storage_path('tmp/uploads/' . basename($request->input('po_file'))))->toMediaCollection('po_file');
-            }
-        } elseif ($inventory->po_file) {
-            $inventory->po_file->delete();
-        }
+		 $expense_detail = $request->all();
+		
+		if($request->hasFile('po_file')){
+			
+			$file = $request->file('po_file');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('po_file')->getRealPath()),
+				'public'
+				);
+			$expense_detail['image_url'] = $name;
+		}
+			
+		$inventory->update($expense_detail);		
 
         return redirect()->route('admin.inventories.index');
     }
