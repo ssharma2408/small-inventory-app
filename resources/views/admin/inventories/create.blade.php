@@ -147,7 +147,7 @@
                     {{ trans('global.save') }}
                 </button>
 				<input type="hidden" id="tax_val" value="" />
-				<input type="hidden" id="package_val" value="" />
+				<input type="hidden" id="package_val" value="" name="package_val" />
             </div>
         </form>
     </div>

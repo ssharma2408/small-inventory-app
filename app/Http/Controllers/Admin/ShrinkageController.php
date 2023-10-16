@@ -41,7 +41,10 @@ class ShrinkageController extends Controller
 
     public function store(StoreShrinkageRequest $request)
     {
-        $shrinkage = Shrinkage::create($request->all());
+        $shrinkage_details = $request->all();
+        $shrinkage_details['added_by_id'] = $user = \Auth::user()->id;
+
+		$shrinkage = Shrinkage::create($shrinkage_details);
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $shrinkage->id]);
@@ -65,7 +68,10 @@ class ShrinkageController extends Controller
 
     public function update(UpdateShrinkageRequest $request, Shrinkage $shrinkage)
     {
-        $shrinkage->update($request->all());
+        $shrinkage_details = $request->all();
+        $shrinkage_details['added_by_id'] = $user = \Auth::user()->id;
+		
+		$shrinkage->update($shrinkage_details);
 
         return redirect()->route('admin.shrinkages.index');
     }

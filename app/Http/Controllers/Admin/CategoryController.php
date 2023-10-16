@@ -34,7 +34,15 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create($request->all());
+        $category = Category::create($request->all());		
+		
+		if ($request->redirect !="") {
+		   if(request()->redirect == "add-product"){
+			  return redirect()->route('admin.products.create'); 
+		   }else{
+			   return redirect("admin/products/".request()->redirect_id."/edit");			   
+		   }
+		}
 
         return redirect()->route('admin.categories.index');
     }

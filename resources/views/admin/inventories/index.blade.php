@@ -245,9 +245,9 @@ maxDateFilter = "";
 
 $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
-
+	
     if (typeof aData._date == 'undefined') {
-      aData._date = new Date(aData[12]).getTime();
+      aData._date = new Date(aData[14]).getTime();
     }
 
     if (minDateFilter && !isNaN(minDateFilter)) {

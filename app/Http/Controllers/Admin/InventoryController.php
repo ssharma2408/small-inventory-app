@@ -63,10 +63,14 @@ class InventoryController extends Controller
 			
 			$expense_detail['image_url'] = $name;
 			
+			if($request->box_or_unit == "0"){
+				$request->stock = $request->stock * $request->package_val;
+			}
+			
 			$inventory = Inventory::create($expense_detail);		
 		
 			$product = Product::find($request->product_id);
-			$product->increment('stock', $request->stock);       
+			$product->increment('stock', $request->stock);
 
 			return redirect()->route('admin.inventories.index');
 		}		

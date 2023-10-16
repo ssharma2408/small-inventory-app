@@ -22,6 +22,7 @@
                         
                     @endforeach
                 </select>
+				<div><a href="{{ route("admin.categories.create") }}/?redirect=add-product">Add Category</a></div>
                 @if($errors->has('category'))
                     <div class="invalid-feedback">
                         {{ $errors->first('category') }}
@@ -54,8 +55,8 @@
                 <span class="help-block">{{ trans('cruds.product.fields.selling_price_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="stock">{{ trans('cruds.product.fields.stock') }}</label>
-                <input class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" type="number" name="stock" id="stock" value="{{ old('stock', '') }}" step="1" required>
+                <label for="stock">{{ trans('cruds.product.fields.stock') }}</label>
+                <input class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" type="number" name="stock" id="stock" value="0" disabled>
                 @if($errors->has('stock'))
                     <span class="text-danger">{{ $errors->first('stock') }}</span>
                 @endif

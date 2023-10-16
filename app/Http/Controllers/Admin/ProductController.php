@@ -59,6 +59,7 @@ class ProductController extends Controller
 			$product_detail = $request->all();
 			
 			$product_detail['image_url'] = $name;
+			$product_detail['stock'] = 0;
 
 			$product = Product::create($product_detail);			
 

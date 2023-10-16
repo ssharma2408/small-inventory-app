@@ -46,18 +46,6 @@
                 <span class="help-block">{{ trans('cruds.shrinkage.fields.description_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="added_by_id">{{ trans('cruds.shrinkage.fields.added_by') }}</label>
-                <select class="form-control select2 {{ $errors->has('added_by') ? 'is-invalid' : '' }}" name="added_by_id" id="added_by_id" required>
-                    @foreach($added_bies as $id => $entry)
-                        <option value="{{ $id }}" {{ old('added_by_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('added_by'))
-                    <span class="text-danger">{{ $errors->first('added_by') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.shrinkage.fields.added_by_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

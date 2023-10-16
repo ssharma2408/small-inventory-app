@@ -33,11 +33,7 @@ class StoreShrinkageRequest extends FormRequest
             ],
             'description' => [
                 'required',
-            ],
-            'added_by_id' => [
-                'required',
-                'integer',
-            ],
+            ]            
         ];
     }
 }

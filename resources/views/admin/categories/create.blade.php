@@ -49,6 +49,8 @@
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
+				<input type="hidden" name="redirect" value="{{ app('request')->input('redirect') }}">				
+				<input type="hidden" name="redirect_id" value="{{ app('request')->input('id') }}" />
             </div>
         </form>
     </div>

@@ -29,12 +29,6 @@ class StoreProductRequest extends FormRequest
                 'numeric',
                 'required',
             ],
-            'stock' => [
-                'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
             'product_image' => [
                 'required',				
             ],
