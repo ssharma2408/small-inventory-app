@@ -13,6 +13,7 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderItem;
+use App\Models\Tax;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,11 +62,13 @@ class OrdersController extends Controller
 							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		}
 
-        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');		
+        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
 		$categories = $this->buildTree(Category::select('name', 'id', 'category_id')->get()->toArray());
+		
+		$taxes = Tax::select('title', 'id')->get();
 
-        return view('admin.orders.create', compact('customers', 'sales_managers', 'categories'));
+        return view('admin.orders.create', compact('customers', 'sales_managers', 'categories', 'taxes'));
     }
 
     public function store(StoreOrderRequest $request)
@@ -232,7 +235,7 @@ class OrdersController extends Controller
     }
 	
 	public function get_product_detail($id){
-		$product = Product::select('id', 'name', 'stock', 'selling_price')->where('id', $id)->first();
+		$product = Product::select('id', 'name', 'stock', 'selling_price', 'maximum_selling_price', 'box_size')->where('id', $id)->first();
 
 		return response()->json(array('success'=>1, 'product'=>$product), 200);
 	}

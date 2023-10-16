@@ -35,6 +35,18 @@
 			}
 		$ddl_html .= '</select>';
 	}
+	
+	$tax_ddl_html = "No Tax Found";
+	
+	if(!empty($taxes)){
+		$tax_ddl_html = '<select class="form-control select2 tax_id" name="item_tax_id[]" required>';
+		$tax_ddl_html .= '<option value="" >Please Select</option>';
+			foreach($taxes as $tax){
+				$tax_ddl_html .= '<option value="'.$tax['id'].'">'.$tax['title'].'</option>';
+			}
+		$tax_ddl_html .= '</select>';
+	}	
+
 ?>
 
 <div class="card">
@@ -73,20 +85,32 @@
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<b>Category Name</b>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-1">
 						<b>Product Name</b>
 					</div>
 					<div class="col-md-1">
-						<b>Stock</b>
+						<b>In Stock</b>
 					</div>
 					<div class="col-md-1">
-						<b>Price</b>
+						<b>Min Selling Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Max Selling Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Box or unit</b>
 					</div>
 					<div class="col-md-1">
 						<b>Quantity</b>
+					</div>
+					<div class="col-md-1">
+						<b>Sales Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Tax</b>
 					</div>
 					<div class="col-md-1">
 						<b>Amount</b>
@@ -97,14 +121,14 @@
 				</div>
 				<div class="item_container">
 					<div class="row mb-3">
-						<div class="cat_container col-md-4">
+						<div class="cat_container col-md-2">
 							<div class="form-group">								
 								<?php
 									echo $ddl_html;
 								?>
 							</div>				
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-1">
 							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
 								<option value="">Please select</option>
 							</select>			
@@ -116,7 +140,24 @@
 							<input class="form-control" type="text" name="item_price[]" disabled />
 						</div>
 						<div class="col-md-1">
+							<input class="form-control max" type="text" name="item_max_price[]" disabled />
+						</div>
+						<div class="col-md-1">							
+							<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/>
+							<label class="form-check-label ml-3">Is Box</label>
+							<input type="hidden" id="package_val" value="" name="package_val" />
+						</div>
+						<div class="col-md-1">
 							<input class="form-control quantity" type="number" name="item_quantity[]" min="1" />
+						</div>
+						<div class="col-md-1">
+							<input class="form-control sale_price" type="text" name="item_sale_priec[]" />
+						</div>
+						<div class="col-md-1">
+							<?php
+								echo $tax_ddl_html;
+							?>
+							<input type="hidden" class="tax_val" value="" />
 						</div>
 						<div class="col-md-1">
 							<input class="form-control amount" type="text" name="item_amount[]" disabled />
@@ -204,31 +245,77 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-4"><?php echo $ddl_html;?></div><div class="col-md-3"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
+			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
 		}
 		
-		$(document).on("change", ".order_item", function () {			
-			var stock = $(this).parent().next().find('input');
-			var qty = $(this).parent().next().next().find('input');
-			$.ajax({
-                    url: 'get_product_detail/'+$(this).val(),
-                    type: 'GET',
-					success: function(data) {
-						if (data.success) {
-							stock.val(data.product.stock);
-							qty.val(data.product.selling_price);
+		$(document).on("change", ".order_item", function () {
+			if($(this).val() != ""){
+				var stock = $(this).parent().next().find('input');				
+				var min_selling_price = stock.parent().next().find('input');				
+				var max_selling_price = min_selling_price.parent().next().find('input');
+				var package_val = max_selling_price.parent().next().find('input[type=hidden]');
+
+				$.ajax({
+						url: 'get_product_detail/'+$(this).val(),
+						type: 'GET',
+						success: function(data) {
+							if (data.success) {
+								stock.val(data.product.stock);
+								min_selling_price.val(data.product.selling_price);
+								max_selling_price.val(data.product.maximum_selling_price);
+								package_val.val(data.product.box_size);
+							}
 						}
-					}
-				 });
+					 });
+			}
 					
 		});
 		
-		$(document).on("keyup", ".quantity, #extra_discount", function () {
-			var price = $(this).parent().prev().find('input').val();
-			$(this).parent().next().find('input').val($(this).val() * price);
+		$(document).on("keyup", ".quantity, .sale_price", function () {
+			var qty = $(this).parent().parent().find(".quantity").val();
+			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}			
+			var tax = $(this).parent().parent().find(".tax_val").val();
+			
+			if(qty !="" && sale_price !=""){
+				$(this).parent().parent().find(".amount").val(qty * sale_price);
+			}
+
+			if(tax !=""){
+				var amount = qty * sale_price;
+				
+				amount = amount + ((amount * tax) / 100);
+				
+				$(this).parent().parent().find(".amount").val(amount);
+			}
 			calculate_total();
 			
 		});
+		$(document).on("change", ".cb", function () {
+			
+			var qty = $(this).parent().parent().find(".quantity").val();
+			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}			
+			
+			var tax = $(this).parent().parent().find(".tax_val").val();			
+						
+			if(qty !="" && sale_price !=""){
+				$(this).parent().parent().find(".amount").val(qty * sale_price);
+			}
+			
+			if(tax !=""){
+				var amount = qty * sale_price;
+				
+				amount = amount + ((amount * tax) / 100);
+				
+				$(this).parent().parent().find(".amount").val(amount);
+			}
+			calculate_total();
+		});		
 		
 		function calculate_total(){
 			var order_total = 0;
@@ -264,6 +351,37 @@
 					}
 				}
 			 });
+	});
+	
+	$(document).on("change", ".tax_id", function () {
+
+		var tax_id;
+		tax_id = $(this).val();
+		if(tax_id != ""){
+			
+			
+			var qty = $(this).parent().parent().find(".quantity").val();
+			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}
+			
+			var tax = $(this).parent().find(".tax_val");
+			var amount = $(this).parent().parent().find(".amount");
+
+			$.ajax({
+					url: '/admin/taxes/get_tax/'+tax_id,
+					type: 'GET',
+					success: function(data) {
+						if (data.success) {					
+							tax.val(data.tax.tax);
+							var item_total = qty * sale_price;
+							amount.val(item_total + ((item_total * data.tax.tax) / 100))
+							calculate_total();
+						}
+					}
+				 });
+		}
 	});
 		
 	</script>
