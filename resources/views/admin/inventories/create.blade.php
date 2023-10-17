@@ -51,6 +51,14 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.inventory.fields.product_helper') }}</span>
             </div>
+			<div class="form-group">
+                <label class="required" for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
+                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="text" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', '') }}" required>
+                @if($errors->has('invoice_number'))
+                    <span class="text-danger">{{ $errors->first('invoice_number') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.invoice_number_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.inventory.fields.box_or_unit') }}</label>
                 @foreach(App\Models\Inventory::BOX_OR_UNIT_RADIO as $key => $label)
@@ -226,11 +234,11 @@ function calculate_total(){
 
 	if(stock > 0 && price > 0){
 
-		if($("#box_or_unit_0").is(":checked")){
+		/* if($("#box_or_unit_0").is(":checked")){
 			stock = stock * $("#package_val").val();
 		}else{
 			stock = stock;
-		}
+		} */
 		
 		order_total = stock * price;
 		
@@ -280,19 +288,20 @@ $(document).on("change", "#product_id", function () {
 	prod_id = $(this).val();
 	if(prod_id != ""){
 	$.ajax({
-			url: '/admin/products/get_package_size/'+prod_id,
+			url: '/admin/products/get_drod_detail/'+prod_id,
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {					
 					$("#package_val").val(data.product.box_size);
+					$("#tax_id").val(data.product.tax_id).change();
+					get_tax_val(data.product.tax_id)
 				}
 			}
 		 });
 	}
 });
-$(document).on("change", "#tax_id", function () {
-	var tax_id;
-	tax_id = $(this).val();
+
+function get_tax_val(tax_id){
 	if(tax_id != ""){
 		$.ajax({
 				url: '/admin/taxes/get_tax/'+tax_id,
@@ -305,6 +314,10 @@ $(document).on("change", "#tax_id", function () {
 				}
 			 });
 	}
+}
+
+$(document).on("change", "#tax_id", function () {
+	get_tax_val($(this).val());
 });
 </script>
 @endsection

@@ -65,6 +65,18 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.stock_helper') }}</span>
             </div>
+			<div class="form-group">
+                <label class="required" for="tax_id">{{ trans('cruds.product.fields.tax') }}</label>
+                <select class="form-control select2 {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id" required>
+                    @foreach($taxes as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('tax_id') ? old('tax_id') : $product->tax->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('tax'))
+                    <span class="text-danger">{{ $errors->first('tax') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.product.fields.tax_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="" for="product_image">{{ trans('cruds.product.fields.product_image') }}</label>
                 <input class="form-control {{ $errors->has('product_image') ? 'is-invalid' : '' }}" type="file" name="product_image" id="product_image" value="{{ old('product_image', $product->product_image) }}" />

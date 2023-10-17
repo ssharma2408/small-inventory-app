@@ -47,6 +47,14 @@
                             {{ $inventory->product->name ?? '' }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.inventory.fields.invoice_number') }}
+                        </th>
+                        <td>
+                            {{ $inventory->invoice_number }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.inventory.fields.box_or_unit') }}

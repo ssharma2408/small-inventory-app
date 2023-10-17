@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\Tax;
+use App\Models\ExpensePaymentMaster;
 use Gate;
 use Storage;
 use Illuminate\Http\Request;
@@ -48,6 +49,9 @@ class InventoryController extends Controller
     public function store(StoreInventoryRequest $request)
     {
         if($request->hasFile('po_file')){
+			
+			$expense_pay_detail = [];
+			
 			$file = $request->file('po_file');
 			
 			$extension  = $file->getClientOriginalExtension();
@@ -67,7 +71,16 @@ class InventoryController extends Controller
 				$request->stock = $request->stock * $request->package_val;
 			}
 			
-			$inventory = Inventory::create($expense_detail);		
+			$inventory = Inventory::create($expense_detail);
+			
+			$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
+			$expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
+			$expense_pay_detail['expense_total'] = $expense_detail['final_price'];
+			$expense_pay_detail['expense_paid'] = 0;
+			$expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
+			$expense_pay_detail['payment_status'] = 0;
+			
+			ExpensePaymentMaster::create($expense_pay_detail);
 		
 			$product = Product::find($request->product_id);
 			$product->increment('stock', $request->stock);
@@ -95,10 +108,17 @@ class InventoryController extends Controller
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
-       	
 		$product = Product::find($request->product_id);
 		
-		if($inventory->stock != $request->stock){
+		if(($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)){
+			
+			if($inventory->box_or_unit != $request->box_or_unit){
+			
+				if($request->box_or_unit == "0"){
+					$request->stock = $request->stock * $request->package_val;
+				}
+			}
+			
 			$product->decrement('stock', $inventory->stock);
 			$product->increment('stock', $request->stock);			
 		}
@@ -119,7 +139,7 @@ class InventoryController extends Controller
 				);
 			$expense_detail['image_url'] = $name;
 		}
-			
+
 		$inventory->update($expense_detail);		
 
         return redirect()->route('admin.inventories.index');

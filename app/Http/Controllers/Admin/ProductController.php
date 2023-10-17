@@ -9,6 +9,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Tax;
 use Gate;
 use Storage;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class ProductController extends Controller
     {
         abort_if(Gate::denies('product_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $products = Product::with(['media'])->get();
+        $products = Product::with(['media', 'tax'])->get();
 
         return view('admin.products.index', compact('products'));
     }
@@ -34,8 +35,10 @@ class ProductController extends Controller
 		
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.create', compact('categories', 'taxes'));
     }
 
     public function store(StoreProductRequest $request)
@@ -75,8 +78,10 @@ class ProductController extends Controller
 		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'taxes'));
     }
 
     public function update(UpdateProductRequest $request, Product $product)
@@ -146,12 +151,12 @@ class ProductController extends Controller
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 	
-	public function get_package_size($prod_id){
+	public function get_drod_detail($prod_id){
 		
 		if($prod_id == ""){
 			return false;
 		}
-		$product = Product::select('box_size')->where('id', $prod_id)->first();
+		$product = Product::select('box_size', 'tax_id')->where('id', $prod_id)->first();
 		
 		return response()->json(array('success'=>1, 'product'=>$product), 200);
 	}

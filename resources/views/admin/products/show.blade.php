@@ -63,6 +63,14 @@
                             {{ $product->stock }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.product.fields.tax') }}
+                        </th>
+                        <td>
+                            {{ $product->tax->title ?? '' }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.product.fields.product_image') }}

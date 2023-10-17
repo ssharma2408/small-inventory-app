@@ -17,9 +17,8 @@ class StoreExpensePaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'expense_id' => [
-                'required',
-                'integer',
+            'invoice_id' => [
+                'required',                
             ],
             'payment_id' => [
                 'required',

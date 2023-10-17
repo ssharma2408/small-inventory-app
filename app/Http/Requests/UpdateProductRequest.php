@@ -32,6 +32,10 @@ class UpdateProductRequest extends FormRequest
             'image_url' => [
                 'required',
             ],
+			'tax_id' => [
+                'required',
+                'integer',
+            ],
             'box_size' => [
                 'required',
                 'integer',

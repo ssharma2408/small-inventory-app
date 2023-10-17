@@ -34,6 +34,7 @@ class Product extends Model implements HasMedia
 		'box_size',
         'category_id',
         'image_url',
+		'tax_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -65,5 +66,10 @@ class Product extends Model implements HasMedia
 	public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+	
+	public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id');
     }
 }

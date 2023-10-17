@@ -38,6 +38,9 @@ class UpdateInventoryRequest extends FormRequest
             'discount_type' => [
                 'required',
             ],
+			'invoice_number' => [
+                'required',
+            ],
             'discount' => [
                 'numeric',
             ],

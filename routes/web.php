@@ -48,7 +48,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Product
     Route::delete('products/destroy', 'ProductController@massDestroy')->name('products.massDestroy');
-	Route::get('products/get_package_size/{id}', 'ProductController@get_package_size')->name('products.get_package_size');
+	Route::get('products/get_drod_detail/{id}', 'ProductController@get_drod_detail')->name('products.get_drod_detail');
     Route::post('products/media', 'ProductController@storeMedia')->name('products.storeMedia');
     Route::post('products/ckmedia', 'ProductController@storeCKEditorImages')->name('products.storeCKEditorImages');
     Route::resource('products', 'ProductController');

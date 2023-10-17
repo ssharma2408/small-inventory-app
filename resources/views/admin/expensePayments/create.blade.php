@@ -10,16 +10,17 @@
         <form method="POST" action="{{ route("admin.expense-payments.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
-                <label class="required" for="expense_id">{{ trans('cruds.expensePayment.fields.expense') }}</label>
-                <select class="form-control select2 {{ $errors->has('expense') ? 'is-invalid' : '' }}" name="expense_id" id="expense_id" required>
-                    @foreach($expenses as $id => $entry)
-                        <option value="{{ $id }}" {{ old('expense_id') == $id ? 'selected' : '' }}>{{ $id }}</option>
+                <label class="required" for="invoice_id">{{ trans('cruds.expensePayment.fields.invoice') }}</label>
+                <select class="form-control select2 {{ $errors->has('invoice') ? 'is-invalid' : '' }}" name="invoice_id" id="invoice_id" required>
+                    <option>Please Select</option>
+					@foreach($invoices as $entry)
+                        <option value="{{ $entry->id }}-{{ $entry->invoice_number }}" {{ old('invoice_id') == $entry->invoice_number ? 'selected' : '' }}>{{$entry->invoice_number}} -> {{ $entry->supplier_name }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('expense'))
-                    <span class="text-danger">{{ $errors->first('expense') }}</span>
+                @if($errors->has('invoice'))
+                    <span class="text-danger">{{ $errors->first('invoice') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.expensePayment.fields.expense_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.expensePayment.fields.invoice_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="payment_id">{{ trans('cruds.expensePayment.fields.payment') }}</label>

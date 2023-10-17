@@ -38,6 +38,9 @@
                         <th>
                             {{ trans('cruds.inventory.fields.product') }}
                         </th>
+						<th>
+                            {{ trans('cruds.inventory.fields.invoice_number') }}
+                        </th>
                         <th>
                             {{ trans('cruds.inventory.fields.box_or_unit') }}
                         </th>
@@ -90,6 +93,9 @@
                             </td>
                             <td>
                                 {{ $inventory->product->name ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->invoice_number ?? '' }}
                             </td>
                             <td>
                                 {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}

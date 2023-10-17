@@ -32,6 +32,10 @@ class StoreProductRequest extends FormRequest
             'product_image' => [
                 'required',				
             ],
+			'tax_id' => [
+                'required',
+                'integer',
+            ],
             'box_size' => [
                 'required',
                 'integer',

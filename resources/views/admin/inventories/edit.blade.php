@@ -54,6 +54,14 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.inventory.fields.product_helper') }}</span>
             </div>
+			<div class="form-group">
+                <label class="required" for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
+                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="number" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $inventory->invoice_number) }}" step="1" required>
+                @if($errors->has('invoice_number'))
+                    <span class="text-danger">{{ $errors->first('invoice_number') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.inventory.fields.invoice_number_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.inventory.fields.box_or_unit') }}</label>
                 @foreach(App\Models\Inventory::BOX_OR_UNIT_RADIO as $key => $label)
@@ -138,7 +146,7 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.days_payable_outstanding_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
+                <label for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
                 <input class="form-control {{ $errors->has('po_file') ? 'is-invalid' : '' }}" type="file" name="po_file" id="po_file" value="{{ old('po_file', $inventory->po_file) }}" />
                 @if($errors->has('po_file'))
                     <span class="text-danger">{{ $errors->first('po_file') }}</span>
@@ -150,6 +158,8 @@
                     {{ trans('global.save') }}
                 </button>
 				<input type="hidden" name="image_url" value="{{$inventory->image_url}}">
+				<input type="hidden" id="tax_val" value="" />
+				<input type="hidden" id="package_val" value="" name="package_val" />
             </div>
         </form>
     </div>
@@ -210,6 +220,12 @@
      }
 }
 
+$(function() {
+    populate_products($("#category_id").val());
+	load_package_val(<?php echo $inventory->product_id; ?>);
+	load_tax_val(<?php echo $inventory->tax->id; ?>);	 
+});
+
 $(document).on("change", "#discount_type_0, #discount_type_1", function () {
 	calculate_total();
 });
@@ -247,10 +263,6 @@ function calculate_total(){
 	$("#final_price").val(order_total);
 }
 
-$(function() {
-    populate_products($("#category_id").val());
-});
-
 function populate_products(cat_id){
 	$.ajax({
 			url: '/admin/inventories/get_products/'+cat_id,
@@ -279,6 +291,43 @@ function populate_products(cat_id){
 
 $("#category_id").change(function (){
 	populate_products($(this).val());
+});
+
+
+function load_package_val(prod_id){
+	if(prod_id != ""){
+	$.ajax({
+			url: '/admin/products/get_drod_detail/'+prod_id,
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					$("#package_val").val(data.product.box_size);
+				}
+			}
+		 });
+	}
+}
+
+function load_tax_val(tax_id){
+	if(tax_id != ""){
+		$.ajax({
+				url: '/admin/taxes/get_tax/'+tax_id,
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {
+						$("#tax_val").val(data.tax.tax);
+						calculate_total();
+					}
+				}
+			 });
+	}
+}
+
+$(document).on("change", "#product_id", function () {
+	load_package_val($(this).val());
+});
+$(document).on("change", "#tax_id", function () {
+	load_tax_val($(this).val());
 });
 </script>
 @endsection
