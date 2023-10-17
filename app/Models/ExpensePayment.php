@@ -21,12 +21,12 @@ class ExpensePayment extends Model
         'deleted_at',
     ];
 
-    protected $fillable = [
-        'expense_id',
+    protected $fillable = [		
         'payment_id',
         'amount',
         'description',
         'date',
+		'expense_id',
         'created_at',
         'updated_at',
         'deleted_at',

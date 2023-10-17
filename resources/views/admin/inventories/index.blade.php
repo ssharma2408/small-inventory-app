@@ -147,6 +147,12 @@
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
                                 @endcan
+								
+								@can('inventory_show')
+                                    <a class="btn btn-xs btn-primary" href="/admin/inventories/payment/{{$inventory->id}}">
+                                        View Payment
+                                    </a>
+                                @endcan
 
                             </td>
 

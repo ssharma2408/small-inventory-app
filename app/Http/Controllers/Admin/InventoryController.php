@@ -79,6 +79,7 @@ class InventoryController extends Controller
 			$expense_pay_detail['expense_paid'] = 0;
 			$expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
 			$expense_pay_detail['payment_status'] = 0;
+			$expense_pay_detail['expense_id'] = $inventory->id;
 			
 			ExpensePaymentMaster::create($expense_pay_detail);
 		
@@ -194,6 +195,14 @@ class InventoryController extends Controller
 		$products = Product::select('id', 'name')->where('category_id', $cat_id)->get();
 		
 		return response()->json(array('success'=>1, 'products'=>$products), 200);
+	}
+	
+	public function payment($expense_id=""){
+		
+		
+		
+		return view('admin.inventories.payment_history');		
+		
 	}
 	
 }

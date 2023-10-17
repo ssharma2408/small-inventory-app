@@ -17,9 +17,9 @@ class UpdateExpensePaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'expense_id' => [
+            'invoice_id' => [
                 'required',
-                'integer',
+				'integer',
             ],
             'payment_id' => [
                 'required',

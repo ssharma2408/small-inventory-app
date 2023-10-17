@@ -14,7 +14,7 @@
                 <select class="form-control select2 {{ $errors->has('invoice') ? 'is-invalid' : '' }}" name="invoice_id" id="invoice_id" required>
                     <option>Please Select</option>
 					@foreach($invoices as $entry)
-                        <option value="{{ $entry->id }}-{{ $entry->invoice_number }}" {{ old('invoice_id') == $entry->invoice_number ? 'selected' : '' }}>{{$entry->invoice_number}} -> {{ $entry->supplier_name }}</option>
+                        <option value="{{ $entry->expense_id }}" {{ old('invoice_id') == $entry->expense_id ? 'selected' : '' }}>{{$entry->invoice_number}} -> {{ $entry->supplier_name }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('invoice'))
@@ -66,7 +66,4 @@
         </form>
     </div>
 </div>
-
-
-
 @endsection

@@ -28,6 +28,7 @@ class ExpensePaymentMaster extends Model
         'expense_paid',
         'expense_pending',
         'payment_status',
+        'expense_id',
         'created_at',
         'updated_at',
 		'deleted_at',

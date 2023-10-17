@@ -18,7 +18,8 @@ class StoreExpensePaymentRequest extends FormRequest
     {
         return [
             'invoice_id' => [
-                'required',                
+                'required',
+				'integer',
             ],
             'payment_id' => [
                 'required',

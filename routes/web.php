@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('inventories/get_products/{id}', 'InventoryController@get_products')->name('inventories.get_products');	
     Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
     Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
+	Route::get('inventories/payment/{$id}', 'InventoryController@payment')->name('inventories.payment');
     Route::resource('inventories', 'InventoryController');
 
     // Orders

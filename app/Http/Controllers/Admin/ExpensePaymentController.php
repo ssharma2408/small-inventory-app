@@ -31,7 +31,7 @@ class ExpensePaymentController extends Controller
         abort_if(Gate::denies('expense_payment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         
         $invoices = DB::table('expense_payment_master')
-					->select('expense_payment_master.invoice_number', 'suppliers.supplier_name', 'suppliers.id')
+					->select('expense_payment_master.invoice_number', 'suppliers.supplier_name', 'suppliers.id', 'expense_payment_master.expense_id')
 					->join('suppliers', 'expense_payment_master.supplier_id', '=', 'suppliers.id')
 					->whereNotIn('payment_status', [1])
 					->get();	
@@ -43,9 +43,8 @@ class ExpensePaymentController extends Controller
 
     public function store(StoreExpensePaymentRequest $request)
     { 
-		$invoice_detail = explode("-", $request->invoice_id);
-		
-		$invoice_pay_details = ExpensePaymentMaster::where(['supplier_id'=>$invoice_detail[0], 'invoice_number'=>$invoice_detail[1]])->first()->toArray();
+
+		$invoice_pay_details = ExpensePaymentMaster::where('expense_id', $request->invoice_id)->first()->toArray();
 		
 		if($invoice_pay_details['expense_pending'] >= $request->amount ){
 			$row = ExpensePaymentMaster::find($invoice_pay_details['id']);
@@ -60,7 +59,11 @@ class ExpensePaymentController extends Controller
 			$row->save();
 		}
 		
-		$expensePayment = ExpensePayment::create($request->all());
+		$expense_detail = $request->all();
+		
+		$expense_detail['expense_id'] = $request->invoice_id;
+
+		$expensePayment = ExpensePayment::create($expense_detail);
 
         return redirect()->route('admin.expense-payments.index');
     }
