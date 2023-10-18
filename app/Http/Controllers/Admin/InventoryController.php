@@ -201,6 +201,8 @@ class InventoryController extends Controller
 	
 	public function payment($expense_id=""){		
 		
+			$status_arr = array("Unpaid", "Paid", "Partial Paid");
+			
 			$payment_arr = [];			
 			$payment_query = DB::table('expense_payments')
 				->select('expense_payments.amount', 'expense_payments.description', 'expense_payments.date', 'expense_payment_master.invoice_number', 'expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'expense_payment_master.payment_status', 'expense_payment_master.expense_id', 'suppliers.supplier_name', 'suppliers.supplier_number', 'suppliers.supplier_email', 'payment_methods.name')
@@ -216,7 +218,7 @@ class InventoryController extends Controller
 				
 			foreach($payment_details as $detail){
 				
-				$payment_arr[$detail->expense_id] = array('invoice_number'=>$detail->invoice_number, 'expense_total'=>$detail->expense_total, 'expense_paid'=>$detail->expense_paid, 'expense_pending'=>$detail->expense_pending, 'payment_status'=>$detail->payment_status, 'supplier_name'=>$detail->supplier_name, 'supplier_number'=>$detail->supplier_number, 'supplier_email'=>$detail->supplier_email, 'payment_detail'=>[]);				
+				$payment_arr[$detail->expense_id] = array('invoice_number'=>$detail->invoice_number, 'expense_total'=>$detail->expense_total, 'expense_paid'=>$detail->expense_paid, 'expense_pending'=>$detail->expense_pending, 'payment_status'=>$status_arr[$detail->payment_status], 'supplier_name'=>$detail->supplier_name, 'supplier_number'=>$detail->supplier_number, 'supplier_email'=>$detail->supplier_email, 'payment_detail'=>[]);				
 			}
 
 			foreach($payment_details as $detail){
