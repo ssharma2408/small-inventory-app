@@ -302,8 +302,16 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => 73,
                 'title' => 'order_management_access',
             ],
-            [
+			[
                 'id'    => 74,
+                'title' => 'expense_history_access',
+            ],
+			[
+                'id'    => 75,
+                'title' => 'order_history_access',
+            ],
+            [
+                'id'    => 76,
                 'title' => 'profile_password_edit',
             ],
         ];

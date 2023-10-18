@@ -132,7 +132,7 @@
                     </li>
                 @endcan
 				@can('expense_management_access')
-					<li class="nav-item has-treeview {{ request()->is("admin/suppliers*") ? "menu-open" : "" }} {{ request()->is("admin/inventories*") ? "menu-open" : "" }} {{ request()->is("admin/expense-payments*") ? "menu-open" : "" }}">
+					<li class="nav-item has-treeview {{ request()->is("admin/suppliers*") ? "menu-open" : "" }} {{ request()->is("admin/inventories*") ? "menu-open" : "" }} {{ request()->is("admin/expense-payments*") ? "menu-open" : "" }} {{ request()->is("admin/inventories/payment*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/suppliers*") ? "active" : "" }} {{ request()->is("admin/inventories*") ? "active" : "" }} {{ request()->is("admin/expense-payments*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
@@ -175,6 +175,18 @@
 										</i>
 										<p>
 											{{ trans('cruds.expensePayment.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
+							@can('expense_history_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.inventories.payment") }}" class="nav-link {{ request()->is("admin/inventories/payment") || request()->is("admin/inventories/payment/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.expenseHistory.expense_history') }}
 										</p>
 									</a>
 								</li>
@@ -229,7 +241,7 @@
 										</p>
 									</a>
 								</li>
-							@endcan
+							@endcan							
 						</ul>
 					</li>				
 				@endcan			

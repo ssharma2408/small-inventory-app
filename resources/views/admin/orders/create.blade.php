@@ -148,10 +148,10 @@
 							<input type="hidden" id="package_val" value="" name="package_val" />
 						</div>
 						<div class="col-md-1">
-							<input class="form-control quantity" type="number" name="item_quantity[]" min="1" />
+							<input class="form-control quantity" type="number" name="item_quantity[]" min="1" required />
 						</div>
 						<div class="col-md-1">
-							<input class="form-control sale_price" type="text" name="item_sale_priec[]" />
+							<input class="form-control sale_price" type="text" name="item_sale_priec[]" required />
 						</div>
 						<div class="col-md-1">
 							<?php
@@ -245,7 +245,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
+			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
@@ -254,6 +254,8 @@
 				var min_selling_price = stock.parent().next().find('input');				
 				var max_selling_price = min_selling_price.parent().next().find('input');
 				var package_val = max_selling_price.parent().next().find('input[type=hidden]');
+				var taxt_ddl = package_val.parent().next().next().next().find('select');
+				var tax_field = package_val.parent().next().next().next().find('input[type=hidden]');
 
 				$.ajax({
 						url: 'get_product_detail/'+$(this).val(),
@@ -264,6 +266,7 @@
 								min_selling_price.val(data.product.selling_price);
 								max_selling_price.val(data.product.maximum_selling_price);
 								package_val.val(data.product.box_size);
+								taxt_ddl.val(data.product.tax_id).change();
 							}
 						}
 					 });
@@ -271,12 +274,12 @@
 					
 		});
 		
-		$(document).on("keyup", ".quantity, .sale_price", function () {
+		$(document).on("keyup", ".quantity, .sale_price, #extra_discount", function () {
 			var qty = $(this).parent().parent().find(".quantity").val();
 			var sale_price = $(this).parent().parent().find(".sale_price").val();
-			if($(this).parent().parent().find(".cb").is(':checked')){
+			/* if($(this).parent().parent().find(".cb").is(':checked')){
 				qty = qty * $(this).parent().parent().find("#package_val").val();
-			}			
+			} */			
 			var tax = $(this).parent().parent().find(".tax_val").val();
 			
 			if(qty !="" && sale_price !=""){
@@ -297,9 +300,9 @@
 			
 			var qty = $(this).parent().parent().find(".quantity").val();
 			var sale_price = $(this).parent().parent().find(".sale_price").val();
-			if($(this).parent().parent().find(".cb").is(':checked')){
+			/* if($(this).parent().parent().find(".cb").is(':checked')){
 				qty = qty * $(this).parent().parent().find("#package_val").val();
-			}			
+			} */			
 			
 			var tax = $(this).parent().parent().find(".tax_val").val();			
 						
@@ -357,14 +360,14 @@
 
 		var tax_id;
 		tax_id = $(this).val();
+		var qty = $(this).parent().parent().find(".quantity").val();
+		var sale_price = $(this).parent().parent().find(".sale_price").val();
+		//if(tax_id != "" && qty != "" && sale_price != ""){
 		if(tax_id != ""){
-			
-			
-			var qty = $(this).parent().parent().find(".quantity").val();
-			var sale_price = $(this).parent().parent().find(".sale_price").val();
-			if($(this).parent().parent().find(".cb").is(':checked')){
+
+			/* if($(this).parent().parent().find(".cb").is(':checked')){
 				qty = qty * $(this).parent().parent().find("#package_val").val();
-			}
+			} */
 			
 			var tax = $(this).parent().find(".tax_val");
 			var amount = $(this).parent().parent().find(".amount");

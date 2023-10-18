@@ -67,7 +67,7 @@ return [
     ],
 	'expenseManagement' => [
         'title'          => 'Expense management',
-        'title_singular' => 'Expense management',
+        'title_singular' => 'Expense management',	
     ],
     'supplier' => [
         'title'          => 'Supplier',
@@ -346,8 +346,18 @@ return [
             'deleted_at'         => 'Deleted at',
             'deleted_at_helper'  => ' ',
 			'invoice'            => 'Invoice',
-			'invoice_helper'     => ' ',
+			'invoice_helper'     => ' ',			
         ],
     ],
+	
+	'expenseHistory' => [	
+		'expense_history'          => 'Expense History',
+		'expense_history_singular' => 'Expense History',
+	],
+	
+	'orderHistory' => [	
+		'order_history'          => 'Order History',
+		'order_history_singular' => 'Order History',
+	],
 
 ];
