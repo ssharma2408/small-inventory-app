@@ -36,7 +36,8 @@
             </div>
             <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.expensePayment.fields.amount') }}</label>
-                <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $expensePayment->amount) }}" step="0.01" required>
+                <div id="due_amount"></div>
+				<input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $expensePayment->amount) }}" step="0.01" required>
                 @if($errors->has('amount'))
                     <span class="text-danger">{{ $errors->first('amount') }}</span>
                 @endif
@@ -66,7 +67,24 @@
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
+<script>
 
-
+	$("#invoice_id").change(function (){
+		
+		if($(this).val() !=""){
+			$.ajax({
+				url: 'get_due_payment/'+$(this).val(),
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {
+						$("#due_amount").html('Pending Amount: <b>'+data.due_amount.expense_pending+'</b>');
+					}
+				}
+			 });
+		}
+	});	
+</script>
 @endsection

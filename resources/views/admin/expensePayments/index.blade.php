@@ -26,7 +26,7 @@
                             {{ trans('cruds.expensePayment.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.expensePayment.fields.expense') }}
+                            {{ trans('cruds.expensePayment.fields.invoice') }}
                         </th>
                         <th>
                             {{ trans('cruds.expensePayment.fields.payment') }}
@@ -55,7 +55,7 @@
                                 {{ $expensePayment->id ?? '' }}
                             </td>
                             <td>
-                                {{ $expensePayment->expense->stock ?? '' }}
+                                {{ $expensePayment->expense->invoice_number ?? '' }}
                             </td>
                             <td>
                                 {{ $expensePayment->payment->name ?? '' }}

@@ -228,6 +228,5 @@ class InventoryController extends Controller
 		
 		return view('admin.inventories.payment_history', compact('payment_arr'));
 		
-	}
-	
+	}	
 }

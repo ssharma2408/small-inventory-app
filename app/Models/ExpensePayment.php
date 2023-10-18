@@ -55,5 +55,5 @@ class ExpensePayment extends Model
     public function setDateAttribute($value)
     {
         $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
-    }
+    }	
 }

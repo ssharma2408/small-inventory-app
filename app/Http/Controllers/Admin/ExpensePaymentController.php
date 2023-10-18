@@ -116,4 +116,13 @@ class ExpensePaymentController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function get_due_payment($expense_id){
+		if($expense_id == ""){
+			return;
+		}
+		$due_amount = ExpensePaymentMaster::select('expense_pending')->where('expense_id', $expense_id)->first();
+		
+		return response()->json(array('success'=>1, 'due_amount'=>$due_amount), 200);
+	}
 }

@@ -180,7 +180,7 @@
 								</li>
 							@endcan
 							@can('expense_history_access')
-								<li class="nav-item">
+								<!--li class="nav-item">
 									<a href="{{ route("admin.inventories.payment") }}" class="nav-link {{ request()->is("admin/inventories/payment") || request()->is("admin/inventories/payment/*") ? "active" : "" }}">
 										<i class="fa-fw nav-icon fas fa-cogs">
 
@@ -189,7 +189,7 @@
 											{{ trans('cruds.expenseHistory.expense_history') }}
 										</p>
 									</a>
-								</li>
+								</li-->
 							@endcan
 						</ul>
 					</li>

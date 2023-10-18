@@ -27,6 +27,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Supplier
     Route::delete('suppliers/destroy', 'SupplierController@massDestroy')->name('suppliers.massDestroy');
+	Route::get('suppliers/expenses/{id}', 'SupplierController@expenses')->name('suppliers.expenses');
     Route::resource('suppliers', 'SupplierController');
 
     // Customers
@@ -38,7 +39,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('inventories/get_products/{id}', 'InventoryController@get_products')->name('inventories.get_products');	
     Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
     Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
-	Route::get('inventories/payment/{id?}', 'InventoryController@payment')->name('inventories.payment');
+	Route::get('inventories/payment/{id?}', 'InventoryController@payment')->name('inventories.payment');	
     Route::resource('inventories', 'InventoryController');
 
     // Orders
@@ -79,6 +80,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Expense Payment
     Route::delete('expense-payments/destroy', 'ExpensePaymentController@massDestroy')->name('expense-payments.massDestroy');
+	Route::get('expense-payments/get_due_payment/{id}', 'ExpensePaymentController@get_due_payment')->name('expense-payments.get_due_payment');
     Route::resource('expense-payments', 'ExpensePaymentController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {

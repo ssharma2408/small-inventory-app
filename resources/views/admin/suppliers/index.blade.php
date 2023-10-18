@@ -77,6 +77,13 @@
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
                                 @endcan
+								
+								 @can('supplier_show')
+                                    <a class="btn btn-xs btn-primary" href="/admin/suppliers/expenses/{{ $supplier->id }}">
+                                        Expenses
+                                    </a>
+                                @endcan
+
 
                             </td>
 
