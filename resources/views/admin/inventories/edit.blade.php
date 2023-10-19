@@ -56,7 +56,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
-                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="number" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $inventory->invoice_number) }}" step="1" disabled>
+                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="text" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $inventory->invoice_number) }}" step="1" disabled>
                 @if($errors->has('invoice_number'))
                     <span class="text-danger">{{ $errors->first('invoice_number') }}</span>
                 @endif
