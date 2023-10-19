@@ -21,7 +21,7 @@ class ExpensePaymentController extends Controller
     {
         abort_if(Gate::denies('expense_payment_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expensePayments = ExpensePayment::with(['expense', 'payment'])->get();
+        $expensePayments = ExpensePayment::with(['expense', 'payment'])->get();		
 
         return view('admin.expensePayments.index', compact('expensePayments'));
     }
@@ -72,13 +72,17 @@ class ExpensePaymentController extends Controller
     {
         abort_if(Gate::denies('expense_payment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $expenses = Inventory::pluck('stock', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $invoices = DB::table('expense_payment_master')
+					->select('expense_payment_master.invoice_number', 'suppliers.supplier_name', 'suppliers.id', 'expense_payment_master.expense_id')
+					->join('suppliers', 'expense_payment_master.supplier_id', '=', 'suppliers.id')
+					->whereNotIn('payment_status', [1])
+					->get();
 
         $payments = PaymentMethod::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $expensePayment->load('expense', 'payment');
 
-        return view('admin.expensePayments.edit', compact('expensePayment', 'expenses', 'payments'));
+        return view('admin.expensePayments.edit', compact('expensePayment', 'invoices', 'payments'));
     }
 
     public function update(UpdateExpensePaymentRequest $request, ExpensePayment $expensePayment)
@@ -99,7 +103,19 @@ class ExpensePaymentController extends Controller
 
     public function destroy(ExpensePayment $expensePayment)
     {
-        abort_if(Gate::denies('expense_payment_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('expense_payment_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');		
+		
+		$expense_master = ExpensePaymentMaster::where('expense_id', $expensePayment->expense_id)->first();		
+		
+		$status = ($expense_master->expense_pending - $expensePayment->amount == 0) ? 0 : 2;		
+		
+		ExpensePaymentMaster::where('expense_id', $expensePayment->expense_id)
+       ->update([
+           'payment_status' => $status
+        ]);
+		
+		$expense_master->decrement('expense_paid', $expensePayment->amount);
+		$expense_master->increment('expense_pending', $expensePayment->amount);		
 
         $expensePayment->delete();
 
@@ -111,7 +127,20 @@ class ExpensePaymentController extends Controller
         $expensePayments = ExpensePayment::find(request('ids'));
 
         foreach ($expensePayments as $expensePayment) {
-            $expensePayment->delete();
+            
+			$expense_master = ExpensePaymentMaster::where('expense_id', $expensePayment->expense_id);		
+		
+			$status = ($expense_master->expense_pending - $expensePayment->amount == 0) ? 0 : 2;		
+			
+			ExpensePaymentMaster::where('expense_id', $expensePayment->expense_id)
+		   ->update([
+			   'payment_status' => $status
+			]);
+			
+			$expense_master->decrement('expense_paid', $expensePayment->amount);
+			$expense_master->increment('expense_pending', $expensePayment->amount);	
+			
+			$expensePayment->delete();
         }
 
         return response(null, Response::HTTP_NO_CONTENT);

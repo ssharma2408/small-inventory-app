@@ -12,7 +12,7 @@
             @csrf
             <div class="form-group">
                 <label for="supplier_id">{{ trans('cruds.inventory.fields.supplier') }}</label>
-                <select class="form-control select2 {{ $errors->has('supplier') ? 'is-invalid' : '' }}" name="supplier_id" id="supplier_id">
+                <select class="form-control select2 {{ $errors->has('supplier') ? 'is-invalid' : '' }}" name="supplier_id" id="supplier_id" disabled>
                     @foreach($suppliers as $id => $entry)
                         <option value="{{ $id }}" {{ (old('supplier_id') ? old('supplier_id') : $inventory->supplier->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
@@ -56,7 +56,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
-                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="number" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $inventory->invoice_number) }}" step="1" required>
+                <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="number" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $inventory->invoice_number) }}" step="1" disabled>
                 @if($errors->has('invoice_number'))
                     <span class="text-danger">{{ $errors->first('invoice_number') }}</span>
                 @endif
@@ -238,7 +238,7 @@ function calculate_total(){
 	var order_total = 0, stock, price, tax, discount;		
 	stock = $("#stock").val();
 	price = $("#purchase_price").val();
-	tax = $("#tax").val();
+	tax = $("#tax_val").val();
 	discount = $("#discount").val();
 	
 	if(stock > 0 && price > 0){

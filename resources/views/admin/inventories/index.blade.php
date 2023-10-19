@@ -135,9 +135,11 @@
                                 @endcan
 
                                 @can('inventory_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.inventories.edit', $inventory->id) }}">
+                                    @if(!in_array($inventory->id, $expense_id_arr))
+									<a class="btn btn-xs btn-info" href="{{ route('admin.inventories.edit', $inventory->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
+									@endif
                                 @endcan
 
                                 @can('inventory_delete')

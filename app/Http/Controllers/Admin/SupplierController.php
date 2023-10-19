@@ -17,11 +17,27 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $payment_arr = [];
+		abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $suppliers = Supplier::all();
+		
+		$payments = DB::table('suppliers')
+				->select('expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'suppliers.id')
+				->join('expense_payment_master','expense_payment_master.supplier_id','=','suppliers.id')
+				->get()->toArray();
 
-        return view('admin.suppliers.index', compact('suppliers'));
+		
+		foreach($payments as $pay){
+			$pay = (array) $pay;			
+			if(!array_key_exists($pay['id'], $payment_arr)) {				
+				$payment_arr[$pay['id']] = 0;
+			}
+			
+			$payment_arr[$pay['id']] += $pay['expense_total'];
+		}
+
+        return view('admin.suppliers.index', compact('suppliers', 'payment_arr'));
     }
 
     public function create()
@@ -89,7 +105,7 @@ class SupplierController extends Controller
 		$payments = DB::table('suppliers')
 				->select('expense_payment_master.invoice_number', 'expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'expense_payment_master.expense_id', 'suppliers.supplier_name', 'suppliers.supplier_number', 'suppliers.supplier_email')
 				->join('expense_payment_master','expense_payment_master.supplier_id','=','suppliers.id')
-				->where('expense_payment_master.supplier_id','=',$supplier_id)->get()->toArray();	
+				->where('expense_payment_master.supplier_id','=',$supplier_id)->get()->toArray();
 		
 		return view('admin.suppliers.payment_history', compact('payments'));
 	}

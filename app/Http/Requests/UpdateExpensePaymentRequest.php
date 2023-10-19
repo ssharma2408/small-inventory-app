@@ -16,19 +16,11 @@ class UpdateExpensePaymentRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'invoice_id' => [
-                'required',
-				'integer',
-            ],
+        return [            
             'payment_id' => [
                 'required',
                 'integer',
-            ],
-            'amount' => [
-                'numeric',
-                'required',
-            ],
+            ],            
             'date' => [
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),

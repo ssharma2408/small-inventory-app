@@ -34,6 +34,9 @@
                         <th>
                             {{ trans('cruds.supplier.fields.supplier_email') }}
                         </th>
+						<th>
+                            Total Expense
+                        </th>
                         <th>
                             &nbsp;
                         </th>
@@ -56,6 +59,9 @@
                             </td>
                             <td>
                                 {{ $supplier->supplier_email ?? '' }}
+                            </td>
+							<td>
+							{{ $payment_arr[$supplier->id] ?? '' }}
                             </td>
                             <td>
                                 @can('supplier_show')

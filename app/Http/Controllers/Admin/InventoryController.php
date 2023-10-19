@@ -27,11 +27,15 @@ class InventoryController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $expense_id_arr = [];
+		
+		abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $inventories = Inventory::with(['supplier', 'product', 'tax', 'media'])->get();
+		
+		$expense_id_arr = $this->get_payments();
 
-        return view('admin.inventories.index', compact('inventories'));
+        return view('admin.inventories.index', compact('inventories', 'expense_id_arr'));
     }
 
     public function create()
@@ -50,53 +54,67 @@ class InventoryController extends Controller
 
     public function store(StoreInventoryRequest $request)
     {
-        if($request->hasFile('po_file')){
-			
-			$expense_pay_detail = [];
-			
-			$file = $request->file('po_file');
-			
-			$extension  = $file->getClientOriginalExtension();
-			$name = time() . '.' . $extension;
-			
-			$store = Storage::disk('do')->put(
-				'/'.$_ENV['DO_FOLDER'].'/'.$name,
-				file_get_contents($request->file('po_file')->getRealPath()),
-				'public'
-				);
-				
-			$expense_detail = $request->all();
-			
-			$expense_detail['image_url'] = $name;
-			
-			if($request->box_or_unit == "0"){
-				$request->stock = $request->stock * $request->package_val;
-			}
-			
-			$inventory = Inventory::create($expense_detail);
-			
-			$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
-			$expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
-			$expense_pay_detail['expense_total'] = $expense_detail['final_price'];
-			$expense_pay_detail['expense_paid'] = 0;
-			$expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
-			$expense_pay_detail['payment_status'] = 0;
-			$expense_pay_detail['expense_id'] = $inventory->id;
-			
-			ExpensePaymentMaster::create($expense_pay_detail);
+        $expense_master = ExpensePaymentMaster::where(['supplier_id'=>$request->supplier_id , 'invoice_number'=>$request->invoice_number])->first();		
 		
-			$product = Product::find($request->product_id);
-			$product->increment('stock', $request->stock);
+		if(empty($expense_master)){
+		
+			if($request->hasFile('po_file')){
+				
+				$expense_pay_detail = [];
+				
+				$file = $request->file('po_file');
+				
+				$extension  = $file->getClientOriginalExtension();
+				$name = time() . '.' . $extension;
+				
+				$store = Storage::disk('do')->put(
+					'/'.$_ENV['DO_FOLDER'].'/'.$name,
+					file_get_contents($request->file('po_file')->getRealPath()),
+					'public'
+					);
+					
+				$expense_detail = $request->all();
+				
+				$expense_detail['image_url'] = $name;
+				
+				if($request->box_or_unit == "0"){
+					$request->stock = $request->stock * $request->package_val;
+				}
+				
+				$inventory = Inventory::create($expense_detail);
+				
+				$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
+				$expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
+				$expense_pay_detail['expense_total'] = $expense_detail['final_price'];
+				$expense_pay_detail['expense_paid'] = 0;
+				$expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
+				$expense_pay_detail['payment_status'] = 0;
+				$expense_pay_detail['expense_id'] = $inventory->id;
+				
+				ExpensePaymentMaster::create($expense_pay_detail);
+			
+				$product = Product::find($request->product_id);
+				$product->increment('stock', $request->stock);
 
-			return redirect()->route('admin.inventories.index');
-		}		
+				return redirect()->route('admin.inventories.index');
+			}
+		}else{
+			return redirect()->route('admin.inventories.index')->withErrors("Invoice number already exist for this supplier");
+		}
     }
 
     public function edit(Inventory $inventory)
     {
         abort_if(Gate::denies('inventory_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
+        
+		$expense_id_arr = $this->get_payments();
+		
+		if(in_array($inventory->id, $expense_id_arr)){
+			return redirect()->route('admin.inventories.index')->withErrors("Can't edit this expense");
+		}
+		
+		$suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 
         $inventory->load('supplier', 'product', 'tax');		
 		
@@ -119,6 +137,8 @@ class InventoryController extends Controller
 			
 				if($request->box_or_unit == "0"){
 					$request->stock = $request->stock * $request->package_val;
+				}else{
+					$inventory->stock = $request->stock * $request->package_val;					
 				}
 			}
 			
@@ -142,8 +162,16 @@ class InventoryController extends Controller
 				);
 			$expense_detail['image_url'] = $name;
 		}
+		
+		if(($inventory->final_price != $request->final_price)){
+			ExpensePaymentMaster::where('expense_id', $inventory->id)
+				   ->update([
+					   'expense_total' => $request->final_price,
+					   'expense_pending' => $request->final_price
+					]);
+		}
 
-		$inventory->update($expense_detail);		
+		$inventory->update($expense_detail);	
 
         return redirect()->route('admin.inventories.index');
     }
@@ -161,7 +189,14 @@ class InventoryController extends Controller
     {
         abort_if(Gate::denies('inventory_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $inventory->delete();
+        $product = Product::find($inventory->product_id);
+		
+		if($inventory->box_or_unit == "0"){
+			$inventory->stock = $inventory->stock * $product->box_size;
+		}
+		
+		$product->decrement('stock', $inventory->stock);
+		$inventory->delete();
 
         return back();
     }
@@ -171,7 +206,12 @@ class InventoryController extends Controller
         $inventories = Inventory::find(request('ids'));
 
         foreach ($inventories as $inventory) {
-            $inventory->delete();
+            $product = Product::find($inventory->product_id);
+			if($inventory->box_or_unit == "0"){
+				$inventory->stock = $inventory->stock * $product->box_size;
+			}
+			$product->decrement('stock', $inventory->stock);
+			$inventory->delete();
         }
 
         return response(null, Response::HTTP_NO_CONTENT);
@@ -228,5 +268,17 @@ class InventoryController extends Controller
 		
 		return view('admin.inventories.payment_history', compact('payment_arr'));
 		
-	}	
+	}
+	
+	private function get_payments(){
+		
+		$expense_ids = ExpensePayment::get('expense_id')->toArray();
+		
+		foreach($expense_ids as $id){
+			$expense_id_arr[] = $id['expense_id'];
+		}
+		$expense_id_arr = array_unique($expense_id_arr);
+		
+		return $expense_id_arr;
+	}
 }

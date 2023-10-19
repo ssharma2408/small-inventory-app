@@ -11,16 +11,17 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="expense_id">{{ trans('cruds.expensePayment.fields.expense') }}</label>
-                <select class="form-control select2 {{ $errors->has('expense') ? 'is-invalid' : '' }}" name="expense_id" id="expense_id" required>
-                    @foreach($expenses as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('expense_id') ? old('expense_id') : $expensePayment->expense->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <label class="required" for="invoice_id">{{ trans('cruds.expensePayment.fields.invoice') }}</label>
+                <select class="form-control select2 {{ $errors->has('invoice') ? 'is-invalid' : '' }}" name="invoice_id" id="invoice_id" required disabled>
+                    <option>Please Select</option>
+					@foreach($invoices as $entry)
+                        <option value="{{ $entry->expense_id }}" {{ (old('invoice_id') ? old('invoice_id') : $expensePayment->expense_id ?? '') == $entry->expense_id ? 'selected' : '' }}>{{$entry->invoice_number}} -> {{ $entry->supplier_name }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('expense'))
-                    <span class="text-danger">{{ $errors->first('expense') }}</span>
+                @if($errors->has('invoice'))
+                    <span class="text-danger">{{ $errors->first('invoice') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.expensePayment.fields.expense_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.expensePayment.fields.invoice_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="payment_id">{{ trans('cruds.expensePayment.fields.payment') }}</label>
@@ -37,7 +38,7 @@
             <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.expensePayment.fields.amount') }}</label>
                 <div id="due_amount"></div>
-				<input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $expensePayment->amount) }}" step="0.01" required>
+				<input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $expensePayment->amount) }}" step="0.01" required disabled>
                 @if($errors->has('amount'))
                     <span class="text-danger">{{ $errors->first('amount') }}</span>
                 @endif
@@ -70,21 +71,17 @@
 @endsection
 
 @section('scripts')
-<script>
-
-	$("#invoice_id").change(function (){
-		
-		if($(this).val() !=""){
-			$.ajax({
-				url: 'get_due_payment/'+$(this).val(),
-				type: 'GET',
-				success: function(data) {
-					if (data.success) {
-						$("#due_amount").html('Pending Amount: <b>'+data.due_amount.expense_pending+'</b>');
-					}
-				}
-			 });
+<script>		
+$(function() {
+	$.ajax({
+		url: '/admin/expense-payments/get_due_payment/'+<?php echo $expensePayment->expense_id; ?>,
+		type: 'GET',
+		success: function(data) {
+			if (data.success) {
+				$("#due_amount").html('Pending Amount: <b>'+data.due_amount.expense_pending+'</b>');
+			}
 		}
-	});	
+	 });
+});
 </script>
 @endsection
