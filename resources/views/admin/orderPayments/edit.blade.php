@@ -9,12 +9,14 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.order-payments.update", [$orderPayment->id]) }}" enctype="multipart/form-data">
             @method('PUT')
-            @csrf
-            <div class="form-group">
+            @csrf            
+
+			<div class="form-group">
                 <label class="required" for="order_id">{{ trans('cruds.orderPayment.fields.order') }}</label>
-                <select class="form-control select2 {{ $errors->has('order') ? 'is-invalid' : '' }}" name="order_id" id="order_id" required>
-                    @foreach($orders as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('order_id') ? old('order_id') : $orderPayment->order->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <select class="form-control select2 {{ $errors->has('order') ? 'is-invalid' : '' }}" name="order_id" id="order_id" required disabled >
+                    <option>Please Select</option>
+					@foreach($orders as $entry)
+                        <option value="{{ $entry->order_number }}" {{ (old('order_id') ? old('order_id') : $orderPayment->order_id ?? '') == $entry->order_number ? 'selected' : '' }}>{{$entry->order_number}} -> {{ $entry->name }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('order'))
@@ -36,7 +38,8 @@
             </div>
             <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.orderPayment.fields.amount') }}</label>
-                <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $orderPayment->amount) }}" step="0.01" required>
+				<div id="due_amount"></div>
+                <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $orderPayment->amount) }}" step="0.01" required disabled>
                 @if($errors->has('amount'))
                     <span class="text-danger">{{ $errors->first('amount') }}</span>
                 @endif
@@ -66,7 +69,20 @@
         </form>
     </div>
 </div>
+@endsection
 
-
-
+@section('scripts')
+<script>		
+$(function() {
+	$.ajax({
+		url: '/admin/order-payments/get_due_payment/'+<?php echo $orderPayment->order_id; ?>,
+		type: 'GET',
+		success: function(data) {
+			if (data.success) {
+				$("#due_amount").html('Pending Amount: <b>'+data.due_amount.order_pending+'</b>');
+			}
+		}
+	 });
+});
+</script>
 @endsection

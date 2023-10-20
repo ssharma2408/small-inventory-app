@@ -8,6 +8,8 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\OrderPaymentMaster;
+use App\Models\OrderPayment;
 use App\Models\User;
 use App\Models\Inventory;
 use App\Models\Product;
@@ -37,8 +39,10 @@ class OrdersController extends Controller
 		}
 
 		$orders = Order::with(['sales_manager', 'customer'])->get();
+		
+		$order_id_arr = $this->get_payments();
 
-        return view('admin.orders.index', compact('orders', 'is_admin'));
+        return view('admin.orders.index', compact('orders', 'is_admin', 'order_id_arr'));
     }
 
     public function create()
@@ -73,7 +77,8 @@ class OrdersController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        $params = 	$request->all();
+        $order_pay_detail = [];
+		$params = 	$request->all();		
 
 		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
 		$params['delivery_agent_id'] = null;
@@ -96,6 +101,15 @@ class OrdersController extends Controller
 		if(!empty($data)){
 			OrderItem::insert($data);
 		}
+		
+		$order_pay_detail['customer_id'] = $params['customer_id'];		
+		$order_pay_detail['order_total'] = $params['order_total'];
+		$order_pay_detail['order_paid'] = 0;
+		$order_pay_detail['order_pending'] = $params['order_total'];
+		$order_pay_detail['payment_status'] = 0;
+		$order_pay_detail['order_number'] = $order->id;
+		
+		OrderPaymentMaster::create($order_pay_detail);
 
         return redirect()->route('admin.orders.index');
     }
@@ -269,6 +283,51 @@ class OrdersController extends Controller
 		}
 
 		return $branch;
+	}
+	
+	private function get_payments(){
+		
+		$order_id_arr = [];
+		
+		$order_ids = OrderPayment::get('order_id')->toArray();
+		
+		foreach($order_ids as $id){
+			$order_id_arr[] = $id['order_id'];
+		}
+		$order_id_arr = array_unique($order_id_arr);
+		
+		return $order_id_arr;
+	}
+	
+	public function payment($order_id=""){		
+		
+			$status_arr = array("Unpaid", "Paid", "Partial Paid");
+			
+			$payment_arr = [];			
+			$payment_query = DB::table('order_payments')
+				->select('order_payments.amount', 'order_payments.description', 'order_payments.date', 'order_payment_master.order_number', 'order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'order_payment_master.payment_status', 'customers.name as cust_name', 'customers.phone_number', 'customers.email', 'payment_methods.name')
+				->leftJoin('order_payment_master','order_payment_master.order_number','=','order_payments.order_id')
+				->join('customers','customers.id','=','order_payment_master.customer_id')
+				->join('payment_methods','payment_methods.id','=','order_payments.payment_id');
+				
+			if($order_id != ""){
+				$payment_query->where('order_payment_master.order_number','=',$order_id);
+			}
+			
+			$payment_details = $payment_query->get()->toArray();
+				
+			foreach($payment_details as $detail){
+				
+				$payment_arr[$detail->order_number] = array('order_number'=>$detail->order_number, 'order_total'=>$detail->order_total, 'order_paid'=>$detail->order_paid, 'order_pending'=>$detail->order_pending, 'payment_status'=>$status_arr[$detail->payment_status], 'cust_name'=>$detail->cust_name, 'phone_number'=>$detail->phone_number, 'email'=>$detail->email, 'payment_detail'=>[]);				
+			}
+
+			foreach($payment_details as $detail){
+				
+				$payment_arr[$detail->order_number]['payment_detail'][] = array('amount'=>$detail->amount, 'description'=>$detail->description, 'date'=>$detail->date, 'name'=>$detail->name);				
+			}	
+		
+		return view('admin.orders.payment_history', compact('payment_arr'));
+		
 	}
 
 }

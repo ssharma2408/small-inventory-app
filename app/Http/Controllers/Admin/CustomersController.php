@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,11 +16,27 @@ class CustomersController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $payment_arr = [];
+		abort_if(Gate::denies('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $customers = Customer::all();
+		
+		$payments = DB::table('customers')
+				->select('order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'customers.id')
+				->join('order_payment_master','order_payment_master.customer_id','=','customers.id')
+				->get()->toArray();
 
-        return view('admin.customers.index', compact('customers'));
+		
+		foreach($payments as $pay){
+			$pay = (array) $pay;			
+			if(!array_key_exists($pay['id'], $payment_arr)) {				
+				$payment_arr[$pay['id']] = 0;
+			}
+			
+			$payment_arr[$pay['id']] += $pay['order_total'];
+		}
+
+        return view('admin.customers.index', compact('customers', 'payment_arr'));
     }
 
     public function create()
@@ -76,4 +93,17 @@ class CustomersController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function revenue($customer_id){
+		if($customer_id ==""){
+			return;
+		}
+		
+		$payments = DB::table('customers')
+				->select('order_payment_master.order_number', 'order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'customers.name', 'customers.phone_number', 'customers.email')
+				->join('order_payment_master','order_payment_master.customer_id','=','customers.id')
+				->where('order_payment_master.customer_id','=',$customer_id)->get()->toArray();
+		
+		return view('admin.customers.payment_history', compact('payments'));
+	}
 }

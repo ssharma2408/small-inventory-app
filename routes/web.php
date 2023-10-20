@@ -32,6 +32,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Customers
     Route::delete('customers/destroy', 'CustomersController@massDestroy')->name('customers.massDestroy');
+	Route::get('customers/revenue/{id}', 'CustomersController@revenue')->name('customers.revenue');
     Route::resource('customers', 'CustomersController');
 
     // Inventory
@@ -39,13 +40,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('inventories/get_products/{id}', 'InventoryController@get_products')->name('inventories.get_products');	
     Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
     Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
-	Route::get('inventories/payment/{id?}', 'InventoryController@payment')->name('inventories.payment');	
+	Route::get('inventories/payment/{id?}', 'InventoryController@payment')->name('inventories.payment');
     Route::resource('inventories', 'InventoryController');
 
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
 	Route::get('orders/get_product_detail/{id}', 'OrdersController@get_product_detail')->name('orders.get_product_detail');
 	Route::post('orders/complete_order', 'OrdersController@complete_order')->name('orders.complete');
+	Route::get('orders/payment/{id?}', 'OrdersController@payment')->name('orders.payment');	
     Route::resource('orders', 'OrdersController');
 
     // Product
@@ -72,6 +74,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Order Payment
     Route::delete('order-payments/destroy', 'OrderPaymentController@massDestroy')->name('order-payments.massDestroy');
+	Route::get('order-payments/get_due_payment/{id}', 'OrderPaymentController@get_due_payment')->name('order-payments.get_due_payment');
     Route::resource('order-payments', 'OrderPaymentController');
 
     // Payment Method

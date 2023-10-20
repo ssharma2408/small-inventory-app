@@ -55,7 +55,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.orders.store") }}" enctype="multipart/form-data">
+        <form method="POST" id="orderfrm" action="{{ route("admin.orders.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label class="required" for="sales_manager_id">{{ trans('cruds.order.fields.sales_manager') }}</label>
@@ -134,10 +134,10 @@
 							</select>			
 						</div>
 						<div class="col-md-1">
-							<input class="form-control" type="number" name="item_stock[]" disabled />
+							<input class="form-control in_stock" type="number" name="item_stock[]" disabled />
 						</div>
 						<div class="col-md-1">
-							<input class="form-control" type="text" name="item_price[]" disabled />
+							<input class="form-control min" type="text" name="item_price[]" disabled />
 						</div>
 						<div class="col-md-1">
 							<input class="form-control max" type="text" name="item_max_price[]" disabled />
@@ -149,9 +149,11 @@
 						</div>
 						<div class="col-md-1">
 							<input class="form-control quantity" type="number" name="item_quantity[]" min="1" required />
+							<span class="text-danger qty_err"></span>
 						</div>
 						<div class="col-md-1">
 							<input class="form-control sale_price" type="text" name="item_sale_priec[]" required />
+							<span class="text-danger sale_price_err"></span>
 						</div>
 						<div class="col-md-1">
 							<?php
@@ -235,7 +237,12 @@
 @endsection
 
 @section('scripts')
-	<script>	
+	<script>
+		
+		$(function() {
+			$(".text-danger").html("");
+		});
+		
 		$(".add_row").click(function(){
 			$(this).parent().parent().parent().append(row_html());
 		});
@@ -245,7 +252,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
@@ -274,9 +281,32 @@
 					
 		});
 		
-		$(document).on("keyup", ".quantity, .sale_price, #extra_discount", function () {
+		$(document).on("keyup", ".quantity, .sale_price", function () {
 			var qty = $(this).parent().parent().find(".quantity").val();
 			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			var min_sale_price = $(this).parent().parent().find(".min").val();
+			var in_stock = $(this).parent().parent().find(".in_stock").val();
+			var quantity = 0;
+
+			if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+				$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+			}else{				
+				$(this).parent().parent().find(".sale_price_err").html("");
+			}
+			
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				quantity = qty * $(this).parent().parent().find("#package_val").val();
+			}else{
+				quantity = qty;
+			}
+			
+			if((parseFloat(quantity) > parseFloat(in_stock))){
+				$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+			}else{				
+				$(this).parent().parent().find(".qty_err").html("");
+			}
+			
 			/* if($(this).parent().parent().find(".cb").is(':checked')){
 				qty = qty * $(this).parent().parent().find("#package_val").val();
 			} */			
@@ -296,10 +326,38 @@
 			calculate_total();
 			
 		});
+		$(document).on("keyup", "#extra_discount", function () {
+			calculate_total();
+		});
+		
 		$(document).on("change", ".cb", function () {
 			
 			var qty = $(this).parent().parent().find(".quantity").val();
 			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			var min_sale_price = $(this).parent().parent().find(".min").val();
+			
+			var in_stock = $(this).parent().parent().find(".in_stock").val();
+			var quantity = 0;
+
+			if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+				$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+			}else{				
+				$(this).parent().parent().find(".sale_price_err").html("");
+			}
+			
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				quantity = qty * $(this).parent().parent().find("#package_val").val();
+			}else{
+				quantity = qty;
+			}
+			
+			if((parseFloat(quantity) > parseFloat(in_stock))){
+				$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+			}else{				
+				$(this).parent().parent().find(".qty_err").html("");
+			}
+			
 			/* if($(this).parent().parent().find(".cb").is(':checked')){
 				qty = qty * $(this).parent().parent().find("#package_val").val();
 			} */			
@@ -362,6 +420,30 @@
 		tax_id = $(this).val();
 		var qty = $(this).parent().parent().find(".quantity").val();
 		var sale_price = $(this).parent().parent().find(".sale_price").val();
+		
+		var min_sale_price = $(this).parent().parent().find(".min").val();
+		var in_stock = $(this).parent().parent().find(".in_stock").val();
+		var quantity = 0;
+
+		if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+			$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+		}else{				
+			$(this).parent().parent().find(".sale_price_err").html("");
+		}
+		
+		
+		if($(this).parent().parent().find(".cb").is(':checked')){
+			quantity = qty * $(this).parent().parent().find("#package_val").val();
+		}else{
+			quantity = qty;
+		}
+		
+		if((parseFloat(quantity) > parseFloat(in_stock))){
+			$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+		}else{				
+			$(this).parent().parent().find(".qty_err").html("");
+		}
+		
 		//if(tax_id != "" && qty != "" && sale_price != ""){
 		if(tax_id != ""){
 
@@ -385,6 +467,20 @@
 					}
 				 });
 		}
+	});
+
+	$( "#orderfrm" ).on( "submit", function( event ) {
+	 
+	  var is_arror = false;
+	  $('span.text-danger').each(function() {
+		  if(!($(this).is(':empty'))){
+			 is_arror = true;
+			  return false;
+		  }
+		});
+	  if(is_arror){		  
+		   event.preventDefault();  
+	  }
 	});
 		
 	</script>

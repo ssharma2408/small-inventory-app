@@ -272,7 +272,9 @@ class InventoryController extends Controller
 	
 	private function get_payments(){
 		
-		$expense_ids = ExpensePayment::get('expense_id')->toArray();
+		$expense_id_arr = [];
+		
+		$expense_ids = ExpensePayment::get('expense_id')->toArray();		
 		
 		foreach($expense_ids as $id){
 			$expense_id_arr[] = $id['expense_id'];

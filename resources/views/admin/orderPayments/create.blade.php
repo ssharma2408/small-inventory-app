@@ -9,17 +9,18 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.order-payments.store") }}" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
+			<div class="form-group">
                 <label class="required" for="order_id">{{ trans('cruds.orderPayment.fields.order') }}</label>
                 <select class="form-control select2 {{ $errors->has('order') ? 'is-invalid' : '' }}" name="order_id" id="order_id" required>
-                    @foreach($orders as $id => $entry)
-                        <option value="{{ $id }}" {{ old('order_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    <option>Please Select</option>
+					@foreach($orders as $entry)
+                        <option value="{{ $entry->order_number }}" {{ old('order_id') == $entry->order_number ? 'selected' : '' }}>{{$entry->order_number}} -> {{ $entry->name }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('order'))
                     <span class="text-danger">{{ $errors->first('order') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.orderPayment.fields.order_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.expensePayment.fields.invoice_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="payment_id">{{ trans('cruds.orderPayment.fields.payment') }}</label>
@@ -35,6 +36,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.orderPayment.fields.amount') }}</label>
+				<div id="due_amount"></div>
                 <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', '') }}" step="0.01" required>
                 @if($errors->has('amount'))
                     <span class="text-danger">{{ $errors->first('amount') }}</span>
@@ -65,7 +67,24 @@
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
+<script>
 
-
+	$("#order_id").change(function (){
+		
+		if($(this).val() !=""){
+			$.ajax({
+				url: 'get_due_payment/'+$(this).val(),
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {
+						$("#due_amount").html('Pending Amount: <b>'+data.due_amount.order_pending+'</b>');
+					}
+				}
+			 });
+		}
+	});	
+</script>
 @endsection

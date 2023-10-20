@@ -8,8 +8,10 @@ use App\Http\Requests\StoreOrderPaymentRequest;
 use App\Http\Requests\UpdateOrderPaymentRequest;
 use App\Models\Order;
 use App\Models\OrderPayment;
+use App\Models\OrderPaymentMaster;
 use App\Models\PaymentMethod;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,9 +28,13 @@ class OrderPaymentController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('order_payment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('order_payment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');        
 
-        $orders = Order::pluck('order_total', 'id')->prepend(trans('global.pleaseSelect'), '');
+		$orders = DB::table('order_payment_master')
+					->select('order_payment_master.order_number', 'customers.name')
+					->join('customers', 'order_payment_master.customer_id', '=', 'customers.id')
+					->whereNotIn('payment_status', [1])
+					->get();
 
         $payments = PaymentMethod::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -37,7 +43,25 @@ class OrderPaymentController extends Controller
 
     public function store(StoreOrderPaymentRequest $request)
     {
-        $orderPayment = OrderPayment::create($request->all());
+		
+		$order_pay_details = OrderPaymentMaster::where('order_number', $request->order_id)->first()->toArray();
+		
+		if($order_pay_details['order_pending'] >= $request->amount ){
+			$row = OrderPaymentMaster::find($order_pay_details['id']);
+			$row->increment('order_paid', $request->amount);
+			$row->decrement('order_pending', $request->amount);
+			
+			if((($order_pay_details['order_paid'] + $request->amount) == $order_pay_details['order_total']) && (($order_pay_details['order_pending'] - $request->amount == 0))){
+				$row->payment_status = 1;				
+			}else{
+				$row->payment_status = 2;
+			}
+			$row->save();
+		}
+		
+		$order_detail = $request->all();		
+
+		$orderPayment = OrderPayment::create($order_detail);
 
         return redirect()->route('admin.order-payments.index');
     }
@@ -46,7 +70,11 @@ class OrderPaymentController extends Controller
     {
         abort_if(Gate::denies('order_payment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $orders = Order::pluck('order_total', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $orders = DB::table('order_payment_master')
+					->select('order_payment_master.order_number', 'customers.name')
+					->join('customers', 'order_payment_master.customer_id', '=', 'customers.id')
+					->whereNotIn('payment_status', [1])
+					->get();
 
         $payments = PaymentMethod::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -90,4 +118,13 @@ class OrderPaymentController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function get_due_payment($order_id){
+		if($order_id == ""){
+			return;
+		}
+		$due_amount = OrderPaymentMaster::select('order_pending')->where('order_number', $order_id)->first();
+		
+		return response()->json(array('success'=>1, 'due_amount'=>$due_amount), 200);
+	}
 }

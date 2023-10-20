@@ -46,6 +46,9 @@
                         <th>
                             {{ trans('cruds.customer.fields.email') }}
                         </th>
+						<th>
+                            Total Revenue
+                        </th>
                         <th>
                             &nbsp;
                         </th>
@@ -81,6 +84,9 @@
                             <td>
                                 {{ $customer->email ?? '' }}
                             </td>
+							<td>
+								{{ $payment_arr[$customer->id] ?? '' }}
+                            </td>
                             <td>
                                 @can('customer_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.customers.show', $customer->id) }}">
@@ -100,6 +106,12 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
+                                @endcan
+								
+								@can('customer_show')
+                                    <a class="btn btn-xs btn-primary" href="/admin/customers/revenue/{{ $customer->id }}">
+                                        Revenue
+                                    </a>
                                 @endcan
 
                             </td>

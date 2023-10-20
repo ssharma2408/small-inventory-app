@@ -16,18 +16,10 @@ class UpdateOrderPaymentRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'order_id' => [
-                'required',
-                'integer',
-            ],
+        return [            
             'payment_id' => [
                 'required',
                 'integer',
-            ],
-            'amount' => [
-                'numeric',
-                'required',
             ],
             'date' => [
                 'required',
