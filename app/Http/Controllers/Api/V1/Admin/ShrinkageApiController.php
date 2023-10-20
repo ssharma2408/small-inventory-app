@@ -18,7 +18,7 @@ class ShrinkageApiController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('shrinkage_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('shrinkage_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ShrinkageResource(Shrinkage::with(['product', 'added_by'])->get());
     }
@@ -34,7 +34,7 @@ class ShrinkageApiController extends Controller
 
     public function show(Shrinkage $shrinkage)
     {
-        abort_if(Gate::denies('shrinkage_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       // abort_if(Gate::denies('shrinkage_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ShrinkageResource($shrinkage->load(['product', 'added_by']));
     }
@@ -50,8 +50,7 @@ class ShrinkageApiController extends Controller
 
     public function destroy(Shrinkage $shrinkage)
     {
-        abort_if(Gate::denies('shrinkage_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        //abort_if(Gate::denies('shrinkage_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $shrinkage->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);

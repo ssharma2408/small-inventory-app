@@ -15,7 +15,7 @@ class TaxApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('tax_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('tax_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new TaxResource(Tax::all());
     }
@@ -31,7 +31,7 @@ class TaxApiController extends Controller
 
     public function show(Tax $tax)
     {
-        abort_if(Gate::denies('tax_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('tax_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new TaxResource($tax);
     }
@@ -47,7 +47,7 @@ class TaxApiController extends Controller
 
     public function destroy(Tax $tax)
     {
-        abort_if(Gate::denies('tax_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('tax_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $tax->delete();
 

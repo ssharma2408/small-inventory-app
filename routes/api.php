@@ -1,5 +1,7 @@
 <?php
+use App\Http\Controllers\Api\V1\Admin\AuthController;
 
+Route::post('/v1/login', [AuthController::class, 'login']);
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:sanctum']], function () {
     // Supplier
     Route::apiResource('suppliers', 'SupplierApiController');
@@ -10,6 +12,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Inventory
     Route::post('inventories/media', 'InventoryApiController@storeMedia')->name('inventories.storeMedia');
     Route::apiResource('inventories', 'InventoryApiController');
+
+    // Payment Methods
+    Route::apiResource('payment-methods', 'PaymentMethodApiController');
 
     // Orders
     Route::apiResource('orders', 'OrdersApiController');
