@@ -11,8 +11,7 @@ class UpdateShrinkageRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;
-        //return Gate::allows('shrinkage_edit');
+        return Gate::allows('shrinkage_edit');
     }
 
     public function rules()

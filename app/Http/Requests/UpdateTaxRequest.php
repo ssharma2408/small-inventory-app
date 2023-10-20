@@ -11,8 +11,7 @@ class UpdateTaxRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('tax_edit');
-        return true;
+        return Gate::allows('tax_edit');
     }
 
     public function rules()

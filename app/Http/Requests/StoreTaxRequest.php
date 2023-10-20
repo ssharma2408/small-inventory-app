@@ -11,8 +11,7 @@ class StoreTaxRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('tax_create');
-        return true;
+        return Gate::allows('tax_create');
     }
 
     public function rules()

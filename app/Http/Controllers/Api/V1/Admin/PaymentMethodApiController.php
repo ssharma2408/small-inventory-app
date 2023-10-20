@@ -15,7 +15,7 @@ class PaymentMethodApiController extends Controller
 {
     public function index()
     {
-        //abort_if(Gate::denies('payment_method_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('payment_method_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return new TaxResource(PaymentMethod::all());
     }
 
@@ -39,13 +39,13 @@ class PaymentMethodApiController extends Controller
 
     public function show(PaymentMethod $paymentMethod)
     {
-        //abort_if(Gate::denies('payment_method_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('payment_method_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return new TaxResource($paymentMethod);
     }
 
     public function destroy(PaymentMethod $paymentMethod)
     {
-        //abort_if(Gate::denies('payment_method_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('payment_method_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $paymentMethod->delete();
 

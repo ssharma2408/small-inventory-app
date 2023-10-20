@@ -11,8 +11,7 @@ class StoreShrinkageRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('shrinkage_create');
-        return true;
+        return Gate::allows('shrinkage_create');
     }
 
     public function rules()

@@ -11,8 +11,7 @@ class StorePaymentMethodRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('payment_method_create');
-        return true;
+        return Gate::allows('payment_method_create');
     }
 
     public function rules()

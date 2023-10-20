@@ -11,8 +11,7 @@ class UpdatePaymentMethodRequest extends FormRequest
 {
     public function authorize()
     {
-        //return Gate::allows('payment_method_edit');
-        return true;
+        return Gate::allows('payment_method_edit');
     }
 
     public function rules()
