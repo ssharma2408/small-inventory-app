@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.order-payments.store") }}" enctype="multipart/form-data">
+        <form method="POST" id="ordPay" action="{{ route("admin.order-payments.store") }}" enctype="multipart/form-data">
             @csrf
 			<div class="form-group">
                 <label class="required" for="order_id">{{ trans('cruds.orderPayment.fields.order') }}</label>
@@ -38,6 +38,7 @@
                 <label class="required" for="amount">{{ trans('cruds.orderPayment.fields.amount') }}</label>
 				<div id="due_amount"></div>
                 <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', '') }}" step="0.01" required>
+				<span class="text-danger amount_err"></span>
                 @if($errors->has('amount'))
                     <span class="text-danger">{{ $errors->first('amount') }}</span>
                 @endif
@@ -72,6 +73,16 @@
 @section('scripts')
 <script>
 
+	$(document).on("keyup", "#amount", function () {
+		var pending_amount = parseFloat($("#pending_amount").html());
+		var entered_amount = parseFloat($(this).val());		
+		if(pending_amount < entered_amount){
+			$(".amount_err").html("Entered Amount can't be greater than Pending Amount");
+		}else{				
+			$(".amount_err").html("");
+		}
+	});
+
 	$("#order_id").change(function (){
 		
 		if($(this).val() !=""){
@@ -80,11 +91,25 @@
 				type: 'GET',
 				success: function(data) {
 					if (data.success) {
-						$("#due_amount").html('Pending Amount: <b>'+data.due_amount.order_pending+'</b>');
+						$("#due_amount").html('Pending Amount: <b id="pending_amount">'+data.due_amount.order_pending+'</b>');
 					}
 				}
 			 });
 		}
+	});
+
+$( "#ordPay" ).on( "submit", function( event ) {
+	 
+	  var is_arror = false;
+	  $('span.text-danger').each(function() {
+		  if(!($(this).is(':empty'))){
+			 is_arror = true;
+			  return false;
+		  }
+		});
+	  if(is_arror){		  
+		   event.preventDefault();  
+	  }
 	});	
 </script>
 @endsection
