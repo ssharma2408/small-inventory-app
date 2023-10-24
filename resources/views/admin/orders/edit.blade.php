@@ -35,6 +35,17 @@
 			}
 		$ddl_html .= '</select>';
 	}
+	
+	$tax_ddl_html = "No Tax Found";
+	
+	if(!empty($taxes)){
+		$tax_ddl_html = '<select class="form-control select2 tax_id" name="item_tax_id[]" required>';
+		$tax_ddl_html .= '<option value="" >Please Select</option>';
+			foreach($taxes as $tax){
+				$tax_ddl_html .= '<option value="'.$tax['id'].'">'.$tax['title'].'</option>';
+			}
+		$tax_ddl_html .= '</select>';
+	}
 ?>
 
 <div class="card">
@@ -43,12 +54,12 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.orders.update", [$order->id]) }}" enctype="multipart/form-data">
+        <form method="POST" id="orderfrm" action="{{ route("admin.orders.update", [$order->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-group">
                 <label class="required" for="sales_manager_id">{{ trans('cruds.order.fields.sales_manager') }}</label>
-                <select class="form-control select2 {{ $errors->has('sales_manager') ? 'is-invalid' : '' }}" name="sales_manager_id" id="sales_manager_id" required>
+                <select class="form-control select2 {{ $errors->has('sales_manager') ? 'is-invalid' : '' }}" name="sales_manager_id" id="sales_manager_id" required disabled>
                     @foreach($sales_managers as $id => $entry)
                         <option value="{{ $id }}" {{ (old('sales_manager_id') ? old('sales_manager_id') : $order->sales_manager->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
@@ -60,7 +71,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="customer_id">{{ trans('cruds.order.fields.customer') }}</label>
-                <select class="form-control select2 {{ $errors->has('customer') ? 'is-invalid' : '' }}" name="customer_id" id="customer_id" required>
+                <select class="form-control select2 {{ $errors->has('customer') ? 'is-invalid' : '' }}" name="customer_id" id="customer_id" required disabled>
                     @foreach($customers as $id => $entry)
                         <option value="{{ $id }}" {{ (old('customer_id') ? old('customer_id') : $order->customer->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
@@ -74,20 +85,32 @@
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<b>Category Name</b>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-1">
 						<b>Product Name</b>
 					</div>
 					<div class="col-md-1">
-						<b>Stock</b>
+						<b>In Stock</b>
 					</div>
 					<div class="col-md-1">
-						<b>Price</b>
+						<b>Min Selling Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Max Selling Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Box or unit</b>
 					</div>
 					<div class="col-md-1">
 						<b>Quantity</b>
+					</div>
+					<div class="col-md-1">
+						<b>Sales Price</b>
+					</div>
+					<div class="col-md-1">
+						<b>Tax</b>
 					</div>
 					<div class="col-md-1">
 						<b>Amount</b>
@@ -103,20 +126,56 @@
 						foreach($order_items as $order_item){
 							echo '<div class="row mb-3">
 									
-									<div class="col-md-4"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
+									<div class="col-md-2"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
 									
-									<div class="col-md-3"><select class="form-control select2" name="item_name[]" required><option value="'.$order_item->product_id.'">'.$order_item->name.'</option></select></div>
+									<div class="col-md-1"><select class="form-control select2" name="item_name[]" required><option value="'.$order_item->product_id.'">'.$order_item->name.'</option></select></div>
 									<div class="col-md-1">
-										<input class="form-control" type="number" name="item_stock[]" disabled value="'.$order_item->stock.'" />
+										<input class="form-control in_stock" type="number" name="item_stock[]" disabled value="'.$order_item->stock.'" />
 									</div>
 									<div class="col-md-1">
-										<input class="form-control" type="text" name="item_price[]" disabled value="'.$order_item->selling_price.'" />
+										<input class="form-control min" type="text" name="item_price[]" disabled value="'.$order_item->selling_price.'" />
+									</div>
+									<div class="col-md-1">
+										<input class="form-control max" type="text" name="item_max_price[]" disabled value="'.$order_item->maximum_selling_price.'" />
+									</div>
+									<div class="col-md-1">';
+									$checked = "";
+									if($order_item->is_box){
+										$checked = "checked";
+									}
+										echo '<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" '.$checked.' />
+										<label class="form-check-label ml-3">Is Box</label>
+										<input type="hidden" id="package_val" value="'.$order_item->box_size.'" name="package_val" />
 									</div>
 									<div class="col-md-1">
 										<input class="form-control quantity" type="number" name="item_quantity[]" min="1" value="'.$order_item->quantity.'"/>
+										<span class="text-danger qty_err"></span>
 									</div>
 									<div class="col-md-1">
-										<input class="form-control amount" type="text" name="item_amount[]" disabled value="'.$order_item->selling_price * $order_item->quantity.'" />
+										<input class="form-control sale_price" type="text" name="item_sale_priec[]" value="'.$order_item->sale_price.'" required />
+										<span class="text-danger sale_price_err"></span>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control select2 tax_id" name="item_tax_id[]" required>
+										<option value="" >Please Select</option>';
+											$selected = "";
+											foreach($taxes as $tax){
+												if($order_item->tax_id == $tax->id){
+													$selected = "selected";
+												}
+												echo '<option value="'.$tax['id'].'" '.$selected.'>'.$tax['title'].'</option>';
+											}
+										echo '</select>
+										<input type="hidden" class="tax_val" value="'.$order_item->tax.'" />
+									</div>
+									<div class="col-md-1">';										
+										if($order_item->is_box){
+											$order_item->quantity = $order_item->quantity * $order_item->box_size;
+										}
+										$item_value = $order_item->sale_price * $order_item->quantity;
+										
+										$item_with_tax =  $item_value + (($item_value * $order_item->tax) / 100);
+										echo '<input class="form-control amount" type="text" name="item_amount[]" disabled value="'.$item_with_tax.'" />
 									</div>
 									<div class="col-md-1">';
 										if(!$cnt){
@@ -226,6 +285,7 @@
 					echo '$(".delivery_agent").hide();$(".delivery_agent").val("");';
 				}
 			?>
+			$(".text-danger").html("");
 		});
 
 		$(".add_row").click(function(){
@@ -237,31 +297,132 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-4"><?php echo $ddl_html;?></div><div class="col-md-3"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';	
+			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
-			var stock = $(this).parent().next().find('input');
-			var qty = $(this).parent().next().next().find('input');
-			$.ajax({
-                    url: '/admin/orders/get_product_detail/'+$(this).val(),
-                    type: 'GET',
-					success: function(data) {
-						if (data.success) {
-							stock.val(data.product.stock);
-							qty.val(data.product.selling_price);							
+			if($(this).val() != ""){
+				var stock = $(this).parent().next().find('input');				
+				var min_selling_price = stock.parent().next().find('input');				
+				var max_selling_price = min_selling_price.parent().next().find('input');
+				var package_val = max_selling_price.parent().next().find('input[type=hidden]');
+				var taxt_ddl = package_val.parent().next().next().next().find('select');
+				var tax_field = package_val.parent().next().next().next().find('input[type=hidden]');
+
+				$.ajax({
+						url: '/admin/orders/get_product_detail/'+$(this).val(),
+						type: 'GET',
+						success: function(data) {
+							if (data.success) {
+								stock.val(data.product.stock);
+								min_selling_price.val(data.product.selling_price);
+								max_selling_price.val(data.product.maximum_selling_price);
+								package_val.val(data.product.box_size);
+								taxt_ddl.val(data.product.tax_id).change();
+							}
 						}
-					}
-				 });
+					 });
+			}
 					
 		});
 		
-		$(document).on("keyup", ".quantity, #extra_discount", function () {
-			var price = $(this).parent().prev().find('input').val();
-			$(this).parent().next().find('input').val($(this).val() * price);
+		$(document).on("keyup", ".quantity, .sale_price", function () {
+			
+			var qty = $(this).parent().parent().find(".quantity").val();
+			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			var min_sale_price = $(this).parent().parent().find(".min").val();
+			var in_stock = $(this).parent().parent().find(".in_stock").val();
+			var quantity = 0;
+
+			if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+				$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+			}else{				
+				$(this).parent().parent().find(".sale_price_err").html("");
+			}
+			
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				quantity = qty * $(this).parent().parent().find("#package_val").val();
+			}else{
+				quantity = qty;
+			}
+			
+			if((parseFloat(quantity) > parseFloat(in_stock))){
+				$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+			}else{				
+				$(this).parent().parent().find(".qty_err").html("");
+			}
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}		
+			var tax = $(this).parent().parent().find(".tax_val").val();
+			
+			if(qty !="" && sale_price !=""){
+				$(this).parent().parent().find(".amount").val(qty * sale_price);
+			}
+
+			if(tax !=""){
+				var amount = qty * sale_price;
+				
+				amount = amount + ((amount * tax) / 100);
+				
+				$(this).parent().parent().find(".amount").val(amount);
+			}
 			calculate_total();
 			
 		});
+		$(document).on("keyup", "#extra_discount", function () {
+			calculate_total();
+		});
+		
+		$(document).on("change", ".cb", function () {
+			
+			var qty = $(this).parent().parent().find(".quantity").val();
+			var sale_price = $(this).parent().parent().find(".sale_price").val();
+			var min_sale_price = $(this).parent().parent().find(".min").val();
+			
+			var in_stock = $(this).parent().parent().find(".in_stock").val();
+			var quantity = 0;
+
+			if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+				$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+			}else{				
+				$(this).parent().parent().find(".sale_price_err").html("");
+			}
+			
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				quantity = qty * $(this).parent().parent().find("#package_val").val();
+			}else{
+				quantity = qty;
+			}
+			
+			if((parseFloat(quantity) > parseFloat(in_stock))){
+				$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+			}else{				
+				$(this).parent().parent().find(".qty_err").html("");
+			}
+			
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}			
+			
+			var tax = $(this).parent().parent().find(".tax_val").val();			
+						
+			if(qty !="" && sale_price !=""){
+				$(this).parent().parent().find(".amount").val(qty * sale_price);
+			}
+			
+			if(tax !=""){
+				var amount = qty * sale_price;
+				
+				amount = amount + ((amount * tax) / 100);
+				
+				$(this).parent().parent().find(".amount").val(amount);
+			}
+			calculate_total();
+		});		
 		
 		function calculate_total(){
 			var order_total = 0;
@@ -270,11 +431,9 @@
 			
 				order_total += parseFloat($(this).val());
 			});
-			
 			if($("#extra_discount").val() > 0){
 				order_total = order_total - $("#extra_discount").val();
 			}
-			
 			$("#order_total").val(order_total);
 		}
 		
@@ -310,6 +469,75 @@
 					}
 				}
 			 });
+	});
+	
+	$(document).on("change", ".tax_id", function () {
+
+		var tax_id;
+		tax_id = $(this).val();
+		var qty = $(this).parent().parent().find(".quantity").val();
+		var sale_price = $(this).parent().parent().find(".sale_price").val();
+		
+		var min_sale_price = $(this).parent().parent().find(".min").val();
+		var in_stock = $(this).parent().parent().find(".in_stock").val();
+		var quantity = 0;
+
+		if((parseFloat(sale_price) < parseFloat(min_sale_price))){
+			$(this).parent().parent().find(".sale_price_err").html("Sales Price can't be less than Min Selling Price");
+		}else{				
+			$(this).parent().parent().find(".sale_price_err").html("");
+		}
+		
+		
+		if($(this).parent().parent().find(".cb").is(':checked')){
+			quantity = qty * $(this).parent().parent().find("#package_val").val();
+		}else{
+			quantity = qty;
+		}
+		
+		if((parseFloat(quantity) > parseFloat(in_stock))){
+			$(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+		}else{				
+			$(this).parent().parent().find(".qty_err").html("");
+		}
+		
+		//if(tax_id != "" && qty != "" && sale_price != ""){
+		if(tax_id != ""){
+
+			if($(this).parent().parent().find(".cb").is(':checked')){
+				qty = qty * $(this).parent().parent().find("#package_val").val();
+			}
+			
+			var tax = $(this).parent().find(".tax_val");
+			var amount = $(this).parent().parent().find(".amount");
+
+			$.ajax({
+					url: '/admin/taxes/get_tax/'+tax_id,
+					type: 'GET',
+					success: function(data) {
+						if (data.success) {					
+							tax.val(data.tax.tax);
+							var item_total = qty * sale_price;
+							amount.val(item_total + ((item_total * data.tax.tax) / 100))
+							calculate_total();
+						}
+					}
+				 });
+		}
+	});
+
+	$( "#orderfrm" ).on( "submit", function( event ) {
+	 
+	  var is_arror = false;
+	  $('span.text-danger').each(function() {
+		  if(!($(this).is(':empty'))){
+			 is_arror = true;
+			  return false;
+		  }
+		});
+	  if(is_arror){		  
+		   event.preventDefault();  
+	  }
 	});
 	</script>
 @endsection

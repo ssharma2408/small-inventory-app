@@ -17,15 +17,7 @@ class UpdateOrderRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'sales_manager_id' => [
-                'required',
-                'integer',
-            ],
-            'customer_id' => [
-                'required',
-                'integer',
-            ],
+        return [            
 			'item_name' => [
                 'required',
             ],
