@@ -133,17 +133,32 @@ class InventoryController extends Controller
 		
 		if(($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)){
 			
-			if($inventory->box_or_unit != $request->box_or_unit){
+			$inc_stock = 0;
+			$dec_stock = 0;
 			
+			if($inventory->box_or_unit != $request->box_or_unit){				
+				
 				if($request->box_or_unit == "0"){
-					$request->stock = $request->stock * $request->package_val;
+					$inc_stock = $request->stock * $request->package_val;
+					$dec_stock = $request->stock;
 				}else{
-					$inventory->stock = $request->stock * $request->package_val;					
+					$dec_stock = $request->stock * $request->package_val;
+					$inc_stock = $request->stock;
 				}
 			}
-			
-			$product->decrement('stock', $inventory->stock);
-			$product->increment('stock', $request->stock);			
+
+ 			if($inventory->stock != $request->stock){
+				if($request->box_or_unit == "0"){
+					$dec_stock = $inventory->stock * $request->package_val;
+					$inc_stock = $request->stock * $request->package_val;					
+				}else{
+					$dec_stock = $inventory->stock;
+					$inc_stock = $request->stock;
+				}
+			} 
+
+			$product->decrement('stock', $dec_stock);
+			$product->increment('stock', $inc_stock);			
 		}
 		
 		 $expense_detail = $request->all();

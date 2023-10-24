@@ -259,6 +259,47 @@
                         </li>
                     @endcan
                 @endif
+				
+				@can('report_access')
+					<li class="nav-item has-treeview {{ request()->is("admin/reports*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/reports*") ? "active" : "" }}" href="#">
+                            <i class="fa-fw nav-icon fas fa-users">
+
+                            </i>
+                            <p>
+                                {{ trans('reports.title') }}
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+							<!--@can('customer_access') -->
+								<li class="nav-item">
+									<a href="" class="nav-link {{ request()->is("admin/reports") || request()->is("admin/reports/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('reports.purchase_report') }}
+										</p>
+									</a>
+								</li>
+							<!--@endcan -->
+							<!--@can('customer_access') -->
+								<li class="nav-item">
+									<a href="" class="nav-link {{ request()->is("admin/reports") || request()->is("admin/reports/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('reports.order_report') }}
+										</p>
+									</a>
+								</li>
+							<!--@endcan -->										
+						</ul>
+					</li>				
+				@endcan			
+				
                 <li class="nav-item">
                     <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
                         <p>
