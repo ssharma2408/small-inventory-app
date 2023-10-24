@@ -13,13 +13,8 @@
                 <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>
                 <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
                     <option value="" >Select Option</option> 
-                    @foreach($categories as $id => $entry)
-                     @php $level=1; @endphp
-                       <option value="{{ $entry->id }}" {{ old('category_id') == $entry->id ? 'selected' : '' }}>{{ $entry->name }}</option> 
-                       @if(count($entry->childCategories) > 0)
-                         @include('admin.categories.subcategories', ['category' => $entry,'selected'=>'0']);
-                        @endif
-                        
+                    @foreach($categories as $id => $entry)                     
+                       <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>                        
                     @endforeach
                 </select>
 				<div><a href="{{ route("admin.categories.create") }}/?redirect=add-product">Add Category</a></div>
@@ -29,6 +24,18 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
+            </div>
+			<div class="form-group">
+                <label for="sub_category_id">{{ trans('cruds.category.fields.sub_category') }}</label>
+                <select class="form-control select2 {{ $errors->has('subcategory') ? 'is-invalid' : '' }}" name="sub_category_id" id="sub_category_id">
+                    <option value="" >Please select</option>                      
+                </select>				
+                @if($errors->has('subcategory'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('subcategory') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.category.fields.sub_category_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.product.fields.name') }}</label>
@@ -157,6 +164,28 @@
         return _results
     }
 }
+
+$("#category_id").change(function (){
+	if($(this).val() !=""){
+		$.ajax({
+			url: '/admin/categories/get_sub_category/'+$(this).val(),
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					if(data.subcategories.length > 0){
+						var html = '<option value="">Please select</option>';
+						$.each(data.subcategories, function (key, val) {
+							html += '<option value="'+val.id+'">'+val.name+'</option>';
+						});
+						$("#sub_category_id").html(html);
+					}else{
+						//
+					}
+				}
+			}
+		 });
+	}
+});
 
 </script>
 @endsection

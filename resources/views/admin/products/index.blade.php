@@ -32,6 +32,9 @@
                             {{ trans('cruds.category.fields.category') }}
                         </th>
 						<th>
+                            {{ trans('cruds.category.fields.sub_category') }}
+                        </th>						
+						<th>
                             {{ trans('cruds.product.fields.maximum_selling_price') }}
                         </th>
                         <th>
@@ -65,6 +68,9 @@
                             </td>
 							<td>
                                 {{ $product->category->name ?? '' }}
+                            </td>							
+							<td>
+                                {{ $product->sub_category->name ?? '' }}
                             </td>
 							<td>
                                 {{ $product->maximum_selling_price ?? '' }}

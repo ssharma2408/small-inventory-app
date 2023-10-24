@@ -33,8 +33,7 @@ class ProductController extends Controller
     {
         abort_if(Gate::denies('product_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -75,9 +74,7 @@ class ProductController extends Controller
     {
         abort_if(Gate::denies('product_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 

@@ -26,8 +26,7 @@ class CategoryController extends Controller
     {
         abort_if(Gate::denies('category_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 
         return view('admin.categories.create', compact('categories'));
     }
@@ -51,9 +50,7 @@ class CategoryController extends Controller
     {
         abort_if(Gate::denies('category_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 
         return view('admin.categories.edit', compact('category', 'categories'));
     }
@@ -91,4 +88,13 @@ class CategoryController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function get_sub_category($cat_id){
+		if($cat_id ==""){
+			return false;
+		}
+		$sub_categories = Category::where('category_id', $cat_id)->get()->toArray();
+		
+		return response()->json(array('success'=>1, 'subcategories'=>$sub_categories), 200);		
+	}
 }

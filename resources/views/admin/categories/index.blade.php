@@ -30,10 +30,7 @@
                         </th>
 						<th>
 							{{ trans('cruds.category.fields.category') }}
-						</th>
-                        <th>
-                            {{ trans('cruds.category.fields.category_order') }}
-                        </th>
+						</th>                        
                         <th>
                             &nbsp;
                         </th>
@@ -53,10 +50,7 @@
                             </td>
 							 <td>
                                 {{ $category->category->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $category->category_order ?? '' }}
-                            </td>
+                            </td>                            
                             <td>
                                 @can('category_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.categories.show', $category->id) }}">

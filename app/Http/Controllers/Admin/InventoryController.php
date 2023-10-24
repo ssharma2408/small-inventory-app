@@ -44,8 +44,7 @@ class InventoryController extends Controller
 
         $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -118,9 +117,7 @@ class InventoryController extends Controller
 
         $inventory->load('supplier', 'product', 'tax');		
 		
-		$categories = Category::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $categories = Category::whereNull('category_id')->with('childcategories.childcategories')->get();
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -136,7 +133,7 @@ class InventoryController extends Controller
 			$inc_stock = 0;
 			$dec_stock = 0;
 			
-			if($inventory->box_or_unit != $request->box_or_unit){				
+		/* 	if($inventory->box_or_unit != $request->box_or_unit){
 				
 				if($request->box_or_unit == "0"){
 					$inc_stock = $request->stock * $request->package_val;
@@ -145,7 +142,7 @@ class InventoryController extends Controller
 					$dec_stock = $request->stock * $request->package_val;
 					$inc_stock = $request->stock;
 				}
-			}
+			} */
 
  			if($inventory->stock != $request->stock){
 				if($request->box_or_unit == "0"){

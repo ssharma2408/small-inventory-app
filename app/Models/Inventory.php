@@ -54,6 +54,7 @@ class Inventory extends Model implements HasMedia
         'tax_id',
         'final_price',
 		'category_id',
+		'sub_category_id',
 		'invoice_number',
 		'days_payable_outstanding',
 		'image_url',

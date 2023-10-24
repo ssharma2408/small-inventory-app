@@ -27,13 +27,8 @@
                 <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
 
                     <option value="">Select Option</option>
-                    @foreach($categories as $id => $entry)
-                    @php $level=1; @endphp
-                    <option value="{{ $entry->id }}" {{ (old('category_id') ? old('category_id') : $inventory->category_id ?? '') == $entry->id ? 'selected' : '' }}>{{ $entry->name }}</option>
-
-                    @if(count($entry->childCategories) > 0)
-                    @include('admin.categories.subcategories', ['category' => $entry,'selected'=>isset($inventory->category_id)?$inventory->category_id:"" ]);
-                    @endif
+                    @foreach($categories as $id => $entry)                    
+                    <option value="{{ $id }}" {{ (old('category_id') ? old('category_id') : $inventory->category_id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
 
                     @endforeach
                 </select>
@@ -43,6 +38,18 @@
                 </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
+            </div>
+			<div class="form-group">
+                <label for="sub_category_id">{{ trans('cruds.category.fields.sub_category') }}</label>
+                <select class="form-control select2 {{ $errors->has('subcategory') ? 'is-invalid' : '' }}" name="sub_category_id" id="sub_category_id">
+                    <option value="" >Please select</option>                      
+                </select>				
+                @if($errors->has('subcategory'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('subcategory') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.category.fields.sub_category_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="product_id">{{ trans('cruds.inventory.fields.product') }}</label>
@@ -66,7 +73,7 @@
                 <label class="required">{{ trans('cruds.inventory.fields.box_or_unit') }}</label>
                 @foreach(App\Models\Inventory::BOX_OR_UNIT_RADIO as $key => $label)
                     <div class="form-check {{ $errors->has('box_or_unit') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="box_or_unit_{{ $key }}" name="box_or_unit" value="{{ $key }}" {{ old('box_or_unit', $inventory->box_or_unit) === (string) $key ? 'checked' : '' }} required>
+                        <input class="form-check-input" type="radio" id="box_or_unit_{{ $key }}" name="box_or_unit" value="{{ $key }}" {{ old('box_or_unit', $inventory->box_or_unit) === (string) $key ? 'checked' : '' }} required disabled>
                         <label class="form-check-label" for="box_or_unit_{{ $key }}">{{ $label }}</label>
                     </div>
                 @endforeach

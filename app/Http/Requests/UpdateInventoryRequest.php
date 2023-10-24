@@ -21,10 +21,7 @@ class UpdateInventoryRequest extends FormRequest
             'product_id' => [
                 'required',
                 'integer',
-            ],
-            'box_or_unit' => [
-                'required',
-            ],
+            ],            
             'stock' => [
                 'required',
                 'integer',

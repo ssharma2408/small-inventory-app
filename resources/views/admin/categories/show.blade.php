@@ -38,15 +38,7 @@
                         <td>
                             {{ $category->category->name ?? '' }}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.category.fields.category_order') }}
-                        </th>
-                        <td>
-                            {{ $category->category_order }}
-                        </td>
-                    </tr>
+                    </tr>                   
                 </tbody>
             </table>
             <div class="form-group">
