@@ -241,12 +241,19 @@ class InventoryController extends Controller
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 	
-	public function get_products($cat_id){
+	public function get_products($cat_id, $sub_cat_id){
 		
 		if($cat_id == ""){
 			return false;
 		}
-		$products = Product::select('id', 'name')->where('category_id', $cat_id)->get();
+
+		$products = Product::select('id', 'name')->where('category_id', $cat_id);
+		
+		if($sub_cat_id != 0){
+			$products = $products->where('sub_category_id', $sub_cat_id);
+		}
+		
+		$products = $products->get();
 		
 		return response()->json(array('success'=>1, 'products'=>$products), 200);
 	}

@@ -276,27 +276,20 @@ $("#sub_category_id").change(function (){
 	}
 });
 
-function populate_products(cat_id, sub_cat_id = ""){
-	var catid = cat_id;
-	
-	if(sub_cat_id != ""){
-		catid = sub_cat_id;
-	}
+function populate_products(cat_id, sub_cat_id = 0){	
 	
 	$.ajax({
-			url: 'get_products/'+catid,
+			url: 'get_products/'+cat_id+'/'+sub_cat_id,
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {
+					var html = '<option value="">Please select</option>';
 					if(data.products.length > 0){
-						var html = '<option value="">Please select</option>';
 						$.each(data.products, function (key, val) {
 							html += '<option value="'+val.id+'">'+val.name+'</option>';
 						});
-						$("#product_id").html(html);
-					}else{
-						//
 					}
+					$("#product_id").html(html);
 				}
 			}
 		 });
@@ -346,17 +339,14 @@ $("#category_id").change(function (){
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {
+					var html = '<option value="">Please select</option>';
 					if(data.subcategories.length > 0){
-						var html = '<option value="">Please select</option>';
 						$.each(data.subcategories, function (key, val) {
 							html += '<option value="'+val.id+'">'+val.name+'</option>';
 						});
-						$("#sub_category_id").html(html);
-						populate_products($("#category_id").val());
-					}else{
-						var html = '<option value="">Please select</option>';
-						$("#sub_category_id").html(html);
 					}
+					$("#sub_category_id").html(html);
+					populate_products($("#category_id").val());
 				}
 			}
 		 });
