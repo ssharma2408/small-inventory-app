@@ -68,7 +68,7 @@ class OrdersController extends Controller
 
         $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
-		$categories = $this->buildTree(Category::select('name', 'id', 'category_id')->get()->toArray());
+		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::select('title', 'id')->get();
 
@@ -93,6 +93,7 @@ class OrdersController extends Controller
 				$item['order_id'] = $order->id;
 				$item['quantity'] = $request['item_quantity'][$i];
 				$item['category_id'] = $request['item_category'][$i];
+				$item['sub_category_id'] = $request['item_subcategory'][$i];
 				$item['sale_price'] = $request['item_sale_priec'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
@@ -148,13 +149,14 @@ class OrdersController extends Controller
 
 			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$categories = $this->buildTree(Category::select('name', 'id', 'category_id')->get()->toArray());
+			$categories = Category::where('category_id', null)->pluck('name', 'id');
 
 			$order_items = DB::table('order_items')
 					->join('products','order_items.product_id', '=', 'products.id')
 					->join('categories','order_items.category_id', '=', 'categories.id')
+					->join('categories as c','order_items.sub_category_id', '=', 'c.id')
 					->join('taxes','taxes.id', '=', 'order_items.tax_id')
-					->select('categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
+					->select('c.name as sub_category_name', 'c.id as sub_category_id','categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
 					->where('order_items.order_id', $order->id)
 					->get();
 
@@ -187,6 +189,7 @@ class OrdersController extends Controller
 				$item['order_id'] = $order->id;
 				$item['quantity'] = $request['item_quantity'][$i];
 				$item['category_id'] = $request['item_category'][$i];
+				$item['sub_category_id'] = $request['item_subcategory'][$i];
 				$item['sale_price'] = $request['item_sale_priec'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;

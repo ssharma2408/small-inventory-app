@@ -3,39 +3,16 @@
 
 <?php
 	$ddl_html = "No Category Found";
+	
 	if(!empty($categories)){
 		$ddl_html = '<select class="category form-control select2" name="item_category[]" required>';
 			$ddl_html .= '<option value="" >Select Option</option>';
-			foreach($categories as $cat_lvl1){
-				$ddl_html .= '<option value="'.$cat_lvl1['id'].'">'.$cat_lvl1['name'].'</option>';
-				
-				if(isset($cat_lvl1['children'])){
-					foreach($cat_lvl1['children'] as $cat_lvl2){
-						$ddl_html .= '<option value="'.$cat_lvl2['id'].'">- '.$cat_lvl2['name'].'</option>';
-						
-						if(isset($cat_lvl2['children'])){
-							foreach($cat_lvl2['children'] as $cat_lvl3){
-								$ddl_html .= '<option value="'.$cat_lvl3['id'].'">- - '.$cat_lvl3['name'].'</option>';
-								
-								if(isset($cat_lvl3['children'])){
-									foreach($cat_lvl3['children'] as $cat_lvl4){
-										$ddl_html .= '<option value="'.$cat_lvl4['id'].'">- - - '.$cat_lvl4['name'].'</option>';
-										
-										if(isset($cat_lvl4['children'])){
-										foreach($cat_lvl4['children'] as $cat_lvl5){
-											$ddl_html .= '<option value="'.$cat_lvl5['id'].'">- - - - '.$cat_lvl5['name'].'</option>';
-										}
-									}
-									}
-								}
-							}
-						}
-					}
-				}
+			foreach($categories as $cat_id => $val){
+				$ddl_html .= '<option value="'.$cat_id.'">'.$val.'</option>';
 			}
 		$ddl_html .= '</select>';
 	}
-	
+
 	$tax_ddl_html = "No Tax Found";
 	
 	if(!empty($taxes)){
@@ -85,8 +62,11 @@
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Category Name</b>
+					</div>
+					<div class="col-md-1">
+						<b>Sub Category Name</b>
 					</div>
 					<div class="col-md-1">
 						<b>Product Name</b>
@@ -121,12 +101,17 @@
 				</div>
 				<div class="item_container">
 					<div class="row mb-3">
-						<div class="cat_container col-md-2">
+						<div class="cat_container col-md-1">
 							<div class="form-group">								
 								<?php
 									echo $ddl_html;
 								?>
 							</div>				
+						</div>
+						<div class="col-md-1">
+							<select class="subcat form-control select2" name="item_subcategory[]">
+								<option value="">Please select</option>
+							</select>
 						</div>
 						<div class="col-md-1">
 							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
@@ -252,7 +237,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+			return '<div class="row mb-3"><div class="cat_container col-md-1"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
@@ -390,29 +375,61 @@
 			}
 			$("#order_total").val(order_total);
 		}
+		
+		$(document).on("change", ".subcat", function () {
+			var cat_id = $(this).parent().prev('div').find('.category').val();
+			var pdod_ddl = $(this).parent().next('div').find('.order_item');
+			if(cat_id != "" && $(this).val() != ""){
+				populate_products(cat_id, $(this).val(), pdod_ddl);
+			}
+		});
 
 		$(document).on("change", ".category", function () {
 			
-			var product_ddl =$(this).closest('.cat_container').next('div').find(".order_item");
-			
+			if($(this).val() !=""){
+				
+				var cat_id = $(this).val();
+				var subcat_ddl =$(this).closest('.cat_container').next('div').find(".subcat");
+				var product_ddl =$(this).closest('.cat_container').next('div').next('div').find(".order_item");
+				
+				$.ajax({
+					url: '/admin/categories/get_sub_category/'+cat_id,
+					type: 'GET',
+					success: function(data) {
+						if (data.success) {
+							var html = '<option value="">Please select</option>';
+							if(data.subcategories.length > 0){
+								$.each(data.subcategories, function (key, val) {
+									html += '<option value="'+val.id+'">'+val.name+'</option>';
+								});
+							}
+							subcat_ddl.html(html);
+							populate_products(cat_id, 0, product_ddl);
+						}
+					}
+				 });
+			}			
+		
+		});
+	
+		function populate_products(cat_id, sub_cat_id = 0, prod_ddl){	
+	
 			$.ajax({
-				url: '/admin/inventories/get_products/'+$(this).val(),
+				url: '/admin/inventories/get_products/'+cat_id+'/'+sub_cat_id,
 				type: 'GET',
 				success: function(data) {
 					if (data.success) {
+						var html = '<option value="">Please select</option>';
 						if(data.products.length > 0){
-							var html = '<option value="">Please select</option>';
 							$.each(data.products, function (key, val) {
 								html += '<option value="'+val.id+'">'+val.name+'</option>';
 							});
-							product_ddl.html(html);
-						}else{
-							//
 						}
+						prod_ddl.html(html);
 					}
 				}
 			 });
-	});
+		}
 	
 	$(document).on("change", ".tax_id", function () {
 

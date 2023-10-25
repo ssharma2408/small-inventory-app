@@ -167,6 +167,7 @@
 				<input type="hidden" name="image_url" value="{{$inventory->image_url}}">
 				<input type="hidden" id="tax_val" value="" />
 				<input type="hidden" id="package_val" value="" name="package_val" />
+				<input type="hidden" id="box_unit" value="<?php echo $inventory->box_or_unit; ?>" name="box_unit" />
             </div>
         </form>
     </div>

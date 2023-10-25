@@ -6,32 +6,8 @@
 	if(!empty($categories)){
 		$ddl_html = '<select class="category form-control select2" name="item_category[]" required>';
 			$ddl_html .= '<option value="" >Select Option</option>';
-			foreach($categories as $cat_lvl1){
-				$ddl_html .= '<option value="'.$cat_lvl1['id'].'">'.$cat_lvl1['name'].'</option>';
-				
-				if(isset($cat_lvl1['children'])){
-					foreach($cat_lvl1['children'] as $cat_lvl2){
-						$ddl_html .= '<option value="'.$cat_lvl2['id'].'">- '.$cat_lvl2['name'].'</option>';
-						
-						if(isset($cat_lvl2['children'])){
-							foreach($cat_lvl2['children'] as $cat_lvl3){
-								$ddl_html .= '<option value="'.$cat_lvl3['id'].'">- - '.$cat_lvl3['name'].'</option>';
-								
-								if(isset($cat_lvl3['children'])){
-									foreach($cat_lvl3['children'] as $cat_lvl4){
-										$ddl_html .= '<option value="'.$cat_lvl4['id'].'">- - - '.$cat_lvl4['name'].'</option>';
-										
-										if(isset($cat_lvl4['children'])){
-										foreach($cat_lvl4['children'] as $cat_lvl5){
-											$ddl_html .= '<option value="'.$cat_lvl5['id'].'">- - - - '.$cat_lvl5['name'].'</option>';
-										}
-									}
-									}
-								}
-							}
-						}
-					}
-				}
+			foreach($categories as $cat_id => $val){
+				$ddl_html .= '<option value="'.$cat_id.'">'.$val.'</option>';
 			}
 		$ddl_html .= '</select>';
 	}
@@ -85,8 +61,11 @@
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Category Name</b>
+					</div>
+					<div class="col-md-1">
+						<b>Sub Category Name</b>
 					</div>
 					<div class="col-md-1">
 						<b>Product Name</b>
@@ -126,7 +105,10 @@
 						foreach($order_items as $order_item){
 							echo '<div class="row mb-3">
 									
-									<div class="col-md-2"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
+									<div class="col-md-1"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
+									
+									<div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="'.$order_item->sub_category_id.'">'.$order_item->sub_category_name.'</option></select>
+									</div>
 									
 									<div class="col-md-1"><select class="form-control select2" name="item_name[]" required><option value="'.$order_item->product_id.'">'.$order_item->name.'</option></select></div>
 									<div class="col-md-1">
@@ -277,7 +259,7 @@
 @section('scripts')
 	<script>
 	
-		$(function() {			
+		$(function() {
 			<?php
 				if($order->status ==4){
 					echo '$(".delivery_agent").show();';

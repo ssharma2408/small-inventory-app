@@ -145,7 +145,8 @@ class InventoryController extends Controller
 			} */
 
  			if($inventory->stock != $request->stock){
-				if($request->box_or_unit == "0"){
+
+				if($request->box_unit == "0"){
 					$dec_stock = $inventory->stock * $request->package_val;
 					$inc_stock = $request->stock * $request->package_val;					
 				}else{
