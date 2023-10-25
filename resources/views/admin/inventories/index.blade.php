@@ -35,6 +35,9 @@
 						<th>
                             {{ trans('cruds.category.fields.category') }}
                         </th>
+						<th>
+                            {{ trans('cruds.category.fields.sub_category') }}
+                        </th>
                         <th>
                             {{ trans('cruds.inventory.fields.product') }}
                         </th>
@@ -90,6 +93,9 @@
                             </td>
 							<td>
                                 {{ $inventory->category->name ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->sub_category->name ?? '' }}
                             </td>
                             <td>
                                 {{ $inventory->product->name ?? '' }}

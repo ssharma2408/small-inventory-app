@@ -228,7 +228,29 @@
 }
 
 $(function() {
-    populate_products($("#category_id").val());
+	$.ajax({
+			url: '/admin/categories/get_sub_category/'+$("#category_id").val(),
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					if(data.subcategories.length > 0){
+						var html = '<option value="">Please select</option>';
+						$.each(data.subcategories, function (key, val) {
+							var selected = "";
+							
+							if(val.id == '<?php echo $inventory->sub_category_id; ?>'){
+								selected = "selected";
+							}
+							html += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
+						});
+						$("#sub_category_id").html(html);
+						populate_products($("#category_id").val(), $("#sub_category_id").val());
+					}else{
+						//
+					}
+				}
+			}
+		 });   
 	load_package_val(<?php echo $inventory->product_id; ?>);
 	load_tax_val(<?php echo $inventory->tax->id; ?>);	 
 });
@@ -270,9 +292,16 @@ function calculate_total(){
 	$("#final_price").val(order_total);
 }
 
-function populate_products(cat_id){
+function populate_products(cat_id, sub_cat_id = ""){
+	
+	var catid = cat_id;
+	
+	if(sub_cat_id != ""){
+		catid = sub_cat_id;
+	}
+	
 	$.ajax({
-			url: '/admin/inventories/get_products/'+cat_id,
+			url: '/admin/inventories/get_products/'+catid,
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {
