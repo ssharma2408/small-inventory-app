@@ -174,8 +174,8 @@ $(function() {
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {
-					if(data.subcategories.length > 0){
-						var html = '<option value="">Please select</option>';
+					var html = '<option value="">Please select</option>';
+					if(data.subcategories.length > 0){						
 						$.each(data.subcategories, function (key, val) {
 							var selected = "";
 							
@@ -183,11 +183,9 @@ $(function() {
 								selected = "selected";
 							}
 							html += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
-						});
-						$("#sub_category_id").html(html);
-					}else{
-						//
+						});						
 					}
+					$("#sub_category_id").html(html);
 				}
 			}
 		 });	 

@@ -354,7 +354,8 @@ $("#category_id").change(function (){
 						$("#sub_category_id").html(html);
 						populate_products($("#category_id").val());
 					}else{
-						//
+						var html = '<option value="">Please select</option>';
+						$("#sub_category_id").html(html);
 					}
 				}
 			}
