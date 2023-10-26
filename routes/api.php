@@ -38,6 +38,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('shrinkages', 'ShrinkageApiController');
 
     // Order Payment
+    Route::get('order-with-pending-amount','OrderPaymentApiController@getpendingamt');
     Route::apiResource('order-payments', 'OrderPaymentApiController');
 
     // Expense Payment
