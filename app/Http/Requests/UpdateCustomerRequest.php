@@ -33,6 +33,9 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'required',
             ],
+			'payment_terms' => [
+                'required',
+            ],
         ];
     }
 }

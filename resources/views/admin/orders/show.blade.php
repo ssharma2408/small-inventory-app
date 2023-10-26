@@ -38,7 +38,7 @@
 								{{ trans('cruds.order.fields.customer') }}
 							</th>
 							<td>
-								{{ $order->customer->name ?? '' }}
+								{{ $order->customer->company_name ?? '' }}
 							</td>
 						</tr>
 						<tr>
@@ -53,45 +53,104 @@
 												Category Name
 											</th>
 											<th>
+												Sub Category Name
+											</th>
+											<th>
 												Product Name
 											</th>
 											<th>
-												Price
+												In Stock
 											</th>
 											<th>
-												Stock
+												Min Selling Price
+											</th>
+											<th>
+												Max Selling Price
+											</th>											
+											<th>
+												Box or unit
 											</th>
 											<th>
 												Ordered Quantity
 											</th>
 											<th>
+												Sales Price
+											</th>
+											<th>
+												Tax
+											</th>
+											<th>
 												Amount
 											</th>
 										</tr>
-										@foreach($order->	order_item as $item)
+										@foreach($order->order_item as $item)
 											<tr>
 												<td>
 												{{ $item->category_name }}
 												</td>
 												<td>
-												{{ $item->name }}
+												{{ $item->sub_category_name }}
 												</td>
 												<td>
-												{{ $item->selling_price }}
+												{{ $item->name }}
 												</td>
 												<td>
 												{{ $item->stock }}
 												</td>
 												<td>
+												{{ $item->selling_price }}
+												</td>
+												<td>
+												{{ $item->maximum_selling_price }}
+												</td>												
+												<td>
+													@if($item->is_box)
+														Box
+													@else
+														Unit
+													@endif
+												</td>
+												<td>
 												{{ $item->quantity }}
 												</td>
 												<td>
-												{{ $item->quantity * $item->selling_price }}
+												{{ $item->sale_price }}
+												</td>
+												<td>
+												{{ $item->title }}
+												</td>
+												<td>
+													@php
+														$qty = $item->quantity;
+														if($item->is_box){
+															$qty = $item->quantity * $item->box_size;
+														}
+														$amount = $qty * $item->sale_price;
+														
+														$total = $amount + (($amount * $item->tax)/100);
+													@endphp
+													{{ $total }}
 												</td>
 											</tr>
 										@endforeach
 									</tbody>
 								</table>
+							</td>
+						</tr>						
+						<tr>
+							<th>
+								{{ trans('cruds.order.fields.order_total_without_tax') }}
+							</th>
+							<td>
+								{{ $order->order_total_without_tax }}
+							</td>
+						</tr>
+						<tr>
+							<th>
+								{{ trans('cruds.order.fields.order_tax') }}
+							</th>
+							<td>
+								{{ $order->order_tax }}
 							</td>
 						</tr>
 						<tr>

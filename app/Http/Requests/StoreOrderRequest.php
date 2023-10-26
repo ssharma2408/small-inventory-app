@@ -29,6 +29,14 @@ class StoreOrderRequest extends FormRequest
 			'item_name' => [
                 'required',
             ],
+			'order_total_without_tax' => [
+                'numeric',
+                'required',
+            ],
+			'order_tax' => [
+                'numeric',
+                'required',
+            ],
             'order_total' => [
                 'numeric',
                 'required',

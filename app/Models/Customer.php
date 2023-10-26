@@ -18,6 +18,13 @@ class Customer extends Model
         'updated_at',
         'deleted_at',
     ];
+	
+	 public const PAYMENT_TERMS_SELECT = [
+        '0' => '15 Days',
+        '1' => '30 Days',
+        '2' => '45 Days',
+        '4' => '60 Days',
+    ];
 
     protected $fillable = [
         'contact_name',
@@ -27,6 +34,7 @@ class Customer extends Model
         'email',
         'pincode',
         'company_name',
+        'payment_terms',
         'created_at',
         'updated_at',
         'deleted_at',

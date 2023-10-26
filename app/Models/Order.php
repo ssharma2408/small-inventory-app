@@ -22,6 +22,8 @@ class Order extends Model
     protected $fillable = [
         'sales_manager_id',
         'customer_id',
+        'order_total_without_tax',
+        'order_tax',
         'order_total',
         'comments',
         'delivery_note',

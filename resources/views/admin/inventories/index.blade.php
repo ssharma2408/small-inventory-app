@@ -29,8 +29,8 @@
                         <th>
                             {{ trans('cruds.inventory.fields.id') }}
                         </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.supplier') }}
+						 <th>
+                            {{ trans('cruds.inventory.fields.product') }}
                         </th>
 						<th>
                             {{ trans('cruds.category.fields.category') }}
@@ -38,42 +38,27 @@
 						<th>
                             {{ trans('cruds.category.fields.sub_category') }}
                         </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.product') }}
+						<th>
+                            {{ trans('cruds.inventory.fields.box_or_unit') }}
+                        </th>
+						<th>
+                            {{ trans('cruds.inventory.fields.stock') }}
+                        </th>
+						 <th>
+                            {{ trans('cruds.inventory.fields.purchase_price') }}
+                        </th>
+						<th>
+                            {{ trans('cruds.inventory.fields.tax') }}
+                        </th>
+						<th>
+                            {{ trans('cruds.inventory.fields.final_price') }}
                         </th>
 						<th>
                             {{ trans('cruds.inventory.fields.invoice_number') }}
                         </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.box_or_unit') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.stock') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.purchase_price') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.discount_type') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.discount') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.tax') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.final_price') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.days_payable_outstanding') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventory.fields.po_file') }}
-                        </th>
 						<th>
                             Date
-                        </th>
+                        </th>						
                         <th>
                             &nbsp;
                         </th>
@@ -88,8 +73,8 @@
                             <td>
                                 {{ $inventory->id ?? '' }}
                             </td>
-                            <td>
-                                {{ $inventory->supplier->supplier_name ?? '' }}
+							 <td>
+                                {{ $inventory->product->name ?? '' }}
                             </td>
 							<td>
                                 {{ $inventory->category->name ?? '' }}
@@ -97,42 +82,27 @@
 							<td>
                                 {{ $inventory->sub_category->name ?? '' }}
                             </td>
-                            <td>
-                                {{ $inventory->product->name ?? '' }}
+							<td>
+                                {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->stock ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->purchase_price ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->tax->title ?? '' }}
+                            </td>
+							<td>
+                                {{ $inventory->final_price ?? '' }}
                             </td>
 							<td>
                                 {{ $inventory->invoice_number ?? '' }}
                             </td>
-                            <td>
-                                {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventory->stock ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventory->purchase_price ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Inventory::DISCOUNT_TYPE_RADIO[$inventory->discount_type] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventory->discount ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventory->tax->title ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventory->final_price ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT[$inventory->days_payable_outstanding] ?? '' }}
-                            </td>
-                            <td>
-                               <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$inventory->image_url }}">
-                            </td>
 							<td>
                                 {{ $inventory->created_at ?? '' }}
-                            </td>
+                            </td>							
                             <td>
                                 @can('inventory_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.inventories.show', $inventory->id) }}">
@@ -267,7 +237,7 @@ $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
 	
     if (typeof aData._date == 'undefined') {
-      aData._date = new Date(aData[14]).getTime();
+      aData._date = new Date(aData[11]).getTime();
     }
 
     if (minDateFilter && !isNaN(minDateFilter)) {

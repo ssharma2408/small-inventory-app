@@ -103,7 +103,7 @@
 						echo '<div class="item_container">';
 						$cnt = 0;
 						foreach($order_items as $order_item){
-							echo '<div class="row mb-3">
+							echo '<div class="row mb-3 item_row">
 									
 									<div class="col-md-1"><select class="form-control select2" name="item_category[]" required><option value="'.$order_item->category_id.'">'.$order_item->category_name.'</option></select></div>
 									
@@ -175,8 +175,23 @@
 					}
 				?>
 
+            </div>			
+			<div class="form-group">
+                <label class="required" for="order_total_without_tax">{{ trans('cruds.order.fields.order_total_without_tax') }}</label>
+                <input class="form-control {{ $errors->has('order_total_without_tax') ? 'is-invalid' : '' }}" type="number" name="order_total_without_tax" id="order_total_without_tax" value="{{ old('order_total_without_tax', $order->order_total_without_tax) }}" step="0.01" required>
+                @if($errors->has('order_total_without_tax'))
+                    <span class="text-danger">{{ $errors->first('order_total_without_tax') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.order_total_without_tax_helper') }}</span>
             </div>
-
+			<div class="form-group">
+                <label class="required" for="order_tax">{{ trans('cruds.order.fields.order_tax') }}</label>
+                <input class="form-control {{ $errors->has('order_tax') ? 'is-invalid' : '' }}" type="number" name="order_tax" id="order_tax" value="{{ old('order_tax', $order->order_tax) }}" step="0.01" required>
+                @if($errors->has('order_tax'))
+                    <span class="text-danger">{{ $errors->first('order_tax') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.order_tax_helper') }}</span>
+            </div>
 			<div class="form-group">
                 <label for="extra_discount">{{ trans('cruds.order.fields.extra_discount') }}</label>
                 <input class="form-control {{ $errors->has('extra_discount') ? 'is-invalid' : '' }}" type="number" name="extra_discount" id="extra_discount" value="{{ old('extra_discount', $order->extra_discount) }}" step="0.01">
@@ -185,7 +200,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.extra_discount_helper') }}</span>
             </div>
-			
             <div class="form-group">
                 <label class="required" for="order_total">{{ trans('cruds.order.fields.order_total') }}</label>
                 <input class="form-control {{ $errors->has('order_total') ? 'is-invalid' : '' }}" type="number" name="order_total" id="order_total" value="{{ old('order_total', $order->order_total) }}" step="0.01" required>
@@ -279,7 +293,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3"><div class="cat_container col-md-2"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+			return '<div class="row mb-3 item_row"><div class="cat_container col-md-1"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
@@ -407,15 +421,29 @@
 		});		
 		
 		function calculate_total(){
+			var order_total_without_tax = 0;			
 			var order_total = 0;
 			
-			$(".amount").each(function() {
+			$(".item_row").each(function() {
+				var checkb = $(this).find("input[type=checkbox]");
+				var package_val = $(this).find("#package_val").val();
+				var qty = $(this).find(".quantity").val();
+				var sale_price = $(this).find(".sale_price").val();
+				var amount = $(this).find(".amount").val();
+				if(checkb.is(':checked')){
+					qty = qty * package_val;
+				}
+				order_total_without_tax += (qty * sale_price);
+				order_total += parseFloat(amount);
+			});			
 			
-				order_total += parseFloat($(this).val());
-			});
+			$("#order_total_without_tax").val(order_total_without_tax);
+			$("#order_tax").val(order_total - order_total_without_tax);
+			
 			if($("#extra_discount").val() > 0){
 				order_total = order_total - $("#extra_discount").val();
 			}
+			
 			$("#order_total").val(order_total);
 		}
 		
@@ -430,28 +458,59 @@
 			}
 		});
 		
+		$(document).on("change", ".subcat", function () {
+			var cat_id = $(this).parent().prev('div').find('.category').val();
+			var pdod_ddl = $(this).parent().next('div').find('.order_item');
+			if(cat_id != "" && $(this).val() != ""){
+				populate_products(cat_id, $(this).val(), pdod_ddl);
+			}
+		});
+		
 		$(document).on("change", ".category", function () {
 			
-			var product_ddl =$(this).closest('.cat_container').next('div').find(".order_item");
-			
-			$.ajax({
-				url: '/admin/inventories/get_products/'+$(this).val(),
-				type: 'GET',
-				success: function(data) {
-					if (data.success) {
-						if(data.products.length > 0){
+			if($(this).val() !=""){
+				
+				var cat_id = $(this).val();
+				var subcat_ddl =$(this).closest('.cat_container').next('div').find(".subcat");
+				var product_ddl =$(this).closest('.cat_container').next('div').next('div').find(".order_item");
+				
+				$.ajax({
+					url: '/admin/categories/get_sub_category/'+cat_id,
+					type: 'GET',
+					success: function(data) {
+						if (data.success) {
 							var html = '<option value="">Please select</option>';
-							$.each(data.products, function (key, val) {
-								html += '<option value="'+val.id+'">'+val.name+'</option>';
-							});
-							product_ddl.html(html);
-						}else{
-							//
+							if(data.subcategories.length > 0){
+								$.each(data.subcategories, function (key, val) {
+									html += '<option value="'+val.id+'">'+val.name+'</option>';
+								});
+							}
+							subcat_ddl.html(html);
+							populate_products(cat_id, 0, product_ddl);
 						}
 					}
-				}
-			 });
+				 });
+			}			
 	});
+	
+	function populate_products(cat_id, sub_cat_id = 0, prod_ddl){	
+	
+		$.ajax({
+			url: '/admin/inventories/get_products/'+cat_id+'/'+sub_cat_id,
+			type: 'GET',
+			success: function(data) {
+				if (data.success) {
+					var html = '<option value="">Please select</option>';
+					if(data.products.length > 0){
+						$.each(data.products, function (key, val) {
+							html += '<option value="'+val.id+'">'+val.name+'</option>';
+						});
+					}
+					prod_ddl.html(html);
+				}
+			}
+		 });
+	}
 	
 	$(document).on("change", ".tax_id", function () {
 

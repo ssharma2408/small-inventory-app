@@ -79,6 +79,14 @@
                             {{ $customer->email }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.customer.fields.payment_terms') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Customer::PAYMENT_TERMS_SELECT[$customer->payment_terms] ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

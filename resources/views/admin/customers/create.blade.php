@@ -65,6 +65,19 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.customer.fields.email_helper') }}</span>
             </div>
+			<div class="form-group">
+                <label class="required">{{ trans('cruds.customer.fields.payment_terms') }}</label>
+                <select class="form-control {{ $errors->has('payment_terms') ? 'is-invalid' : '' }}" name="payment_terms" id="payment_terms" required>
+                    <option value disabled {{ old('payment_terms', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Customer::PAYMENT_TERMS_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('payment_terms', '0') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('payment_terms'))
+                    <span class="text-danger">{{ $errors->first('payment_terms') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.customer.fields.payment_terms_helper') }}</span>
+            </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}

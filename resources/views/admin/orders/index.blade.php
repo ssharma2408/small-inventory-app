@@ -68,7 +68,7 @@
                                 {{ $order->sales_manager->name ?? '' }}
                             </td>
                             <td>
-                                {{ $order->customer->name ?? '' }}
+                                {{ $order->customer->company_name ?? '' }}
                             </td>
                             <td>
                                 {{ $order->order_total ?? '' }}

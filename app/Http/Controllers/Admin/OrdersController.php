@@ -66,7 +66,7 @@ class OrdersController extends Controller
 							)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		}
 
-        $customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $customers = Customer::pluck('company_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 		
 		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
@@ -147,7 +147,7 @@ class OrdersController extends Controller
 									}
 								)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-			$customers = Customer::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+			$customers = Customer::pluck('company_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
 			$categories = Category::where('category_id', null)->pluck('name', 'id');
 
@@ -156,7 +156,7 @@ class OrdersController extends Controller
 					->join('categories','order_items.category_id', '=', 'categories.id')
 					->join('categories as c','order_items.sub_category_id', '=', 'c.id')
 					->join('taxes','taxes.id', '=', 'order_items.tax_id')
-					->select('c.name as sub_category_name', 'c.id as sub_category_id','categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
+					->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id','order_items.quantity','products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
 					->where('order_items.order_id', $order->id)
 					->get();
 
@@ -233,7 +233,9 @@ class OrdersController extends Controller
 		$order['order_item'] = DB::table('order_items')
 					->join('products','order_items.product_id', '=', 'products.id')
 					->join('categories','order_items.category_id', '=', 'categories.id')
-					->select('categories.name as category_name', 'categories.id as category_id','order_items.quantity','products.stock', 'products.selling_price', 'products.name')
+					->join('categories as c','order_items.sub_category_id', '=', 'c.id')
+					->join('taxes','taxes.id', '=', 'order_items.tax_id')
+					->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id','order_items.quantity','products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
 					->where('order_items.order_id', $order->id)
 					->get()->toArray();	
 
