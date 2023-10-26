@@ -31,6 +31,7 @@ class Order extends Model
         'status',
 		'extra_discount',
 		'delivery_agent_id',
+		'due_date',
         'created_at',
         'updated_at',
         'deleted_at',

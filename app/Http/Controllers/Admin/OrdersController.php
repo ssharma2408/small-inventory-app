@@ -78,10 +78,14 @@ class OrdersController extends Controller
     public function store(StoreOrderRequest $request)
     {
 		$order_pay_detail = [];
-		$params = 	$request->all();		
+		$params = 	$request->all();
+		$due_date_arr = Customer::PAYMENT_TERMS_SELECT;		
+		
+		$due_days = Customer::select('payment_terms')->where('id', $request->customer_id)->first()->toArray();	
 
 		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
 		$params['delivery_agent_id'] = null;
+		$params['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). ' + '.explode(" ", $due_date_arr[$due_days['payment_terms']])[0].' days'));
 
 		$order = Order::create($params);
 
@@ -350,6 +354,25 @@ class OrdersController extends Controller
 		
 		return view('admin.orders.payment_history', compact('payment_arr'));
 		
+	}
+	
+	public function order_summary($id){
+		//abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+		$order = Order::find($id);	
+
+        $order = $order->load('sales_manager', 'customer');
+		
+		$order['order_item'] = DB::table('order_items')
+					->join('products','order_items.product_id', '=', 'products.id')
+					->join('categories','order_items.category_id', '=', 'categories.id')
+					->join('categories as c','order_items.sub_category_id', '=', 'c.id')
+					->join('taxes','taxes.id', '=', 'order_items.tax_id')
+					->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id','order_items.quantity','products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+					->where('order_items.order_id', $order->id)
+					->get()->toArray();
+
+        //return view('admin.orders.show', compact('order'));
 	}
 
 }

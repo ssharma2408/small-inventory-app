@@ -113,9 +113,13 @@
                                     <a class="btn btn-xs btn-primary" href="/admin/orders/payment/{{$order->id}}">
                                         View Payment
                                     </a>
-                                @endcan
+									@endcan
 								@endif
-
+								@if($order->status ==4)
+									 <a class="btn btn-xs btn-primary" href="/admin/orders/order_summary/{{$order->id}}">
+                                        Download PDF
+                                    </a>
+								@endif
                             </td>
 
                         </tr>

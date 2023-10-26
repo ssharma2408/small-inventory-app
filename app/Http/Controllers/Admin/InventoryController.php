@@ -61,6 +61,8 @@ class InventoryController extends Controller
 				
 				$expense_pay_detail = [];
 				
+				$due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
+				
 				$file = $request->file('po_file');
 				
 				$extension  = $file->getClientOriginalExtension();
@@ -75,6 +77,7 @@ class InventoryController extends Controller
 				$expense_detail = $request->all();
 				
 				$expense_detail['image_url'] = $name;
+				$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
 				
 				if($request->box_or_unit == "0"){
 					$request->stock = $request->stock * $request->package_val;
@@ -126,6 +129,7 @@ class InventoryController extends Controller
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
+		$due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
 		$product = Product::find($request->product_id);
 		
 		if(($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)){
@@ -183,6 +187,8 @@ class InventoryController extends Controller
 					   'expense_pending' => $request->final_price
 					]);
 		}
+		
+		$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at. ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
 
 		$inventory->update($expense_detail);	
 
