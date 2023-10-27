@@ -62,7 +62,8 @@ class InventoryApiController extends Controller
                 $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
 
                 if ($request->box_or_unit == "0") {
-                    $request->stock = $request->stock * $request->package_val;
+                    $pro = Product::where('id', $request->product_id)->first();
+                    $request->stock = $request->stock * $pro->box_size;
                 }
 
                 $inventory = Inventory::create($expense_detail);
@@ -98,14 +99,14 @@ class InventoryApiController extends Controller
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
         $due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
-		$product = Product::find($request->product_id);
-		
-		if(($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)){
-			
-			$inc_stock = 0;
-			$dec_stock = 0;
-			
-		/* 	if($inventory->box_or_unit != $request->box_or_unit){
+        $product = Product::find($request->product_id);
+
+        if (($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)) {
+
+            $inc_stock = 0;
+            $dec_stock = 0;
+
+            /* 	if($inventory->box_or_unit != $request->box_or_unit){
 				
 				if($request->box_or_unit == "0"){
 					$inc_stock = $request->stock * $request->package_val;
@@ -116,49 +117,50 @@ class InventoryApiController extends Controller
 				}
 			} */
 
- 			if($inventory->stock != $request->stock){
+            if ($inventory->stock != $request->stock) {
 
-				if($request->box_unit == "0"){
-					$dec_stock = $inventory->stock * $request->package_val;
-					$inc_stock = $request->stock * $request->package_val;					
-				}else{
-					$dec_stock = $inventory->stock;
-					$inc_stock = $request->stock;
-				}
-			} 
+                if ($request->box_unit == "0") {
+                    $pro = Product::where('id', $request->product_id)->first();
+                    $dec_stock = $inventory->stock * $pro->box_size;
+                    $inc_stock = $request->stock * $pro->box_size;
+                } else {
+                    $dec_stock = $inventory->stock;
+                    $inc_stock = $request->stock;
+                }
+            }
 
-			$product->decrement('stock', $dec_stock);
-			$product->increment('stock', $inc_stock);			
-		}
-		
-		 $expense_detail = $request->all();
-		
-		if($request->hasFile('po_file')){
-			
-			$file = $request->file('po_file');
-			
-			$extension  = $file->getClientOriginalExtension();
-			$name = time() . '.' . $extension;
-			
-			$store = Storage::disk('do')->put(
-				'/'.$_ENV['DO_FOLDER'].'/'.$name,
-				file_get_contents($request->file('po_file')->getRealPath()),
-				'public'
-				);
-			$expense_detail['image_url'] = $name;
-		}
-		
-		if(($inventory->final_price != $request->final_price)){
-			ExpensePaymentMaster::where('expense_id', $inventory->id)
-				   ->update([
-					   'expense_total' => $request->final_price,
-					   'expense_pending' => $request->final_price
-					]);
-		}
-		
-		$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at. ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
+            $product->decrement('stock', $dec_stock);
+            $product->increment('stock', $inc_stock);
+        }
 
-		$inventory->update($expense_detail);
+        $expense_detail = $request->all();
+
+        if ($request->hasFile('po_file')) {
+
+            $file = $request->file('po_file');
+
+            $extension  = $file->getClientOriginalExtension();
+            $name = time() . '.' . $extension;
+
+            $store = Storage::disk('do')->put(
+                '/' . $_ENV['DO_FOLDER'] . '/' . $name,
+                file_get_contents($request->file('po_file')->getRealPath()),
+                'public'
+            );
+            $expense_detail['image_url'] = $name;
+        }
+
+        if (($inventory->final_price != $request->final_price)) {
+            ExpensePaymentMaster::where('expense_id', $inventory->id)
+                ->update([
+                    'expense_total' => $request->final_price,
+                    'expense_pending' => $request->final_price
+                ]);
+        }
+
+        $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
+
+        $inventory->update($expense_detail);
 
         return (new InventoryResource($inventory))
             ->response()
