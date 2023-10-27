@@ -30,8 +30,6 @@ class InventoryApiController extends Controller
             $rw['edit_key'] = in_array($rw->id,$expense_id) ? 1 : 0;
             array_push($expense_id_arr, $rw);
         }
-
-        return $expense_id_arr;
         return new InventoryResource($inventories);
     }
 

@@ -29,7 +29,10 @@ class OrderPaymentApiController extends Controller
             ->join('customers', 'order_payment_master.customer_id', '=', 'customers.id')
             ->whereNotIn('payment_status', [1])
             ->get();
-        return $orders;
+        return ;
+        return (new OrderPaymentResource($orders))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function store(StoreOrderPaymentRequest $request)
