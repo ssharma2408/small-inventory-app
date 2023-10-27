@@ -395,7 +395,7 @@ class OrdersController extends Controller
 
         //$pdf= PDF::loadHTML($html);
 
-        $pdf = PDF::loadView('admin.orders.order_summary', compact('invoiceItems', 'invoiceData'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true]);
+        $pdf = PDF::loadView('admin.orders.order_summary', compact('invoiceItems', 'invoiceData'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
 
         return $pdf->download('invoice.pdf');
     }

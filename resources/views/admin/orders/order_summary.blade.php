@@ -69,8 +69,9 @@
             ">
                     <p>Invoice 4500</p>
                 </td>
-                <td style="text-align: right; width: 120px">
-                    <img src="logo.jpg" alt="True Leaf" height="120" width="120" />
+                <td style="text-align: right; width: 150px">
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode(file_get_contents(base_path('public/images/logo.jpg'))); ?>"
+                        alt="True Leaf" height="150" width="150" />
                 </td>
             </tr>
         </table>
