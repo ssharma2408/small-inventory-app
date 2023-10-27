@@ -17,6 +17,7 @@ use App\Models\Tax;
 use App\Models\User;
 use DB;
 use Gate;
+use Storage;
 use Illuminate\Http\Request;
 use PDF;
 use Symfony\Component\HttpFoundation\Response;
@@ -377,6 +378,12 @@ class OrdersController extends Controller
             ->get()->toArray();        
 
         $pdf = PDF::loadView('admin.orders.order_summary', compact('order'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+		
+		$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/orders/order_'.$order->id.'.pdf',
+				$pdf->output(),
+				'public'
+				);
 
         return $pdf->download('invoice.pdf');
     }
