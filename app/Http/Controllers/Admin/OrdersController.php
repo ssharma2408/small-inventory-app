@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use DB;
 use Auth;
+use PDF;
 
 class OrdersController extends Controller
 {
@@ -372,7 +373,28 @@ class OrdersController extends Controller
 					->where('order_items.order_id', $order->id)
 					->get()->toArray();
 
-        //return view('admin.orders.show', compact('order'));
+        //return view('admin.orders.order_summary', compact('order'));
+		
+		$invoiceItems = [
+            ['item' => 'Website Design', 'amount' => 50.50],
+            ['item' => 'Hosting (3 months)', 'amount' => 80.50],
+            ['item' => 'Domain (1 year)', 'amount' => 10.50]
+        ];
+        $invoiceData = [
+            'invoice_id' => 123,
+            'transaction_id' => 1234567,
+            'payment_method' => 'Paypal',
+            'creation_date' => date('M d, Y'),
+            'total_amount' => 141.50
+        ];
+
+		//$html = view('admin.orders.order_summary', compact('order'));
+                    
+                    //$pdf= PDF::loadHTML($html);
+					
+			$pdf = PDF::loadView('admin.orders.order_summary', compact('invoiceItems', 'invoiceData'));
+                   
+                    return $pdf->download('invoice.pdf');		
 	}
 
 }
