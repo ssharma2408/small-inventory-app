@@ -37,6 +37,9 @@ class OrdersApiController extends Controller
 	{
 		$order_pay_detail = [];
 		$params = 	$request->all();
+		$due_date_arr = Customer::PAYMENT_TERMS_SELECT;
+		$due_days = Customer::select('payment_terms')->where('id', $request->customer_id)->first()->toArray();
+		$params['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
 
 		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
 		$params['delivery_agent_id'] = null;
@@ -106,50 +109,51 @@ class OrdersApiController extends Controller
 
 	public function update(UpdateOrderRequest $request, Order $order)
 	{
-		$params = 	$request->all();
+		$params = $request->all();
 
-		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
-		$params['delivery_agent_id'] = ($params['status'] == 4) ? $params['delivery_agent_id'] : null;
+        $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+        $params['delivery_agent_id'] = ($params['status'] == 4) ? $params['delivery_agent_id'] : null;
 
-		$order->update($params);
+        $order->update($params);
 
-		DB::table('order_items')->where('order_id', $order->id)->delete();
+        DB::table('order_items')->where('order_id', $order->id)->delete();
 
-		$data = [];
-		for ($i = 0; $i < count($request['item_name']); $i++) {
-			if (!empty($request['item_name']) && !empty($request['item_quantity'])) {
-				$item = [];
-				$item['product_id'] = $request['item_name'][$i];
-				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];
-				$item['category_id'] = $request['item_category'][$i];
-				$item['sub_category_id'] = $request['item_subcategory'][$i];
-				$item['sale_price'] = $request['item_sale_priec'][$i];
-				$item['tax_id'] = $request['item_tax_id'][$i];
-				$item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
-				$data[] = $item;
-			}
-		}
+        $data = [];
+        for ($i = 0; $i < count($request['item_name']); $i++) {
+            if (!empty($request['item_name']) && !empty($request['item_quantity'])) {
+                $item = [];
+                $item['product_id'] = $request['item_name'][$i];
+                $item['order_id'] = $order->id;
+                $item['quantity'] = $request['item_quantity'][$i];
+                $item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i];
+                $item['sale_price'] = $request['item_sale_priec'][$i];
+                $item['tax_id'] = $request['item_tax_id'][$i];
+                $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+                $data[] = $item;
+            }
 
-		if (!empty($data)) {
-			OrderItem::insert($data);
-		}
+        }
 
-		//If order is accepted by Admin then decrease the stock
-		if ($params['status'] == 4) {
-			foreach ($data as $ord_item) {
-				$product = Product::find($ord_item['product_id']);
-				$product->decrement('stock', $ord_item['quantity']);
-			}
-		}
+        if (!empty($data)) {
+            OrderItem::insert($data);
+        }
 
-		if (($order->order_total != $request->order_total)) {
-			OrderPaymentMaster::where('order_id', $order->id)
-				->update([
-					'order_total' => $request->order_total,
-					'order_pending' => $request->order_total
-				]);
-		}
+        //If order is accepted by Admin then decrease the stock
+        if ($params['status'] == 4) {
+            foreach ($data as $ord_item) {
+                $product = Product::find($ord_item['product_id']);
+                $product->decrement('stock', $ord_item['quantity']);
+            }
+        }
+
+        if (($order->order_total != $request->order_total)) {
+            OrderPaymentMaster::where('order_id', $order->id)
+                ->update([
+                    'order_total' => $request->order_total,
+                    'order_pending' => $request->order_total,
+                ]);
+        }
 		return (new OrderResource($order))
 			->response()
 			->setStatusCode(Response::HTTP_ACCEPTED);
