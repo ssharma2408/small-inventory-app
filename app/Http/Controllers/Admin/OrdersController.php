@@ -361,7 +361,7 @@ class OrdersController extends Controller
 
     public function order_summary($id)
     {
-        //abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $order = Order::find($id);
 
@@ -374,28 +374,9 @@ class OrdersController extends Controller
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
             ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
-            ->get()->toArray();
+            ->get()->toArray();        
 
-        //return view('admin.orders.order_summary', compact('order'));
-
-        $invoiceItems = [
-            ['item' => 'Website Design', 'amount' => 50.50],
-            ['item' => 'Hosting (3 months)', 'amount' => 80.50],
-            ['item' => 'Domain (1 year)', 'amount' => 10.50],
-        ];
-        $invoiceData = [
-            'invoice_id' => 123,
-            'transaction_id' => 1234567,
-            'payment_method' => 'Paypal',
-            'creation_date' => date('M d, Y'),
-            'total_amount' => 141.50,
-        ];
-
-        //$html = view('admin.orders.order_summary', compact('order'));
-
-        //$pdf= PDF::loadHTML($html);
-
-        $pdf = PDF::loadView('admin.orders.order_summary', compact('invoiceItems', 'invoiceData'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf = PDF::loadView('admin.orders.order_summary', compact('order'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
 
         return $pdf->download('invoice.pdf');
     }

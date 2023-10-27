@@ -67,7 +67,7 @@
               font-weight: bold;
               color: #2a3e10;
             ">
-                    <p>Invoice 4500</p>
+                    <p>Order {{$order->id}}</p>
                 </td>
                 <td style="text-align: right; width: 150px">
                     <img src="data:image/jpeg;base64,<?php echo base64_encode(file_get_contents(base_path('public/images/logo.jpg'))); ?>"
@@ -80,15 +80,13 @@
             <tr>
                 <td style="text-align: left;  width:230px;">
                     <p style="font-size: 14px"><strong>BILL TO</strong></p>
-                    <p>Mr Asad</p>
-                    <p>Apna Farm Halal Meat &amp; Grocery, Brampton</p>
-                    <p>50 Sky Harbour Drive Unit 5-7 Brampton L6Y 6B8</p>
+                    <p>{{$order->customer->name}}</p>
+                    <p>{{$order->customer->address}}</p>
                 </td>
                 <td style="text-align: left;  width:230px;">
                     <p style="font-size: 14px"><strong>SHIP TO</strong></p>
-                    <p>Mr Asad</p>
-                    <p>Apna Farm Halal Meat &amp; Grocery, Brampton</p>
-                    <p>50 Sky Harbour Drive Unit 5-7 Brampton L6Y 6B8</p>
+                    <p>{{$order->customer->name}}</p>
+                    <p>{{$order->customer->address}}</p>
                 </td>
                 <td style="text-align: center">
                     <table style="width: 100%;">
@@ -101,7 +99,7 @@
                     background-color: #d4d9cf;
                     color: #2a3e10;
                   ">
-                                <p>DATE<br />21/09/2023</p>
+                                <p>DATE<br />{{$order->created_at->format('j F, Y')}}</p>
                             </td>
                             <td style="
                     padding: 20px 10px;
@@ -111,7 +109,7 @@
                     background-color: #2a3e10;
                     color: #ffffff;
                   ">
-                                <p>PLEASE PAY<br /><strong>$1,096.80</strong></p>
+                                <p>PLEASE PAY<br /><strong>${{number_format($order->order_total, 2)}}</strong></p>
                             </td>
                             <td style="
                     padding: 20px 10px;
@@ -121,7 +119,7 @@
                     background-color: #d4d9cf;
                     color: #2a3e10;
                   ">
-                                <p>DUE DATE<br />21/10/2023</p>
+                                <p>DUE DATE<br />{{$order->due_date->format('j F, Y')}}</p>
                             </td>
                         </tr>
                     </table>
@@ -151,253 +149,37 @@
                         <p style="margin-bottom: 0;"><strong>AMOUNT</strong></p>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <p><strong>Apple, Barbican - 330ml x (4x6)</strong></p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>3</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>72.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>
-                            <strong>Pomegranate, Barbican - 330ml x </strong><strong>(4x6)</strong>
-                        </p>
-                    </td>
-                    <td>
-                        <p>Premium Quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>6</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>144.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Peach, Barbican - 330ml x (4x6)</strong></p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>5</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>120.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>
-                            <strong>Pineapple , Barbican - 330ml x </strong><strong>(4x6)</strong>
-                        </p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>5</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>120.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>
-                            <strong>Strawberry, Barbican - 330ml x </strong><strong>(4x6)</strong>
-                        </p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>3</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>72.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Raspberry, Barbican - 330ml </strong><strong>(4x6)</strong></p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>2</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Lemon, Barbican - 330ml (4x6)</strong></p>
-                    </td>
-                    <td>
-                        <p>Premium quality</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>HST ON</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>1</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>24.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Shangrila Chilli garlic sauce 800g</strong></p>
-                    </td>
-                    <td>
-                        <p>12&nbsp;&nbsp;&nbsp; 800g</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Out of Scope</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>1</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Shangrila Soya sauce 800g</strong></p>
-                    </td>
-                    <td>
-                        <p>12&nbsp;&nbsp;&nbsp; 800g</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Out of Scope</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>1</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Shangrila - Chilli Sauce</strong></p>
-                    </td>
-                    <td>
-                        <p>400ml</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Out of Scope</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>1</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Shangrila Soya sauce 800g</strong></p>
-                    </td>
-                    <td>
-                        <p>400ml</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Out of Scope</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>1</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>48.00</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><strong>Green cardamom 100g</strong></p>
-                    </td>
-                    <td>
-                        <p>100g x 2cs</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Out of Scope</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>72</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>3.15</p>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>226.80</p>
-                    </td>
-                </tr>
-
+				@foreach($order->order_item as $item)
+					<tr>
+						<td>
+							<p><strong>{{ $item->name }}</strong></p>
+						</td>
+						<td>
+							<p></p>
+						</td>
+						<td style="text-align: right;">
+							<p>{{ $item->title }}</p>
+						</td>
+						<td style="text-align: right;">
+							<p>{{ $item->quantity }}</p>
+						</td>
+						<td style="text-align: right;">
+							<p>{{ $item->sale_price }}</p>
+						</td>
+						<td style="text-align: right;">
+							@php
+								$qty = $item->quantity;
+								if($item->is_box){
+									$qty = $item->quantity * $item->box_size;
+								}
+								$amount = $qty * $item->sale_price;
+								
+								$total = $amount + (($amount * $item->tax)/100);
+							@endphp
+							<p>{{ $total }}</p>
+						</td>
+					</tr>
+				@endforeach
             </tbody>
         </table>
         <table style="width: 100%" cellpadding="10">
@@ -409,16 +191,16 @@
                     <table style="width: 100%">
                         <tr>
                             <td>SUBTOTAL</td>
-                            <td style="text-align: right">1,018.80</td>
+                            <td style="text-align: right">${{number_format($order->order_total_without_tax, 2)}}</td>
                         </tr>
                         <tr>
-                            <td>HST (ON) @ 13%</td>
-                            <td style="text-align: right">78.00</td>
+                            <td>{{ $item->title }} @ {{$order->tax}}%</td>
+                            <td style="text-align: right">${{number_format($order->order_tax, 2)}}</td>
                         </tr>
                         <tr>
                             <td style="padding-bottom: 16px">TOTAL</td>
                             <td style="text-align: right; padding-bottom: 16px">
-                                1,096.80
+                                ${{number_format($order->order_total, 2)}}
                             </td>
                         </tr>
                         <tr style="
@@ -432,7 +214,7 @@
                     font-size: 24px;
                     padding-bottom: 10px;
                   ">
-                                $1,096.80
+                                ${{number_format($order->order_total, 2)}}
                             </td>
                         </tr>
                         <tr>

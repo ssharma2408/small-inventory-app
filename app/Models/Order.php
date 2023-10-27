@@ -12,6 +12,10 @@ class Order extends Model
     use SoftDeletes, HasFactory;
 
     public $table = 'orders';
+	
+	protected $casts = [
+		'due_date' => 'datetime',
+	];
 
     protected $dates = [
         'created_at',
