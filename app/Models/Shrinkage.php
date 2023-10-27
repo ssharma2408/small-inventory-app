@@ -23,6 +23,10 @@ class Shrinkage extends Model implements HasMedia
         'updated_at',
         'deleted_at',
     ];
+	
+	protected $casts = [
+		'date' => 'date',
+	];
 
     protected $fillable = [
         'product_id',
