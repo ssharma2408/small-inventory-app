@@ -87,6 +87,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('expense-payments/destroy', 'ExpensePaymentController@massDestroy')->name('expense-payments.massDestroy');
 	Route::get('expense-payments/get_due_payment/{id}', 'ExpensePaymentController@get_due_payment')->name('expense-payments.get_due_payment');
     Route::resource('expense-payments', 'ExpensePaymentController');
+	
+	// Reports
+	Route::get('reports/get_expense_report', 'ReportsController@get_expense_report')->name('reports.get_expense_report');
+	Route::get('reports/get_order_report', 'ReportsController@get_order_report')->name('reports.get_order_report');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

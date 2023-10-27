@@ -67,4 +67,9 @@ class Order extends Model
     {
         return $this->belongsToMany(OrderItem::class);
     }
+	
+	public function payment()
+    {
+        return $this->belongsTo(OrderPaymentMaster::class, 'id');
+    }
 }

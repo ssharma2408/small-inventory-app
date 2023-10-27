@@ -274,24 +274,24 @@
                         <ul class="nav nav-treeview">
 							<!--@can('customer_access') -->
 								<li class="nav-item">
-									<a href="" class="nav-link {{ request()->is("admin/reports") || request()->is("admin/reports/*") ? "active" : "" }}">
+									<a href="{{ route('admin.reports.get_expense_report') }}" class="nav-link {{ request()->is("admin/reports/get_expense_report") || request()->is("admin/reports/get_expense_report") ? "active" : "" }}">
 										<i class="fa-fw nav-icon fas fa-cogs">
 
 										</i>
 										<p>
-											{{ trans('reports.purchase_report') }}
+											{{ trans('reports.purchase_report.title') }}
 										</p>
 									</a>
 								</li>
 							<!--@endcan -->
 							<!--@can('customer_access') -->
 								<li class="nav-item">
-									<a href="" class="nav-link {{ request()->is("admin/reports") || request()->is("admin/reports/*") ? "active" : "" }}">
+									<a href="{{ route('admin.reports.get_order_report') }}" class="nav-link {{ request()->is("admin/reports/get_order_report") || request()->is("admin/reports/get_order_report") ? "active" : "" }}">
 										<i class="fa-fw nav-icon fas fa-cogs">
 
 										</i>
 										<p>
-											{{ trans('reports.order_report') }}
+											{{ trans('reports.order_report.title') }}
 										</p>
 									</a>
 								</li>

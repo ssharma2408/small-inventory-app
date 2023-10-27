@@ -200,8 +200,8 @@
                 <div class="card-body">
                    Total <b>2</b>					
 						<ul>						
-							<li></li>
-							<li></li>
+							<li>Purchase Report</li>
+							<li>Order Report</li>
 						</ul>					
 					<a href="">View All</a>
                 </div>
