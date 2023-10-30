@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('suppliers', 'SupplierApiController');
 
     // Customers
+    Route::post('upload-image','CustomersApiController@uploaddata');
     Route::apiResource('customers', 'CustomersApiController');
 
     // Inventory

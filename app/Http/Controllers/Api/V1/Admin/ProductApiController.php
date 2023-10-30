@@ -26,32 +26,16 @@ class ProductApiController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        if ($request->hasFile('product_image')) {
-            $file = $request->file('product_image');
-
-            $extension  = $file->getClientOriginalExtension();
-            $name = time() . '_' . str_replace(" ", "_", $request->name) . '.' . $extension;
-
-            $store = Storage::disk('do')->put(
-                '/' . $_ENV['DO_FOLDER'] . '/' . $name,
-                file_get_contents($request->file('product_image')->getRealPath()),
-                'public'
-            );
-
             /* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
 			
 			$cdn_url = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url); */
 
             $product_detail = $request->all();
-
-            $product_detail['image_url'] = $name;
-
             $product = Product::create($product_detail);
 
             return (new ProductResource($product))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
-        }
     }
 
     public function show(Product $product)
@@ -63,27 +47,7 @@ class ProductApiController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        return $request->all();
         $product_detail = $request->all();
-		
-		if($request->hasFile('product_image')){
-			$file = $request->file('product_image');
-			
-			$extension  = $file->getClientOriginalExtension();
-			$name = time() .'_' . str_replace(" ", "_", $request->name) . '.' . $extension;
-			
-			$store = Storage::disk('do')->put(
-				'/'.$_ENV['DO_FOLDER'].'/'.$name,
-				file_get_contents($request->file('product_image')->getRealPath()),
-				'public'
-				);
-			
-			/* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
-			
-			$product_detail['image_url'] = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url); */
-			
-			$product_detail['image_url'] = $name;
-		}	
         $product->update($product_detail);  
         return (new ProductResource($product))
             ->response()
