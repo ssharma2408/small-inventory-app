@@ -93,7 +93,7 @@
                 @if($errors->has('purchase_price'))
                     <span class="text-danger">{{ $errors->first('purchase_price') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.purchase_price_helper') }}</span>
+               <span class="help-block h6">* If you are selecting BOX, then add Box price<br>* If you are selecting UNIT, then add Unit price</span>
             </div>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>

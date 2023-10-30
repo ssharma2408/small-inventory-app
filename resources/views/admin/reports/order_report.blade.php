@@ -28,7 +28,7 @@
                             {{ trans('reports.order_report.no') }}
                         </th>
 						<th>
-                            {{ trans('reports.order_report.supplier') }}
+                            {{ trans('reports.order_report.customer') }}
                         </th>
 						<th>
                             {{ trans('reports.order_report.memo') }}
@@ -46,7 +46,21 @@
                 </thead>
                 <tbody>
 					@foreach($orders as $key => $order)
-                        <tr data-entry-id="{{ $order->id }}">
+                        @php
+							if(!empty($order->payment)){
+								$bgcolor = "";
+								if($order->payment->order_pending == 0 && $order->payment->payment_status == 1){
+									$bgcolor = "#75dc75";
+								}else{
+									if(strtotime($order->due_date) < strtotime(date('Y-m-d H:i:s'))){
+										if(!empty($order->due_date)){
+											$bgcolor = "#ff5050";
+										}
+									}
+								}
+							}
+						@endphp
+						<tr style="background-color: {{$bgcolor}}" data-entry-id="{{ $order->id }}">
                             <td>
 
                             </td>
@@ -54,7 +68,7 @@
 								{{ date('d/m/Y', strtotime($order->created_at)) }}
                             </td>
 							<td>
-								Expense
+								Order
                             </td>
 							<td>
 								{{ $order->id }}
@@ -75,13 +89,13 @@
 									@else
 										@if(strtotime($order->due_date) < strtotime(date('Y-m-d H:i:s')))
 											@if(!empty($order->due_date))
-												{{ $status[2] }} {{round((strtotime(date('Y-m-d'))- strtotime($order->due_date)) / (60 * 60 * 24))}} days
+												{{ $status[2] }} {{round((strtotime(date('Y-m-d')) - strtotime($order->due_date)) / (60 * 60 * 24)) + 1}} days
 											@endif
 										@else
 											@if(date('Y-m-d', strtotime($order->due_date)) == date('Y-m-d', strtotime(date('Y-m-d H:i:s'))))
 												{{ $status[0] }} today
 											@else
-												{{ $status[0] }} {{round((strtotime($order->due_date)- strtotime(date('Y-m-d'))) / (60 * 60 * 24))}} days
+												{{ $status[0] }} {{round((strtotime($order->due_date) - strtotime(date('Y-m-d'))) / (60 * 60 * 24)) - 1}} days
 											@endif
 										@endif
 									@endif
