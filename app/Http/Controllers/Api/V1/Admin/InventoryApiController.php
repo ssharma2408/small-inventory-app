@@ -35,57 +35,43 @@ class InventoryApiController extends Controller
 
     public function store(StoreInventoryRequest $request)
     {
+
         $expense_master = ExpensePaymentMaster::where(['supplier_id' => $request->supplier_id, 'invoice_number' => $request->invoice_number])->first();
 
         if (empty($expense_master)) {
+            $expense_pay_detail = [];
 
-            if ($request->hasFile('po_file')) {
+            $due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
 
-                $expense_pay_detail = [];
+            $expense_detail = $request->all();
 
-                $due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
+            $expense_detail['image_url'] = $request->po_file;
+            $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
 
-                $file = $request->file('po_file');
-
-                $extension  = $file->getClientOriginalExtension();
-                $name = time() . '.' . $extension;
-
-                $store = Storage::disk('do')->put(
-                    '/' . $_ENV['DO_FOLDER'] . '/' . $name,
-                    file_get_contents($request->file('po_file')->getRealPath()),
-                    'public'
-                );
-
-                $expense_detail = $request->all();
-
-                $expense_detail['image_url'] = $name;
-                $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
-
-                if ($request->box_or_unit == "0") {
-                    $pro = Product::where('id', $request->product_id)->first();
-                    $request->stock = $request->stock * $pro->box_size;
-                }
-
-                $inventory = Inventory::create($expense_detail);
-
-                $expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
-                $expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
-                $expense_pay_detail['expense_total'] = $expense_detail['final_price'];
-                $expense_pay_detail['expense_paid'] = 0;
-                $expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
-                $expense_pay_detail['payment_status'] = 0;
-                $expense_pay_detail['expense_id'] = $inventory->id;
-
-                ExpensePaymentMaster::create($expense_pay_detail);
-
-                $product = Product::find($request->product_id);
-                $product->increment('stock', $request->stock);
-                $inventories = Inventory::where('id', $inventory->id)->with(['supplier', 'product', 'tax', 'media'])->get();
-                return (new InventoryResource($inventories))
-                    ->response()
-                    ->setStatusCode(Response::HTTP_CREATED);
+            if ($request->box_or_unit == "0") {
+                $pro = Product::where('id', $request->product_id)->first();
+                $request->stock = $request->stock * $pro->box_size;
             }
-        } else {
+            return $expense_detail;
+
+            $inventory = Inventory::create($expense_detail);
+
+            $expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
+            $expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
+            $expense_pay_detail['expense_total'] = $expense_detail['final_price'];
+            $expense_pay_detail['expense_paid'] = 0;
+            $expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
+            $expense_pay_detail['payment_status'] = 0;
+            $expense_pay_detail['expense_id'] = $inventory->id;
+
+            ExpensePaymentMaster::create($expense_pay_detail);
+
+            $product = Product::find($request->product_id);
+            $product->increment('stock', $request->stock);
+            $inventories = Inventory::where('id', $inventory->id)->with(['supplier', 'product', 'tax', 'media'])->get();
+            return (new InventoryResource($inventories))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
         }
     }
 
@@ -134,21 +120,7 @@ class InventoryApiController extends Controller
         }
 
         $expense_detail = $request->all();
-
-        if ($request->hasFile('po_file')) {
-
-            $file = $request->file('po_file');
-
-            $extension  = $file->getClientOriginalExtension();
-            $name = time() . '.' . $extension;
-
-            $store = Storage::disk('do')->put(
-                '/' . $_ENV['DO_FOLDER'] . '/' . $name,
-                file_get_contents($request->file('po_file')->getRealPath()),
-                'public'
-            );
-            $expense_detail['image_url'] = $name;
-        }
+        $expense_detail['image_url'] = $request->po_file;
 
         if (($inventory->final_price != $request->final_price)) {
             ExpensePaymentMaster::where('expense_id', $inventory->id)
