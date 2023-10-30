@@ -46,7 +46,21 @@
                 </thead>
                 <tbody>
 					@foreach($inventories as $key => $inventory)
-                        <tr data-entry-id="{{ $inventory->id }}">
+
+						@php
+							$bgcolor = "";
+							if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1){
+								$bgcolor = "#75dc75";
+							}else{
+								if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s'))){
+									if(!empty($inventory->due_date)){
+										$bgcolor = "#ff5050";
+									}
+								}
+							}
+						@endphp
+						
+						<tr style="background-color: {{$bgcolor}}" data-entry-id="{{ $inventory->id }} ">
                             <td>
 
                             </td>
@@ -74,13 +88,13 @@
 								@else
 									@if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s')))
 										@if(!empty($inventory->due_date))
-											{{ $status[2] }} {{round((strtotime(date('Y-m-d'))- strtotime($inventory->due_date)) / (60 * 60 * 24))}} days
+											{{ $status[2] }} {{round((strtotime(date('Y-m-d')) - strtotime($inventory->due_date)) / (60 * 60 * 24)) + 1}} days
 										@endif
 									@else
 										@if(date('Y-m-d', strtotime($inventory->due_date)) == date('Y-m-d', strtotime(date('Y-m-d H:i:s'))))
 											{{ $status[0] }} today
 										@else
-											{{ $status[0] }} {{round((strtotime($inventory->due_date)- strtotime(date('Y-m-d'))) / (60 * 60 * 24))}} days
+											{{ $status[0] }} {{round((strtotime($inventory->due_date) - strtotime(date('Y-m-d'))) / (60 * 60 * 24)) - 1}} days
 										@endif
 									@endif
 								@endif

@@ -127,6 +127,7 @@
 									}
 										echo '<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" '.$checked.' />
 										<label class="form-check-label ml-3">Is Box</label>
+										<div style="font-size:12px" id="box_size">Box Size: '.$order_item->box_size.'</div>
 										<input type="hidden" id="package_val" value="'.$order_item->box_size.'" name="package_val" />
 									</div>
 									<div class="col-md-1">
@@ -139,10 +140,10 @@
 									</div>
 									<div class="col-md-1">
 										<select class="form-control select2 tax_id" name="item_tax_id[]" required>
-										<option value="" >Please Select</option>';
-											$selected = "";
+										<option value="" >Please Select</option>';											
 											foreach($taxes as $tax){
-												if($order_item->tax_id == $tax->id){
+												$selected = "";
+												if($order_item->tax_id == $tax['id']){
 													$selected = "selected";
 												}
 												echo '<option value="'.$tax['id'].'" '.$selected.'>'.$tax['title'].'</option>';
@@ -236,9 +237,13 @@
                 <label class="required">{{ trans('cruds.order.fields.status') }}</label>
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
                     <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Order::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', $order->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
+                    @if(\Auth::user()->roles()->first()->title == "Sales Manager")
+						<option value="3" {{ old('status', '3') === (string) 3 ? 'selected' : '' }}>Review</option>
+					@else
+						@foreach(App\Models\Order::STATUS_SELECT as $key => $label)
+							<option value="{{ $key }}" {{ old('status', $order->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+						@endforeach
+					@endif
                 </select>
                 @if($errors->has('status'))
                     <span class="text-danger">{{ $errors->first('status') }}</span>
@@ -293,7 +298,7 @@
 		});
 		
 		function row_html(){
-			return '<div class="row mb-3 item_row"><div class="cat_container col-md-1"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+			return '<div class="row mb-3 item_row"><div class="cat_container col-md-1"><?php echo $ddl_html;?></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html;?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
 		}
 		
 		$(document).on("change", ".order_item", function () {
@@ -302,6 +307,7 @@
 				var min_selling_price = stock.parent().next().find('input');				
 				var max_selling_price = min_selling_price.parent().next().find('input');
 				var package_val = max_selling_price.parent().next().find('input[type=hidden]');
+				var box_size = package_val.prev();
 				var taxt_ddl = package_val.parent().next().next().next().find('select');
 				var tax_field = package_val.parent().next().next().next().find('input[type=hidden]');
 
@@ -314,6 +320,7 @@
 								min_selling_price.val(data.product.selling_price);
 								max_selling_price.val(data.product.maximum_selling_price);
 								package_val.val(data.product.box_size);
+								box_size.html('Box Size: '+data.product.box_size);
 								taxt_ddl.val(data.product.tax_id).change();
 							}
 						}
