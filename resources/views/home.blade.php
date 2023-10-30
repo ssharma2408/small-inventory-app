@@ -199,11 +199,10 @@
 
                 <div class="card-body">
                    Total <b>2</b>					
-						<ul>						
-							<li>Purchase Report</li>
-							<li>Order Report</li>
-						</ul>					
-					<a href="">View All</a>
+					<ul>						
+						<li><a href="{{ route('admin.reports.get_expense_report') }}">Purchase Report</a></li>
+						<li><a href="{{ route('admin.reports.get_order_report') }}">Order Report</a></li>
+					</ul>					
                 </div>
             </div>
         </div>

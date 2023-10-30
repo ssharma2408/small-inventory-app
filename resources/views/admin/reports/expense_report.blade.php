@@ -60,7 +60,7 @@
 								{{ $inventory->invoice_number }}
                             </td>
 							<td>
-								{{ $inventory->supplier->supplier_name }}
+								{{ $inventory->supplier->supplier_name ?? '' }}
                             </td>
 							<td>
 								
