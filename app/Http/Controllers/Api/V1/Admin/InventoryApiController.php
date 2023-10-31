@@ -52,7 +52,6 @@ class InventoryApiController extends Controller
                 $pro = Product::where('id', $request->product_id)->first();
                 $request->stock = $request->stock * $pro->box_size;
             }
-            return $expense_detail;
 
             $inventory = Inventory::create($expense_detail);
 
