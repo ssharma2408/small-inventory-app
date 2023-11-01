@@ -18,7 +18,12 @@ class Inventory extends Model implements HasMedia
 
     protected $appends = [
         'po_file',
-    ];    
+    ];
+
+    public const BOX_OR_UNIT_RADIO = [
+        '0' => 'Box',
+        '1' => 'Unit',
+    ];
 
     protected $dates = [
         'created_at',
@@ -40,11 +45,16 @@ class Inventory extends Model implements HasMedia
 
     protected $fillable = [
         'supplier_id',
-		'expense_total',
-        'expense_tax',
+        'product_id',
+        'box_or_unit',
+        'stock',
+        'purchase_price',
         'discount_type',
         'discount',
+        'tax_id',
         'final_price',
+		'category_id',
+		'sub_category_id',
 		'invoice_number',
 		'days_payable_outstanding',
 		'due_date',
@@ -68,12 +78,32 @@ class Inventory extends Model implements HasMedia
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
-    }    
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id');
+    }
 
     public function getPoFileAttribute()
     {
         return $this->getMedia('po_file')->last();
-    }	
+    }
+	
+	public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+	
+	public function sub_category()
+    {
+        return $this->belongsTo(Category::class, 'sub_category_id');
+    }
 	
 	public function payment()
     {
