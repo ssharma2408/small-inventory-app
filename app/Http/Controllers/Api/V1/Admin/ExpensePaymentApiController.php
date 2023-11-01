@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\ExpensePaymentResource;
 use App\Models\ExpensePayment;
 use App\Models\ExpensePaymentMaster;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
