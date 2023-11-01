@@ -20,7 +20,6 @@ class StoreInventoryRequest extends FormRequest
         return [
 			'item_name' => [
                 'required',
-                'integer',
             ],
 			'expense_tax' => [
                 'numeric',

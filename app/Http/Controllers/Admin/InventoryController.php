@@ -57,7 +57,7 @@ class InventoryController extends Controller
         $expense_master = ExpensePaymentMaster::where(['supplier_id'=>$request->supplier_id , 'invoice_number'=>$request->invoice_number])->first();		
 		
 		if(empty($expense_master)){
-		
+
 			$expense_detail = $request->all();
 			$expense_pay_detail = [];
 			$due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;	
@@ -79,7 +79,7 @@ class InventoryController extends Controller
 			}			
 			
 			$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
-			
+
 			$inventory = Inventory::create($expense_detail);
 			
 			$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];

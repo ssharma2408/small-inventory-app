@@ -17,30 +17,12 @@ class UpdateInventoryRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'product_id' => [
-                'required',
-                'integer',
-            ],            
-            'stock' => [
-                'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
-            'purchase_price' => [
-                'numeric',
-                'required',
-            ],
+        return [            
             'discount_type' => [
                 'required',
             ],			
             'discount' => [
                 'numeric',
-            ],
-            'tax_id' => [
-                'required',
-                'integer',
             ],
             'final_price' => [
                 'numeric',
@@ -49,9 +31,7 @@ class UpdateInventoryRequest extends FormRequest
             'days_payable_outstanding' => [
                 'required',
             ],
-            'image_url' => [
-                'required',
-            ],
+            
         ];
     }
 }

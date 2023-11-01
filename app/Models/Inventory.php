@@ -20,11 +20,6 @@ class Inventory extends Model implements HasMedia
         'po_file',
     ];
 
-    public const BOX_OR_UNIT_RADIO = [
-        '0' => 'Box',
-        '1' => 'Unit',
-    ];
-
     protected $dates = [
         'created_at',
         'updated_at',
@@ -44,20 +39,15 @@ class Inventory extends Model implements HasMedia
     ];
 
     protected $fillable = [
-        'supplier_id',
-        'product_id',
-        'box_or_unit',
-        'stock',
-        'purchase_price',
+        'supplier_id',        
         'discount_type',
-        'discount',
-        'tax_id',
-        'final_price',
-		'category_id',
-		'sub_category_id',
+        'discount',        
+        'final_price',		
 		'invoice_number',
 		'days_payable_outstanding',
 		'due_date',
+		'expense_total',
+		'expense_tax',
 		'image_url',
         'created_at',
         'updated_at',
@@ -80,31 +70,11 @@ class Inventory extends Model implements HasMedia
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
-
-    public function tax()
-    {
-        return $this->belongsTo(Tax::class, 'tax_id');
-    }
-
     public function getPoFileAttribute()
     {
         return $this->getMedia('po_file')->last();
     }
-	
-	public function category()
-    {
-        return $this->belongsTo(Category::class, 'category_id');
-    }
-	
-	public function sub_category()
-    {
-        return $this->belongsTo(Category::class, 'sub_category_id');
-    }
-	
+
 	public function payment()
     {
         return $this->belongsTo(ExpensePaymentMaster::class, 'id');
