@@ -94,7 +94,7 @@
 
                                 @if($order->sales_manager_id === \Auth::user()->id || $is_admin || $order->delivery_agent_id === \Auth::user()->id)
 									@can('order_edit')
-										@if(!in_array($order->id, $order_id_arr) && !in_array($order->status, [1,4]))
+										@if(!in_array($order->id, $order_id_arr) && !in_array($order->status, [1]))
 										<a class="btn btn-xs btn-info" href="{{ route('admin.orders.edit', $order->id) }}">
 											{{ trans('global.edit') }}
 										</a>
@@ -115,7 +115,7 @@
                                     </a>
 									@endcan
 								@endif
-								@if($order->status ==4)
+								@if(in_array($order->status, [1,4]))
 									 <a class="btn btn-xs btn-primary" href="/admin/orders/order_summary/{{$order->id}}">
                                         Download PDF
                                     </a>

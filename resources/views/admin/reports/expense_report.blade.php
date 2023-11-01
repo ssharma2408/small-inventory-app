@@ -48,13 +48,15 @@
 					@foreach($inventories as $key => $inventory)
 
 						@php
-							$bgcolor = "";
-							if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1){
-								$bgcolor = "#75dc75";
-							}else{
-								if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s'))){
-									if(!empty($inventory->due_date)){
-										$bgcolor = "#ff5050";
+							if(!empty($inventory->payment)){
+								$bgcolor = "";
+								if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1){
+									$bgcolor = "#75dc75";
+								}else{
+									if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s'))){
+										if(!empty($inventory->due_date)){
+											$bgcolor = "#ff5050";
+										}
 									}
 								}
 							}
@@ -83,18 +85,20 @@
 								{{ $inventory->final_price }}
                             </td>
 							<td>
-								@if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1)
-									{{ $status[$inventory->payment->payment_status] }}
-								@else
-									@if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s')))
-										@if(!empty($inventory->due_date))
-											{{ $status[2] }} {{round((strtotime(date('Y-m-d')) - strtotime($inventory->due_date)) / (60 * 60 * 24)) + 1}} days
-										@endif
+								@if(!empty($order->payment))
+									@if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1)
+										{{ $status[$inventory->payment->payment_status] }}
 									@else
-										@if(date('Y-m-d', strtotime($inventory->due_date)) == date('Y-m-d', strtotime(date('Y-m-d H:i:s'))))
-											{{ $status[0] }} today
+										@if(strtotime($inventory->due_date) < strtotime(date('Y-m-d H:i:s')))
+											@if(!empty($inventory->due_date))
+												{{ $status[2] }} {{round((strtotime(date('Y-m-d')) - strtotime($inventory->due_date)) / (60 * 60 * 24)) + 1}} days
+											@endif
 										@else
-											{{ $status[0] }} {{round((strtotime($inventory->due_date) - strtotime(date('Y-m-d'))) / (60 * 60 * 24)) - 1}} days
+											@if(date('Y-m-d', strtotime($inventory->due_date)) == date('Y-m-d', strtotime(date('Y-m-d H:i:s'))))
+												{{ $status[0] }} today
+											@else
+												{{ $status[0] }} {{round((strtotime($inventory->due_date) - strtotime(date('Y-m-d'))) / (60 * 60 * 24)) - 1}} days
+											@endif
 										@endif
 									@endif
 								@endif
