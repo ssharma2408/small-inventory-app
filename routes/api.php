@@ -43,7 +43,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('order-payments', 'OrderPaymentApiController');
 
     // Expense Payment
-    
+    Route::get('invoice-with-pending-amt/{id}','ExpensePaymentApiController@get_invoice_pending_amt');
     Route::get('get-invoices','ExpensePaymentApiController@get_invoice');
     Route::apiResource('expense-payments', 'ExpensePaymentApiController');
 });
