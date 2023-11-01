@@ -15,6 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExpensePaymentApiController extends Controller
 {
+    public function get_invoice_pending_amt($expense_id)
+    {
+        if ($expense_id == "") {
+            return;
+        }
+        $due_amount = ExpensePaymentMaster::select('expense_pending')->where('expense_id', $expense_id)->get();
+        return new ExpensePaymentResource($due_amount);
+    }
 
     public function get_invoice()
     {
