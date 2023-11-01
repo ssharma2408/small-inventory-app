@@ -30,31 +30,7 @@
                         <td>
                             {{ $inventory->supplier->supplier_name ?? '' }}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.category.fields.category') }}
-                        </th>
-                        <td>
-                            {{ $inventory->category->name }}
-                        </td>
-                    </tr>
-					<tr>
-                        <th>
-                            {{ trans('cruds.category.fields.sub_category') }}
-                        </th>
-                        <td>
-                            {{ $inventory->sub_category->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.inventory.fields.product') }}
-                        </th>
-                        <td>
-                            {{ $inventory->product->name ?? '' }}
-                        </td>
-                    </tr>
+                    </tr>                    
 					<tr>
                         <th>
                             {{ trans('cruds.inventory.fields.invoice_number') }}
@@ -63,30 +39,97 @@
                             {{ $inventory->invoice_number }}
                         </td>
                     </tr>
-                    <tr>
+					<tr>
+						<th>
+							Expense Items
+						</th>
+						<td>
+							<table class="table table-bordered table-striped">
+								<tbody>
+									<tr>
+										<th>
+											Category Name
+										</th>
+										<th>
+											Sub Category Name
+										</th>
+										<th>
+											Product Name
+										</th>
+										<th>
+											Box or unit
+										</th>
+										<th>
+											Stock
+										</th>
+										<th>
+											Purchase Price
+										</th>											
+										<th>
+											Tax
+										</th>
+										<th>
+											Amount
+										</th>										
+									</tr>
+									@foreach($expense_items as $item)
+										<tr>
+											<td>
+											{{ $item->category_name }}
+											</td>
+											<td>
+											{{ $item->sub_category_name }}
+											</td>
+											<td>
+											{{ $item->name }}
+											</td>
+											<td>
+												@if($item->is_box)
+													Box
+												@else
+													Unit
+												@endif
+											</td>											
+											<td>
+											{{ $item->stock }}
+											</td>
+											<td>
+											{{ $item->purchase_price }}
+											</td>											
+											<td>
+											{{ $item->title }}
+											</td>
+											<td>
+												@php
+													$qty = $item->stock;													
+													$amount = $qty * $item->purchase_price;
+													
+													$total = $amount + (($amount * $item->tax)/100);
+												@endphp
+												{{ $total }}
+											</td>
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr>
                         <th>
-                            {{ trans('cruds.inventory.fields.box_or_unit') }}
+                            {{ trans('cruds.inventory.fields.expense_total') }}
                         </th>
                         <td>
-                            {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
+                            {{ $inventory->expense_total ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.inventory.fields.stock') }}
+                            {{ trans('cruds.inventory.fields.expense_tax') }}
                         </th>
                         <td>
-                            {{ $inventory->stock }}
+                            {{ $inventory->expense_tax  ?? ''  }}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.inventory.fields.purchase_price') }}
-                        </th>
-                        <td>
-                            {{ $inventory->purchase_price }}
-                        </td>
-                    </tr>
+                    </tr>   
                     <tr>
                         <th>
                             {{ trans('cruds.inventory.fields.discount_type') }}
@@ -101,14 +144,6 @@
                         </th>
                         <td>
                             {{ $inventory->discount }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.inventory.fields.tax') }}
-                        </th>
-                        <td>
-                            {{ $inventory->tax->title ?? '' }}
                         </td>
                     </tr>
                     <tr>

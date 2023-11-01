@@ -18,20 +18,15 @@ class StoreInventoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => [
+			'item_name' => [
                 'required',
                 'integer',
             ],
-            'box_or_unit' => [
+			'expense_tax' => [
+                'numeric',
                 'required',
             ],
-            'stock' => [
-                'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
-            'purchase_price' => [
+			'expense_total' => [
                 'numeric',
                 'required',
             ],
@@ -43,21 +38,14 @@ class StoreInventoryRequest extends FormRequest
             ],
             'discount' => [
                 'numeric',
-            ],
-            'tax_id' => [
-                'required',
-                'integer',
-            ],
+            ],            
             'final_price' => [
                 'numeric',
                 'required',
             ],
             'days_payable_outstanding' => [
                 'required',
-            ],
-            'po_file' => [
-                'required',
-            ],
+            ],            
         ];
     }
 }
