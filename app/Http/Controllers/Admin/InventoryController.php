@@ -14,7 +14,6 @@ use App\Models\Supplier;
 use App\Models\Tax;
 use App\Models\ExpensePaymentMaster;
 use App\Models\ExpensePayment;
-use App\Models\ExpenseItem;
 use Gate;
 use DB;
 use Storage;
@@ -32,7 +31,7 @@ class InventoryController extends Controller
 		
 		abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $inventories = Inventory::with(['supplier', 'media'])->get();
+        $inventories = Inventory::with(['supplier', 'product', 'tax', 'media'])->get();
 		
 		$expense_id_arr = $this->get_payments();
 
@@ -47,7 +46,7 @@ class InventoryController extends Controller
 		
 		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
-		$taxes = Tax::select('title', 'id')->get();
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.inventories.create', compact('suppliers', 'categories', 'taxes'));
     }
@@ -80,6 +79,10 @@ class InventoryController extends Controller
 				$expense_detail['image_url'] = $name;
 				$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
 				
+				if($request->box_or_unit == "0"){
+					$request->stock = $request->stock * $request->package_val;
+				}
+				
 				$inventory = Inventory::create($expense_detail);
 				
 				$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
@@ -91,37 +94,9 @@ class InventoryController extends Controller
 				$expense_pay_detail['expense_id'] = $inventory->id;
 				
 				ExpensePaymentMaster::create($expense_pay_detail);
-
-				$data = [];
-				for ($i = 0; $i < count($request['item_name']); $i++) {
-					if (!empty($request['item_name']) && !empty($request['item_stock'])) {						
-						
-						$stock = $request['item_stock'][$i];
-						
-						if($request['box_or_unit'][$i] == "1"){
-							$stock = $request['item_stock'][$i] * $request['package_val'][$i];
-						}
-						
-						$item = [];
-						$item['product_id'] = $request['item_name'][$i];
-						$item['expense_id'] = $inventory->id;
-						$item['stock'] = $request['item_stock'][$i];
-						$item['category_id'] = $request['item_category'][$i];
-						$item['sub_category_id'] = $request['item_subcategory'][$i];
-						$item['purchase_price'] = $request['item_price'][$i];
-						$item['tax_id'] = $request['item_tax_id'][$i];
-						$item['is_box'] = $request['box_or_unit'][$i];
-						$data[] = $item;
-						
-						$product = Product::find($request['item_name'][$i]);
-						$product->increment('stock', $stock);
-					}
-
-				}
-
-				if (!empty($data)) {
-					ExpenseItem::insert($data);
-				}
+			
+				$product = Product::find($request->product_id);
+				$product->increment('stock', $request->stock);
 
 				return redirect()->route('admin.inventories.index');
 			}
@@ -143,29 +118,52 @@ class InventoryController extends Controller
 		
 		$suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 
-        $inventory->load('supplier');		
+        $inventory->load('supplier', 'product', 'tax');		
 		
 		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
-		$expense_items = DB::table('expense_items')
-                ->join('products', 'expense_items.product_id', '=', 'products.id')
-                ->join('categories', 'expense_items.category_id', '=', 'categories.id')
-                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
-                ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax')
-                ->where('expense_items.expense_id', $inventory->id)
-                ->get();
-		
-		$taxes = Tax::select('title', 'id')->get();
+		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories', 'taxes', 'expense_items'));
+        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories', 'taxes'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
 		$due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
+		$product = Product::find($request->product_id);
+		
+		if(($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)){
+			
+			$inc_stock = 0;
+			$dec_stock = 0;
+			
+		/* 	if($inventory->box_or_unit != $request->box_or_unit){
 				
-		$expense_detail = $request->all();
+				if($request->box_or_unit == "0"){
+					$inc_stock = $request->stock * $request->package_val;
+					$dec_stock = $request->stock;
+				}else{
+					$dec_stock = $request->stock * $request->package_val;
+					$inc_stock = $request->stock;
+				}
+			} */
+
+ 			if($inventory->stock != $request->stock){
+
+				if($request->box_unit == "0"){
+					$dec_stock = $inventory->stock * $request->package_val;
+					$inc_stock = $request->stock * $request->package_val;					
+				}else{
+					$dec_stock = $inventory->stock;
+					$inc_stock = $request->stock;
+				}
+			} 
+
+			$product->decrement('stock', $dec_stock);
+			$product->increment('stock', $inc_stock);			
+		}
+		
+		 $expense_detail = $request->all();
 		
 		if($request->hasFile('po_file')){
 			
@@ -192,57 +190,7 @@ class InventoryController extends Controller
 		
 		$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at. ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
 
-		$inventory->update($expense_detail);
-		
-		$expense_items = DB::table('expense_items')
-                ->join('products', 'expense_items.product_id', '=', 'products.id')
-				->select('expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size')
-                ->where('expense_items.expense_id', $inventory->id)
-                ->get();				
-		
-		foreach($expense_items as $ei){
-			$old_stock = $ei->stock;
-			
-			if($ei->is_box){
-				$old_stock = $old_stock * $ei->box_size;
-			}
-			$product = Product::find($ei->product_id);
-			$product->decrement('stock', $old_stock);
-		}
-
-		DB::table('expense_items')->where('expense_id', $inventory->id)->delete();
-		
-		$data = [];
-		for ($i = 0; $i < count($request['item_name']); $i++) {
-			if (!empty($request['item_name']) && !empty($request['item_stock'])) {
-				
-				$stock = $request['item_stock'][$i];
-				
-				if($request['box_or_unit'][$i] == "1"){
-					$stock = $request['item_stock'][$i] * $request['package_val'][$i];
-				}
-				
-				$item = [];
-				$item['product_id'] = $request['item_name'][$i];
-				$item['expense_id'] = $inventory->id;
-				$item['stock'] = $request['item_stock'][$i];
-				$item['category_id'] = $request['item_category'][$i];
-				$item['sub_category_id'] = $request['item_subcategory'][$i];
-				$item['purchase_price'] = $request['item_price'][$i];
-				$item['tax_id'] = $request['item_tax_id'][$i];
-				$item['is_box'] = $request['box_or_unit'][$i];
-				$data[] = $item;
-				
-				// Stock Mgmt				
-				$product = Product::find($request['item_name'][$i]);
-				$product->increment('stock', $stock);
-			}
-
-		}
-
-		if (!empty($data)) {
-			ExpenseItem::insert($data);
-		}
+		$inventory->update($expense_detail);	
 
         return redirect()->route('admin.inventories.index');
     }
@@ -361,11 +309,4 @@ class InventoryController extends Controller
 		
 		return $expense_id_arr;
 	}
-	
-	 public function get_product_detail($id)
-    {
-        $product = Product::select('id', 'name', 'box_size')->where('id', $id)->first();
-
-        return response()->json(array('success' => 1, 'product' => $product), 200);
-    }
 }

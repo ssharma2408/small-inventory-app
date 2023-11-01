@@ -18,14 +18,17 @@ class UpdateInventoryRequest extends FormRequest
     public function rules()
     {
         return [
-			'item_name' => [
+            'product_id' => [
                 'required',
-            ],
-			'expense_tax' => [
-                'numeric',
+                'integer',
+            ],            
+            'stock' => [
                 'required',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
             ],
-			'expense_total' => [
+            'purchase_price' => [
                 'numeric',
                 'required',
             ],
@@ -34,7 +37,11 @@ class UpdateInventoryRequest extends FormRequest
             ],			
             'discount' => [
                 'numeric',
-            ],           
+            ],
+            'tax_id' => [
+                'required',
+                'integer',
+            ],
             'final_price' => [
                 'numeric',
                 'required',
