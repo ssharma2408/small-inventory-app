@@ -167,7 +167,9 @@
                             {{ trans('cruds.inventory.fields.po_file') }}
                         </th>
                         <td>
-                            <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$inventory->image_url }}">
+                            @if($inventory->image_url != "")
+								<img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$inventory->image_url }}">
+							@endif
                         </td>
                     </tr>
                 </tbody>
