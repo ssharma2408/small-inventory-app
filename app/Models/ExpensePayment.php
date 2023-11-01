@@ -27,6 +27,7 @@ class ExpensePayment extends Model
         'description',
         'date',
 		'expense_id',
+        'invoice_id',
         'created_at',
         'updated_at',
         'deleted_at',

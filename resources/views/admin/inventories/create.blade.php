@@ -1,13 +1,38 @@
 @extends('layouts.admin')
 @section('content')
 
+<?php
+	$ddl_html = "No Category Found";
+	
+	if(!empty($categories)){
+		$ddl_html = '<select class="category form-control select2" name="item_category[]" required>';
+			$ddl_html .= '<option value="" >Select Option</option>';
+			foreach($categories as $cat_id => $val){
+				$ddl_html .= '<option value="'.$cat_id.'">'.$val.'</option>';
+			}
+		$ddl_html .= '</select>';
+	}
+
+	$tax_ddl_html = "No Tax Found";
+	
+	if(!empty($taxes)){
+		$tax_ddl_html = '<select class="form-control select2 tax_id" name="item_tax_id[]" required>';
+		$tax_ddl_html .= '<option value="" >Please Select</option>';
+			foreach($taxes as $tax){
+				$tax_ddl_html .= '<option value="'.$tax['id'].'">'.$tax['title'].'</option>';
+			}
+		$tax_ddl_html .= '</select>';
+	}	
+
+?>
+
 <div class="card">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.inventory.title_singular') }}
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.inventories.store") }}" enctype="multipart/form-data">
+        <form method="POST" id="expensefrm" action="{{ route("admin.inventories.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="supplier_id">{{ trans('cruds.inventory.fields.supplier') }}</label>
@@ -22,78 +47,107 @@
                 <span class="help-block">{{ trans('cruds.inventory.fields.supplier_helper') }}</span>
             </div>
 			<div class="form-group">
-                <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>
-                <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
-                    <option value="" >Select Option</option> 
-                    @foreach($categories as $id => $entry)                     
-                       <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>                        
-                    @endforeach
-                </select>
-                @if($errors->has('category'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('category') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
-            </div>
-			<div class="form-group">
-                <label for="sub_category_id">{{ trans('cruds.category.fields.sub_category') }}</label>
-                <select class="form-control select2 {{ $errors->has('subcategory') ? 'is-invalid' : '' }}" name="sub_category_id" id="sub_category_id">
-                    <option value="" >Please select</option>                      
-                </select>				
-                @if($errors->has('subcategory'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('subcategory') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.category.fields.sub_category_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="product_id">{{ trans('cruds.inventory.fields.product') }}</label>
-                <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
-					<option value="">Please select</option>
-				</select>
-                @if($errors->has('product'))
-                    <span class="text-danger">{{ $errors->first('product') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.product_helper') }}</span>
-            </div>
-			<div class="form-group">
                 <label class="required" for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
                 <input class="form-control {{ $errors->has('invoice_number') ? 'is-invalid' : '' }}" type="text" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', '') }}" required>
                 @if($errors->has('invoice_number'))
                     <span class="text-danger">{{ $errors->first('invoice_number') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.inventory.fields.invoice_number_helper') }}</span>
+            </div>			
+			<div class="form-group">
+                <label class="required" for="order_items">Expense Items</label>
+				<div class="help-block h6">* If you are selecting BOX, then add Box price in Purchase Price<br>* If you are selecting UNIT, then add Unit price in Purchase Price</div>
+                <div class="row">
+					<div class="col-md-2">
+						<b>Category Name</b>
+					</div>
+					<div class="col-md-2">
+						<b>Sub Category Name</b>
+					</div>
+					<div class="col-md-2">
+						<b>Product Name</b>
+					</div>									
+					<div class="col-md-1">
+						<b>Box or unit</b>
+					</div>
+					<div class="col-md-1">
+						<b>Stock</b>
+					</div>
+					<div class="col-md-1">
+						<b>Purchase Price</b>						
+					</div>	
+					<div class="col-md-1">
+						<b>Tax</b>
+					</div>
+					<div class="col-md-1">
+						<b>Amount</b>
+					</div>
+					<div class="col-md-1">
+
+					</div>
+				</div>
+				<div class="item_container">
+					<div class="row mb-3 item_row">
+						<div class="cat_container col-md-2">
+							<div class="form-group">								
+								<?php
+									echo $ddl_html;
+								?>
+							</div>				
+						</div>
+						<div class="col-md-2">
+							<select class="subcat form-control select2" name="item_subcategory[]">
+								<option value="">Please select</option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
+								<option value="">Please select</option>
+							</select>			
+						</div>
+						<div class="col-md-1">							
+							<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/>
+							<label class="form-check-label ml-3">Is Box</label>
+							<div style="font-size:12px" id="box_size"></div>
+							<input type="hidden" id="package_val" value="" name="package_val[]" />
+							<input type="hidden" id="box_or_unit" value="0" name="box_or_unit[]" />
+						</div>
+						<div class="col-md-1">
+							<input class="form-control stock" type="number" name="item_stock[]" />
+						</div>
+						<div class="col-md-1">
+							<input class="form-control price" type="text" name="item_price[]" />
+						</div>
+						<div class="col-md-1">
+							<?php
+								echo $tax_ddl_html;
+							?>
+							<input type="hidden" class="tax_val" value="" />
+						</div>
+						<div class="col-md-1">
+							<input class="form-control amount" type="text" name="item_amount[]" disabled />
+						</div>
+						<div class="col-md-1">
+							<span class="add_row" id="add_row" data-key ="">+</span>
+						</div>
+					</div>
+				</div>
             </div>
-            <div class="form-group">
-                <label class="required">{{ trans('cruds.inventory.fields.box_or_unit') }}</label>
-                @foreach(App\Models\Inventory::BOX_OR_UNIT_RADIO as $key => $label)
-                    <div class="form-check {{ $errors->has('box_or_unit') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="box_or_unit_{{ $key }}" name="box_or_unit" value="{{ $key }}" {{ old('box_or_unit', '1') === (string) $key ? 'checked' : '' }} required>
-                        <label class="form-check-label" for="box_or_unit_{{ $key }}">{{ $label }}</label>
-                    </div>
-                @endforeach
-                @if($errors->has('box_or_unit'))
-                    <span class="text-danger">{{ $errors->first('box_or_unit') }}</span>
+			<div class="form-group">
+                <label class="required" for="expense_total">{{ trans('cruds.inventory.fields.expense_total') }}</label>
+                <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number" name="expense_total" id="expense_total" value="{{ old('expense_total', '') }}" step="0.01" required>
+                @if($errors->has('expense_total'))
+                    <span class="text-danger">{{ $errors->first('expense_total') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.box_or_unit_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.inventory.fields.expense_total_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="stock">{{ trans('cruds.inventory.fields.stock') }}</label>
-                <input class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" type="number" name="stock" id="stock" value="{{ old('stock', '') }}" step="1" required>
-                @if($errors->has('stock'))
-                    <span class="text-danger">{{ $errors->first('stock') }}</span>
+			<div class="form-group">
+                <label class="required" for="expense_tax">{{ trans('cruds.inventory.fields.expense_tax') }}</label>
+                <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number" name="expense_tax" id="expense_tax" value="{{ old('expense_tax', '') }}" step="0.01" required>
+                @if($errors->has('expense_tax'))
+                    <span class="text-danger">{{ $errors->first('expense_tax') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.stock_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="purchase_price">{{ trans('cruds.inventory.fields.purchase_price') }}</label>
-                <input class="form-control {{ $errors->has('purchase_price') ? 'is-invalid' : '' }}" type="number" name="purchase_price" id="purchase_price" value="{{ old('purchase_price', '') }}" step="0.01" required>
-                @if($errors->has('purchase_price'))
-                    <span class="text-danger">{{ $errors->first('purchase_price') }}</span>
-                @endif
-               <span class="help-block h6">* If you are selecting BOX, then add Box price<br>* If you are selecting UNIT, then add Unit price</span>
+                <span class="help-block">{{ trans('cruds.inventory.fields.expense_tax_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>
@@ -115,18 +169,6 @@
                     <span class="text-danger">{{ $errors->first('discount') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.inventory.fields.discount_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="tax_id">{{ trans('cruds.inventory.fields.tax') }}</label>
-                <select class="form-control select2 {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id" required>
-                    @foreach($taxes as $id => $entry)
-                        <option value="{{ $id }}" {{ old('tax_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('tax'))
-                    <span class="text-danger">{{ $errors->first('tax') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.inventory.fields.tax_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="final_price">{{ trans('cruds.inventory.fields.final_price') }}</label>
@@ -160,9 +202,7 @@
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
-                </button>
-				<input type="hidden" id="tax_val" value="" />
-				<input type="hidden" id="package_val" value="" name="package_val" />
+                </button>				
             </div>
         </form>
     </div>
@@ -223,119 +263,56 @@
      }
 }
 
-$(document).on("change", "#discount_type_0, #discount_type_1, #box_or_unit_0, #box_or_unit_1", function () {
-	calculate_total();
+$(".add_row").click(function(){
+	$(this).parent().parent().parent().append(row_html());
+});
+$(".item_container").on('click','.remove_row',function(){
+   $(this).parent().parent().remove();
+   calculate_total();
 });
 
-$(document).on("keyup", "#stock, #purchase_price, #discount", function () {			
-	calculate_total();
-});
-
-function calculate_total(){
-	
-	var order_total = 0, stock, price, tax, discount;		
-	stock = $("#stock").val();
-	price = $("#purchase_price").val();
-	tax = $("#tax_val").val();
-	discount = $("#discount").val();
-
-	if(stock > 0 && price > 0){
-
-		/* if($("#box_or_unit_0").is(":checked")){
-			stock = stock * $("#package_val").val();
-		}else{
-			stock = stock;
-		} */
-		
-		order_total = stock * price;
-		
-		if(discount > 0){
-			if($("#discount_type_0").is(":checked")){
-				if(discount < order_total){
-					order_total = order_total - discount;
-				}
-			}else{
-				if(((order_total * discount) / 100) < order_total){
-					order_total = order_total - (order_total * discount) / 100;
-				}
-			}
-		}
-		
-		if(tax != ""){			
-			console.log("code")
-			console.log(order_total * parseFloat(tax))
-			order_total = order_total + (order_total * parseFloat(tax)) / 100;
-		}
-	}
-	$("#final_price").val(order_total);
+function row_html(){
+	return '<div class="row mb-3 item_row"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-2"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-2"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]"/><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="0" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
 }
 
-$("#sub_category_id").change(function (){
-	if($("#category_id").val() != "" && $("#sub_category_id").val() != ""){
-		populate_products($("#category_id").val(), $("#sub_category_id").val());
-	}
-});
 
-function populate_products(cat_id, sub_cat_id = 0){	
-	
-	$.ajax({
-			url: 'get_products/'+cat_id+'/'+sub_cat_id,
-			type: 'GET',
-			success: function(data) {
-				if (data.success) {
-					var html = '<option value="">Please select</option>';
-					if(data.products.length > 0){
-						$.each(data.products, function (key, val) {
-							html += '<option value="'+val.id+'">'+val.name+'</option>';
-						});
-					}
-					$("#product_id").html(html);
-				}
-			}
-		 });
-}
+$(document).on("change", ".order_item", function () {
+	if($(this).val() != ""){		
+		var box_size = $(this).parent().next().find("#box_size");		
+		var package_val = $(this).parent().next().find("#package_val");
 
-$(document).on("change", "#product_id", function () {
-	var prod_id;
-	prod_id = $(this).val();
-	if(prod_id != ""){
-	$.ajax({
-			url: '/admin/products/get_drod_detail/'+prod_id,
-			type: 'GET',
-			success: function(data) {
-				if (data.success) {					
-					$("#package_val").val(data.product.box_size);
-					$("#tax_id").val(data.product.tax_id).change();
-					get_tax_val(data.product.tax_id)
-				}
-			}
-		 });
-	}
-});
-
-function get_tax_val(tax_id){
-	if(tax_id != ""){
 		$.ajax({
-				url: '/admin/taxes/get_tax/'+tax_id,
+				url: 'get_product_detail/'+$(this).val(),
 				type: 'GET',
 				success: function(data) {
-					if (data.success) {					
-						$("#tax_val").val(data.tax.tax);
-						calculate_total();
+					if (data.success) {						
+						box_size.html('Box Size: '+data.product.box_size);
+						package_val.val(data.product.box_size);
 					}
 				}
 			 });
 	}
-}
-
-$(document).on("change", "#tax_id", function () {
-	get_tax_val($(this).val());
+			
 });
 
-$("#category_id").change(function (){
+$(document).on("change", ".subcat", function () {
+	var cat_id = $(this).parent().prev('div').find('.category').val();
+	var pdod_ddl = $(this).parent().next('div').find('.order_item');
+	if(cat_id != "" && $(this).val() != ""){
+		populate_products(cat_id, $(this).val(), pdod_ddl);
+	}
+});
+
+$(document).on("change", ".category", function () {
+			
 	if($(this).val() !=""){
+		
+		var cat_id = $(this).val();
+		var subcat_ddl =$(this).closest('.cat_container').next('div').find(".subcat");
+		var product_ddl =$(this).closest('.cat_container').next('div').next('div').find(".order_item");
+		
 		$.ajax({
-			url: '/admin/categories/get_sub_category/'+$(this).val(),
+			url: '/admin/categories/get_sub_category/'+cat_id,
 			type: 'GET',
 			success: function(data) {
 				if (data.success) {
@@ -345,12 +322,133 @@ $("#category_id").change(function (){
 							html += '<option value="'+val.id+'">'+val.name+'</option>';
 						});
 					}
-					$("#sub_category_id").html(html);
-					populate_products($("#category_id").val());
+					subcat_ddl.html(html);
+					populate_products(cat_id, 0, product_ddl);
 				}
 			}
 		 });
 	}
+
 });
+
+function populate_products(cat_id, sub_cat_id = 0, prod_ddl){	
+	
+	$.ajax({
+		url: 'get_products/'+cat_id+'/'+sub_cat_id,
+		type: 'GET',
+		success: function(data) {
+			if (data.success) {
+				var html = '<option value="">Please select</option>';
+				if(data.products.length > 0){
+					$.each(data.products, function (key, val) {
+						html += '<option value="'+val.id+'">'+val.name+'</option>';
+					});
+				}
+				prod_ddl.html(html);
+			}
+		}
+	 });
+}
+
+$(document).on("keyup", ".stock, .price", function () {
+	populate_amount($(this));
+});
+
+$(document).on("change", ".cb", function () {
+	
+	var box_unit = $(this).parent().find("#box_or_unit");
+	
+	if($(this).is(":checked")){
+		box_unit.val(1);
+	}else{
+		box_unit.val(0);
+	}
+	populate_amount($(this));
+});
+
+$(document).on("change", ".tax_id", function () {
+	get_tax_val($(this));	
+});
+
+
+function get_tax_val(tax_ele){
+	
+	var tax_id = tax_ele.val();
+	var tax_val = tax_ele.parent().find(".tax_val");
+	
+	if(tax_id != ""){
+		$.ajax({
+				url: '/admin/taxes/get_tax/'+tax_id,
+				type: 'GET',
+				success: function(data) {
+					if (data.success) {					
+						tax_val.val(data.tax.tax);
+						populate_amount(tax_ele);
+					}
+				}
+			 });
+	}
+}
+
+function populate_amount(ele){
+	var stock = ele.parent().parent().find(".stock").val();
+	var purchase_price = ele.parent().parent().find(".price").val();
+	var amount = ele.parent().parent().find(".amount");
+	var tax = ele.parent().parent().find(".tax_val").val();
+	
+	if(stock !="" && purchase_price != "" && tax != ""){
+		var amount_total = 0, total = 0;
+		
+		total = stock * purchase_price;
+		
+		amount_total = total + ((total * tax) / 100);
+		amount.val(amount_total);
+		calculate_total();
+	}
+	
+}
+
+
+$(document).on("change", "#discount_type_0, #discount_type_1", function () {
+	calculate_total();
+});
+
+$(document).on("keyup", "#discount", function () {
+	calculate_total();
+});
+
+function calculate_total(){
+	
+	var expense_total = 0, final_price = 0, discount;
+	discount = $("#discount").val();
+	
+	$(".item_row").each(function() {		
+		var stock = $(this).find(".stock").val();
+		var price = $(this).find(".price").val();
+		var amount = $(this).find(".amount").val();
+		
+		expense_total += (stock * price);
+		final_price += parseFloat(amount);
+	});	
+	
+	$("#expense_total").val(expense_total);
+	$("#expense_tax").val(final_price - expense_total);
+	
+	
+	if(discount > 0){
+		if($("#discount_type_0").is(":checked")){
+			if(discount < final_price){
+				final_price = final_price - discount;
+			}
+		}else{
+			if(((final_price * discount) / 100) < final_price){
+				final_price = final_price - (final_price * discount) / 100;
+			}
+		}
+	}
+	
+	$("#final_price").val(final_price);
+	
+}
 </script>
 @endsection

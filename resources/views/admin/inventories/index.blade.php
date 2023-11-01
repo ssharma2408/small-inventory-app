@@ -28,28 +28,7 @@
                         </th>
                         <th>
                             {{ trans('cruds.inventory.fields.id') }}
-                        </th>
-						 <th>
-                            {{ trans('cruds.inventory.fields.product') }}
-                        </th>
-						<th>
-                            {{ trans('cruds.category.fields.category') }}
-                        </th>
-						<th>
-                            {{ trans('cruds.category.fields.sub_category') }}
-                        </th>
-						<th>
-                            {{ trans('cruds.inventory.fields.box_or_unit') }}
-                        </th>
-						<th>
-                            {{ trans('cruds.inventory.fields.stock') }}
-                        </th>
-						 <th>
-                            {{ trans('cruds.inventory.fields.purchase_price') }}
-                        </th>
-						<th>
-                            {{ trans('cruds.inventory.fields.tax') }}
-                        </th>
+                        </th>						
 						<th>
                             {{ trans('cruds.inventory.fields.final_price') }}
                         </th>
@@ -72,27 +51,6 @@
                             </td>
                             <td>
                                 {{ $inventory->id ?? '' }}
-                            </td>
-							 <td>
-                                {{ $inventory->product->name ?? '' }}
-                            </td>
-							<td>
-                                {{ $inventory->category->name ?? '' }}
-                            </td>
-							<td>
-                                {{ $inventory->sub_category->name ?? '' }}
-                            </td>
-							<td>
-                                {{ App\Models\Inventory::BOX_OR_UNIT_RADIO[$inventory->box_or_unit] ?? '' }}
-                            </td>
-							<td>
-                                {{ $inventory->stock ?? '' }}
-                            </td>
-							<td>
-                                {{ $inventory->purchase_price ?? '' }}
-                            </td>
-							<td>
-                                {{ $inventory->tax->title ?? '' }}
                             </td>
 							<td>
                                 {{ $inventory->final_price ?? '' }}
@@ -239,7 +197,7 @@ $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
 	
     if (typeof aData._date == 'undefined') {
-      aData._date = new Date(aData[11]).getTime();
+      aData._date = new Date(aData[4]).getTime();
     }
 
     if (minDateFilter && !isNaN(minDateFilter)) {
