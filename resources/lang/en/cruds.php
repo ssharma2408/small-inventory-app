@@ -159,6 +159,10 @@ return [
             'invoice_number_helper'           => ' ',
             'days_payable_outstanding'        => 'Days Payable Outstanding',
             'days_payable_outstanding_helper' => ' ',
+			'expense_total'                   => 'Expense Total',            
+            'expense_total_helper'            => ' ',
+			'expense_tax'                     => 'Expense Tax',            
+            'expense_tax_helper'              => ' ',
         ],
     ],
     'order' => [

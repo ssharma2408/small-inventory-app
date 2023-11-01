@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Inventory
     Route::delete('inventories/destroy', 'InventoryController@massDestroy')->name('inventories.massDestroy');
 	Route::get('inventories/get_products/{cat_id}/{sub_cat_id}', 'InventoryController@get_products')->name('inventories.get_products');	
+	Route::get('inventories/get_product_detail/{id}', 'InventoryController@get_product_detail')->name('inventories.get_product_detail');
     Route::post('inventories/media', 'InventoryController@storeMedia')->name('inventories.storeMedia');
     Route::post('inventories/ckmedia', 'InventoryController@storeCKEditorImages')->name('inventories.storeCKEditorImages');
 	Route::get('inventories/payment/{id?}', 'InventoryController@payment')->name('inventories.payment');
