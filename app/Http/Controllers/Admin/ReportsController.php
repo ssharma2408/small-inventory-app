@@ -14,7 +14,7 @@ class ReportsController extends Controller
 		
 		$status = ['Due', 'Closed',  'Overdue'];
 		
-		$inventories = Inventory::with(['supplier', 'product', 'tax', 'media', 'payment'])->get();
+		$inventories = Inventory::with(['supplier', 'media', 'payment'])->get();
 		return view('admin.reports.expense_report', compact('inventories', 'status'));
 	}
 	
