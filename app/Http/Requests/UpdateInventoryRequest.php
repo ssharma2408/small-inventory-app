@@ -18,7 +18,18 @@ class UpdateInventoryRequest extends FormRequest
     public function rules()
     {
         return [            
-            'discount_type' => [
+            'item_name' => [
+                'required',
+            ],
+			'expense_tax' => [
+                'numeric',
+                'required',
+            ],
+			'expense_total' => [
+                'numeric',
+                'required',
+            ],
+			'discount_type' => [
                 'required',
             ],			
             'discount' => [
