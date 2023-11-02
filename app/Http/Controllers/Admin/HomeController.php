@@ -12,47 +12,51 @@ use App\Models\Supplier;
 use App\Models\Inventory;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\OrderPaymentMaster;
 
 class HomeController
 {
     public function index()
     {
        	$category = [];
-		$category['total'] = Category::count();
-		$category['latest'] = Category::select('name')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$category['total'] = Category::count();		
 		
 		$product = [];
-		$product['total'] = Product::count();
-		$product['latest'] = Product::select('name')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$product['total'] = Product::count();		
 		
 		$tax = [];
-		$tax['total'] = Tax::count();
-		$tax['latest'] = Tax::select('title')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$tax['total'] = Tax::count();		
 		
 		$payment_method = [];
-		$payment_method['total'] = PaymentMethod::count();
-		$payment_method['latest'] = PaymentMethod::select('name')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$payment_method['total'] = PaymentMethod::count();		
 		
 		$shrinkage = [];
-		$shrinkage['total'] = Shrinkage::count();
-		$shrinkage['latest'] = Shrinkage::select('date')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$shrinkage['total'] = Shrinkage::count();		
 		
 		$supplier = [];
-		$supplier['total'] = Supplier::count();
-		$supplier['latest'] = Supplier::select('supplier_name')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$supplier['total'] = Supplier::count();		
 		
 		$expense = [];
-		$expense['total'] = Inventory::count();
-		$expense['latest'] = Inventory::select('invoice_number')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$expense['total'] = Inventory::count();		
 		
 		$customer = [];
-		$customer['total'] = Customer::count();
-		$customer['latest'] = Customer::select('name')->orderBy('id','DESC')->take(5)->get()->toArray();
+		$customer['total'] = Customer::count();		
 		
 		$order = [];
 		$order['total'] = Order::count();
 		$order['latest'] = Order::select('created_at')->orderBy('id','DESC')->take(5)->get()->toArray();
 		
-		return view('home', compact('category', 'product', 'tax', 'payment_method', 'shrinkage', 'supplier', 'expense', 'customer', 'order'));
+		$admin = [];
+		$admin['total_open_order'] = OrderPaymentMaster::whereIn('payment_status', array(0, 2))->count();
+		$admin['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->orderBy('id','DESC')->take(3)->get()->toArray();
+		$admin['expenses'] = Inventory::select('invoice_number', 'final_price')->orderBy('id','DESC')->take(3)->get()->toArray();
+		
+		$sales = [];		
+		$sales['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->where('sales_manager_id', \Auth::user()->id)->orderBy('id','DESC')->take(3)->get()->toArray();
+		
+		$del_agent = [];		
+		$del_agent['total_assigned_orders'] = Order::where('status', '4')->where('delivery_agent_id', \Auth::user()->id)->count();
+		
+		return view('home', compact('category', 'product', 'tax', 'payment_method', 'shrinkage', 'supplier', 'expense', 'customer', 'order', 'admin', 'sales', 'del_agent'));
     }
 }
