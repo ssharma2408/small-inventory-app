@@ -12,7 +12,20 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Tax">
+            <p id="date_filter">
+				<span id="date-label-from" class="date-label">From: </span><input class="date_range_filter" type="text" id="datepicker_from" />
+				<span id="date-label-to" class="date-label">To:<input class="date_range_filter" type="text" id="datepicker_to" />
+				<span id="supplier_span" class="">Supplier: </span>
+				<select id="supplier">
+					<option value="">-- Please Select --</option>
+					@if(!empty($suppliers))
+						@foreach($suppliers as $supplier)
+							<option value="{{$supplier->id}}">{{$supplier->supplier_name}}</option>
+						@endforeach
+					@endif
+				</select>
+			</p>
+			<table class=" table table-bordered table-striped table-hover datatable datatable-Tax">
                 <thead>
                     <tr>
                         <th width="10">
@@ -29,6 +42,9 @@
                         </th>
 						<th>
                             {{ trans('reports.purchase_report.supplier') }}
+                        </th>
+						<th class="d-none">
+                            Supplier ID
                         </th>
 						<th>
                             {{ trans('reports.purchase_report.memo') }}
@@ -76,8 +92,11 @@
 								{{ $inventory->invoice_number }}
                             </td>
 							<td>
-								{{ $inventory->supplier->supplier_name ?? '' }}
+								{{ $inventory->supplier->supplier_name ?? '' }}								
                             </td>
+							<td class="d-none">
+								{{ $inventory->supplier->id ?? '' }}		
+							</td>
 							<td>
 								
                             </td>
@@ -85,7 +104,7 @@
 								{{ $inventory->final_price }}
                             </td>
 							<td>
-								@if(!empty($order->payment))
+								@if(!empty($inventory->payment))
 									@if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1)
 										{{ $status[$inventory->payment->payment_status] }}
 									@else
@@ -162,13 +181,92 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Tax:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  //let table = $('.datatable-Tax:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
   
-})
+  var oTable = $('.datatable-Tax:not(.ajaxTable)').DataTable({
+    "oLanguage": {
+      "sSearch": "Filter Data"
+    },
+    "iDisplayLength": -1,
+    "sPaginationType": "full_numbers",
+	buttons: dtButtons,
+
+  });
+
+  $("#datepicker_from").datepicker({
+    showOn: "button",
+    //buttonImage: "images/calendar.gif",
+    buttonImageOnly: false,
+    "onSelect": function(date) {
+      minDateFilter = new Date(date).getTime();
+      oTable.draw();
+    }
+  }).keyup(function() {
+    minDateFilter = new Date(this.value).getTime();
+    oTable.draw();
+  });
+
+  $("#datepicker_to").datepicker({
+    showOn: "button",
+    //buttonImage: "images/calendar.gif",
+    buttonImageOnly: false,
+    "onSelect": function(date) {
+      maxDateFilter = new Date(date).getTime();
+      oTable.draw();
+    }
+  }).keyup(function() {
+    maxDateFilter = new Date(this.value).getTime();
+    oTable.draw();
+  });
+  
+  $("#supplier").change(function (){
+	  supplierFilter = $(this).val();
+	  oTable.draw();
+  });
+  
+});
+
+// Date range filter
+minDateFilter = "";
+maxDateFilter = "";
+supplierFilter = "";
+
+$.fn.dataTableExt.afnFiltering.push(
+  function(oSettings, aData, iDataIndex) {
+    if (typeof aData._date == 'undefined') {
+		var date_piece = aData[1].split("/");
+	  aData._date = new Date(date_piece[2]+"-"+date_piece[1]+"-"+date_piece[0]).getTime();
+    }
+	
+	if (typeof aData._supplier == 'undefined') {		
+	  aData._supplier = aData[5];
+    }
+
+    if (minDateFilter && !isNaN(minDateFilter)) {
+      if (aData._date < minDateFilter) {
+        return false;
+      }
+    }
+
+    if (maxDateFilter && !isNaN(maxDateFilter)) {
+      if (aData._date > maxDateFilter) {
+        return false;
+      }
+    }
+
+	if (supplierFilter && !isNaN(supplierFilter)) {
+      if (aData._supplier != supplierFilter) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+);
 
 </script>
 @endsection
