@@ -295,6 +295,16 @@
 										</p>
 									</a>
 								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.reports.get_product_expiry_report') }}" class="nav-link {{ request()->is("admin/reports/get_product_expiry_report") || request()->is("admin/reports/get_product_expiry_report") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('reports.product_expiry_report.title') }}
+										</p>
+									</a>
+								</li>
 							<!--@endcan -->										
 						</ul>
 					</li>				

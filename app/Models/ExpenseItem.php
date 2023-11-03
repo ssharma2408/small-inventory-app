@@ -30,6 +30,7 @@ class ExpenseItem extends Model
         'is_box',
         'purchase_price',
         'tax_id',
+        'exp_date',
         'sub_category_id',
     ];
 

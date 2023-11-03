@@ -100,10 +100,10 @@
 					<div class="col-md-2">
 						<b>Category Name</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Sub Category Name</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Product Name</b>
 					</div>									
 					<div class="col-md-1">
@@ -117,6 +117,9 @@
 					</div>	
 					<div class="col-md-1">
 						<b>Tax</b>
+					</div>
+					<div class="col-md-2">
+						<b>Expiry Date</b>
 					</div>
 					<div class="col-md-1">
 						<b>Amount</b>
@@ -134,12 +137,12 @@
 								?>
 							</div>				
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<select class="subcat form-control select2" name="item_subcategory[]">
 								<option value="">Please select</option>
 							</select>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
 								<option value="">Please select</option>
 							</select>			
@@ -162,6 +165,9 @@
 								echo $tax_ddl_html;
 							?>
 							<input type="hidden" class="tax_val" value="" />
+						</div>
+						<div class="col-md-2">
+							<input class="form-control exp_date" type="date" name="item_exp_date[]" required />
 						</div>
 						<div class="col-md-1">
 							<input class="form-control amount" type="text" name="item_amount[]" disabled />
@@ -290,7 +296,7 @@ $(".item_container").on('click','.remove_row',function(){
 });
 
 function row_html(){
-	return '<div class="row mb-3 item_row"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-2"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-2"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
+	return '<div class="row mb-3 item_row"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-2"><input class="form-control exp_date" type="date" name="item_exp_date[]" required /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
 }
 
 

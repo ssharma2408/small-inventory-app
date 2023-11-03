@@ -28,5 +28,18 @@ return [
 		'action'		=>  'ACTION',
 		
 	],
+	'product_expiry_report' 	=>
+	[
+		'title'			=>  'Product Expiry Report',
+		'expiry_date'	=>  'EXPIRY_DATE',
+		'invoice_no'	=>  'INVOICE NO.',
+		'product_name'	=>  'PRODUCT NAME',
+		'stock'			=>  'STOCK',
+		'is_box'		=>  'BOX OR UNIT',
+		'purchase_price'=>  'PURCHASE PRICE',		
+		'box_size'		=>  'BOX SIZE',
+		'expire_in'		=>  'EXPIRE IN',
+		'action'		=>  'ACTION',
+	],
 
 ];

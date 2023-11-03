@@ -111,6 +111,7 @@ class InventoryController extends Controller
 					$item['purchase_price'] = $request['item_price'][$i];
 					$item['tax_id'] = $request['item_tax_id'][$i];
 					$item['is_box'] = $request['box_or_unit'][$i];
+					$item['exp_date'] = $request['item_exp_date'][$i];
 					$data[] = $item;
 					
 					$product = Product::find($request['item_name'][$i]);
@@ -151,7 +152,7 @@ class InventoryController extends Controller
                 ->join('categories', 'expense_items.category_id', '=', 'categories.id')
                 ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
                 ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax')
+                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'expense_items.exp_date')
                 ->where('expense_items.expense_id', $inventory->id)
                 ->get();
 		
@@ -230,6 +231,7 @@ class InventoryController extends Controller
 				$item['purchase_price'] = $request['item_price'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = $request['box_or_unit'][$i];
+				$item['exp_date'] = $request['item_exp_date'][$i];
 				$data[] = $item;
 				
 				// Stock Mgmt				

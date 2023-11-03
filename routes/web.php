@@ -92,6 +92,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	// Reports
 	Route::get('reports/get_expense_report', 'ReportsController@get_expense_report')->name('reports.get_expense_report');
 	Route::get('reports/get_order_report', 'ReportsController@get_order_report')->name('reports.get_order_report');
+	Route::get('reports/get_product_expiry_report', 'ReportsController@get_product_expiry_report')->name('reports.get_product_expiry_report');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
