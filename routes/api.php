@@ -18,7 +18,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('payment-methods', 'PaymentMethodApiController');
 
     // Orders
-    Route::get('suppliers','OrdersApiController@get_supplier');
+    Route::get('sales-manager','OrdersApiController@get_supplier');
     Route::apiResource('orders', 'OrdersApiController');
 
     // Product
