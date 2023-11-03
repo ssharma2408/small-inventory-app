@@ -47,6 +47,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('invoice-with-pending-amt/{id}','ExpensePaymentApiController@get_invoice_pending_amt');
     Route::get('get-invoices','ExpensePaymentApiController@get_invoice');
     Route::apiResource('expense-payments', 'ExpensePaymentApiController');
+	
+	// Credit Note
+    Route::apiResource('credit-notes', 'CreditNoteApiController');
 });
 
 Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	
