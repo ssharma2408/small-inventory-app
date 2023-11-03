@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\Admin\OrderResource;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
@@ -18,6 +19,33 @@ use DB;
 
 class OrdersApiController extends Controller
 {
+
+	public function get_supplier()
+	{
+		$user = \Auth::user();
+		$role = $user->roles()->first()->toArray();
+
+		if ($role['title'] == 'Sales Manager') {
+			$sales_managers = User::whereHas(
+				'roles',
+				function ($q) {
+					$q->where('title', 'Sales Manager');
+				}
+			)->where('id', $user->id)->get();
+		} else {
+			$sales_managers = User::whereHas(
+				'roles',
+				function ($q) {
+					$q->where('title', 'Sales Manager');
+				}
+			)->get();
+		}
+
+		return (new OrderResource($sales_managers))
+			->response()
+			->setStatusCode(Response::HTTP_CREATED);
+	}
+	
 	public function index()
 	{
 		//abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
