@@ -39,21 +39,9 @@
                         </th>
                         <th>
                             {{ trans('reports.product_expiry_report.product_name') }}
-                        </th>
-						<th>
-                            {{ trans('reports.product_expiry_report.stock') }}
-                        </th>
+                        </th>						
 						<th class="d-none">
                             Product ID
-                        </th>
-						<th>
-                            {{ trans('reports.product_expiry_report.is_box') }}
-                        </th>
-						<th>
-                            {{ trans('reports.product_expiry_report.purchase_price') }}
-                        </th>
-						<th>
-                            {{ trans('reports.product_expiry_report.box_size') }}
                         </th>
 						<th>
                             {{ trans('reports.product_expiry_report.expire_in') }}
@@ -94,21 +82,9 @@
 							<td>
 								{{ $expense_item->name }}
                             </td>
-							<td>
-								{{ $expense_item->stock ?? '' }}								
-                            </td>
 							<td class="d-none">
 								{{ $expense_item->product_id ?? '' }}
 							</td>
-							<td>
-								{{ $expense_item->is_box ? 'Box' : 'Unit' }}
-                            </td>
-							<td>
-								{{ $expense_item->purchase_price }}
-                            </td>
-							<td>
-								{{ $expense_item->box_size }}
-                            </td>
 							<td>
 								@if(strtotime($expense_item->exp_date) < strtotime(date('Y-m-d')))
 									@if(!empty($expense_item->exp_date))
@@ -238,8 +214,8 @@ $.fn.dataTableExt.afnFiltering.push(
 	  aData._date = new Date(date_piece[2]+"-"+date_piece[1]+"-"+date_piece[0]).getTime();
     }
 	
-	if (typeof aData._supplier == 'undefined') {		
-	  aData._supplier = aData[5];
+	if (typeof aData._product == 'undefined') {		
+	  aData._product = aData[4];
     }
 
     if (minDateFilter && !isNaN(minDateFilter)) {
@@ -255,7 +231,7 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 
 	if (productFilter && !isNaN(productFilter)) {
-      if (aData._supplier != productFilter) {
+      if (aData._product != productFilter) {
         return false;
       }
     }
