@@ -47,6 +47,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
 	Route::get('orders/get_product_detail/{id}', 'OrdersController@get_product_detail')->name('orders.get_product_detail');
+	Route::get('orders/get_credit_balance/{id}', 'OrdersController@get_credit_balance')->name('orders.get_credit_balance');
 	Route::post('orders/complete_order', 'OrdersController@complete_order')->name('orders.complete');
 	Route::get('orders/payment/{id?}', 'OrdersController@payment')->name('orders.payment');
 	Route::get('orders/order_summary/{id?}', 'OrdersController@order_summary')->name('orders.order_summary');

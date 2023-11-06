@@ -201,6 +201,22 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.extra_discount_helper') }}</span>
             </div>
+			@if($credit_balance > 0)
+				<div class="form-group" id="credit_balance_container">
+					<div class="row">
+						<div class="col-lg-6">
+							<label for="credit_balance">{{ trans('cruds.order.fields.credit_balance') }}</label>
+							<input class="form-control" type="number" name="credit_balance" id="credit_balance" value="{{ old('credit_balance', $credit_balance) }}" step="0.01" disabled />
+						</div>
+						<div class="col-lg-6">
+							<label for="credit_balance"></label>
+							<input class="form-check-input ml-2 mt-5" type="checkbox" name="use_credit" id="use_credit" checked disabled />
+							<label class="form-check-label ml-4 mt-5">Use Credit Balance</label>
+							<input type="hidden" name="credit_balance_value" id="credit_balance_value" value="{{$credit_balance}}" />
+						</div>
+					</div>
+				</div>
+			@endif
             <div class="form-group">
                 <label class="required" for="order_total">{{ trans('cruds.order.fields.order_total') }}</label>
                 <input class="form-control {{ $errors->has('order_total') ? 'is-invalid' : '' }}" type="number" name="order_total" id="order_total" value="{{ old('order_total', $order->order_total) }}" step="0.01" required>
@@ -449,6 +465,11 @@
 			
 			if($("#extra_discount").val() > 0){
 				order_total = order_total - $("#extra_discount").val();
+			}
+			
+			if($('#credit_balance_container').is(':visible')){
+				var credit_balance_value = $("#credit_balance_value").val();				
+				order_total= order_total - credit_balance_value;				
 			}
 			
 			$("#order_total").val(order_total);

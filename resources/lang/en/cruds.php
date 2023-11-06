@@ -199,6 +199,7 @@ return [
             'order_total_without_tax_helper'   => ' ',
 			'order_tax'          => 'Order Tax',
             'order_tax_helper'   => ' ',
+            'credit_balance'   => 'Credit Balance',
         ],
     ],
     'product' => [

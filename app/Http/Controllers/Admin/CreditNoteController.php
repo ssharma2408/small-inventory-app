@@ -43,9 +43,16 @@ class CreditNoteController extends Controller
 
     public function store(StoreCreditNoteRequest $request)
     {
-        $creditNote = CreditNote::create($request->all());
+        $credit_note_log = [];
+		$credit_note = [];		
 		
-		$cust = Order::select('customer_id')->where('id', $creditNote->order_id)->first();
+		$cust = Order::select('customer_id')->where('id', $request->order_id)->first();
+		
+		$credit_note = $request->all();
+		
+		$credit_note['customer_id'] = $cust->customer_id;
+		
+		$creditNote = CreditNote::create($credit_note);		
 
 		$customer = Customer::find($cust->customer_id);
 
@@ -56,9 +63,7 @@ class CreditNoteController extends Controller
 					]);
 		}else{
 			$customer->increment('credit_note_balance', $creditNote->amount);
-		}
-
-		$credit_note_log = [];
+		}		
 		
 		$credit_note_log['credit_order_id'] = $creditNote->order_id;
 		$credit_note_log['customer_id'] = $cust->customer_id;
