@@ -34,31 +34,53 @@
     <div class="card-body">
         <form method="POST" id="orderfrm" action="{{ route("admin.orders.store") }}" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
-                <label class="required" for="sales_manager_id">{{ trans('cruds.order.fields.sales_manager') }}</label>
-                <select class="form-control select2 {{ $errors->has('sales_manager') ? 'is-invalid' : '' }}" name="sales_manager_id" id="sales_manager_id" required>
-                    @foreach($sales_managers as $id => $entry)
-                        <option value="{{ $id }}" {{ old('sales_manager_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('sales_manager'))
-                    <span class="text-danger">{{ $errors->first('sales_manager') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.order.fields.sales_manager_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="customer_id">{{ trans('cruds.order.fields.customer') }}</label>
-                <select class="form-control select2 {{ $errors->has('customer') ? 'is-invalid' : '' }}" name="customer_id" id="customer_id" required>
-                    @foreach($customers as $id => $entry)
-                        <option value="{{ $id }}" {{ old('customer_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('customer'))
-                    <span class="text-danger">{{ $errors->first('customer') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.order.fields.customer_helper') }}</span>
-            </div>
-			
+            <div class="row">
+				<div class="col-lg-4">
+					<div class="form-group">
+						<label class="required" for="sales_manager_id">{{ trans('cruds.order.fields.sales_manager') }}</label>
+						<select class="form-control select2 {{ $errors->has('sales_manager') ? 'is-invalid' : '' }}" name="sales_manager_id" id="sales_manager_id" required>
+							@foreach($sales_managers as $id => $entry)
+								<option value="{{ $id }}" {{ old('sales_manager_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+							@endforeach
+						</select>
+						@if($errors->has('sales_manager'))
+							<span class="text-danger">{{ $errors->first('sales_manager') }}</span>
+						@endif
+						<span class="help-block">{{ trans('cruds.order.fields.sales_manager_helper') }}</span>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="form-group">
+						<label class="required" for="customer_id">{{ trans('cruds.order.fields.customer') }}</label>
+						<select class="form-control select2 {{ $errors->has('customer') ? 'is-invalid' : '' }}" name="customer_id" id="customer_id" required>
+							@foreach($customers as $id => $entry)
+								<option value="{{ $id }}" {{ old('customer_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+							@endforeach
+						</select>
+						@if($errors->has('customer'))
+							<span class="text-danger">{{ $errors->first('customer') }}</span>
+						@endif
+						<span class="help-block">{{ trans('cruds.order.fields.customer_helper') }}</span>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="form-group" id="credit_balance_container">
+						<div class="row">
+							<div class="col-lg-6">
+								<label for="credit_balance">{{ trans('cruds.order.fields.credit_balance') }}</label>
+								<input class="form-control" type="number" name="credit_balance" id="credit_balance" value="{{ old('credit_balance', '') }}" step="0.01" disabled />
+							</div>
+							<div class="col-lg-6">
+								<label for="credit_balance"></label>
+								<input class="form-check-input ml-2 mt-5" type="checkbox" name="use_credit" id="use_credit" />
+								<label class="form-check-label ml-4 mt-5">Use Credit Balance</label>
+								<input type="hidden" name="credit_balance_value" id="credit_balance_value" />
+								<span class="text-danger credit_note_err"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
                 <label class="required" for="order_items">Order Items</label>
                 <div class="row">
@@ -158,7 +180,7 @@
             </div>			
 			<div class="form-group">
                 <label class="required" for="order_total_without_tax">{{ trans('cruds.order.fields.order_total_without_tax') }}</label>
-                <input class="form-control {{ $errors->has('order_total_without_tax') ? 'is-invalid' : '' }}" type="number" name="order_total_without_tax" id="order_total_without_tax" value="{{ old('order_total_without_tax', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('order_total_without_tax') ? 'is-invalid' : '' }}" type="number" name="order_total_without_tax" id="order_total_without_tax" value="{{ old('order_total_without_tax', '') }}" step="0.01" required readonly>
                 @if($errors->has('order_total_without_tax'))
                     <span class="text-danger">{{ $errors->first('order_total_without_tax') }}</span>
                 @endif
@@ -166,7 +188,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="order_tax">{{ trans('cruds.order.fields.order_tax') }}</label>
-                <input class="form-control {{ $errors->has('order_tax') ? 'is-invalid' : '' }}" type="number" name="order_tax" id="order_tax" value="{{ old('order_tax', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('order_tax') ? 'is-invalid' : '' }}" type="number" name="order_tax" id="order_tax" value="{{ old('order_tax', '') }}" step="0.01" required readonly>
                 @if($errors->has('order_tax'))
                     <span class="text-danger">{{ $errors->first('order_tax') }}</span>
                 @endif
@@ -180,23 +202,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.extra_discount_helper') }}</span>
             </div>
-			<div class="form-group" id="credit_balance_container">
-                <div class="row">
-					<div class="col-lg-6">
-						<label for="credit_balance">{{ trans('cruds.order.fields.credit_balance') }}</label>
-						<input class="form-control" type="number" name="credit_balance" id="credit_balance" value="{{ old('credit_balance', '') }}" step="0.01" disabled />
-					</div>
-					<div class="col-lg-6">
-						<label for="credit_balance"></label>
-						<input class="form-check-input ml-2 mt-5" type="checkbox" name="use_credit" id="use_credit" />
-						<label class="form-check-label ml-4 mt-5">Use Credit Balance</label>
-						<input type="hidden" name="credit_balance_value" id="credit_balance_value" />
-					</div>
-				</div>
-            </div>
             <div class="form-group">
                 <label class="required" for="order_total">{{ trans('cruds.order.fields.order_total') }}</label>
-                <input class="form-control {{ $errors->has('order_total') ? 'is-invalid' : '' }}" type="number" name="order_total" id="order_total" value="{{ old('order_total', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('order_total') ? 'is-invalid' : '' }}" type="number" name="order_total" id="order_total" value="{{ old('order_total', '') }}" step="0.01" required readonly>
                 @if($errors->has('order_total'))
                     <span class="text-danger">{{ $errors->first('order_total') }}</span>
                 @endif
@@ -588,6 +596,10 @@
 				}else{
 					$("#order_total").val(order_total + credit_balance_value);
 				}
+				$(".credit_note_err").html("");
+			}else{
+				$(".credit_note_err").html("Credit Note Balance can not be greater than order total");
+				$(this).prop('checked', false);
 			}
 		});
 	</script>

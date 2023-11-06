@@ -201,7 +201,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="expense_total">{{ trans('cruds.inventory.fields.expense_total') }}</label>
-                <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number" name="expense_total" id="expense_total" value="{{ old('expense_total', $inventory->expense_total) }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number" name="expense_total" id="expense_total" value="{{ old('expense_total', $inventory->expense_total) }}" step="0.01" required readonly>
                 @if($errors->has('expense_total'))
                     <span class="text-danger">{{ $errors->first('expense_total') }}</span>
                 @endif
@@ -209,7 +209,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="expense_tax">{{ trans('cruds.inventory.fields.expense_tax') }}</label>
-                <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number" name="expense_tax" id="expense_tax" value="{{ old('expense_tax', $inventory->expense_tax) }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number" name="expense_tax" id="expense_tax" value="{{ old('expense_tax', $inventory->expense_tax) }}" step="0.01" required readonly>
                 @if($errors->has('expense_tax'))
                     <span class="text-danger">{{ $errors->first('expense_tax') }}</span>
                 @endif
@@ -238,7 +238,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="final_price">{{ trans('cruds.inventory.fields.final_price') }}</label>
-                <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number" name="final_price" id="final_price" value="{{ old('final_price', $inventory->final_price) }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number" name="final_price" id="final_price" value="{{ old('final_price', $inventory->final_price) }}" step="0.01" required readonly>
                 @if($errors->has('final_price'))
                     <span class="text-danger">{{ $errors->first('final_price') }}</span>
                 @endif
