@@ -197,6 +197,12 @@
                             <td>{{ $item->title }} @ {{$order->tax}}%</td>
                             <td style="text-align: right">${{number_format($order->order_tax, 2)}}</td>
                         </tr>
+						@if($credit_balance > 0)
+							<tr>
+								<td>{{ trans('cruds.order.fields.credit_balance') }}</td>
+								<td style="text-align: right">${{number_format($credit_balance, 2)}}</td>
+							</tr>
+						@endif
                         <tr>
                             <td style="padding-bottom: 16px">TOTAL</td>
                             <td style="text-align: right; padding-bottom: 16px">

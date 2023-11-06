@@ -411,9 +411,11 @@ class OrdersController extends Controller
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
             ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
-            ->get()->toArray();        
+            ->get()->toArray();
 
-        $pdf = PDF::loadView('admin.orders.order_summary', compact('order'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+		$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
+
+        $pdf = PDF::loadView('admin.orders.order_summary', compact('order', 'credit_balance'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
 		
 		$store = Storage::disk('do')->put(
 				'/'.$_ENV['DO_FOLDER'].'/orders/order_'.$order->id.'.pdf',
