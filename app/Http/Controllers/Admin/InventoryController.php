@@ -373,7 +373,7 @@ class InventoryController extends Controller
 				$payment_arr[$detail->expense_id]['payment_detail'][] = array('amount'=>$detail->amount, 'description'=>$detail->description, 'date'=>$detail->date, 'name'=>$detail->name);				
 			}	
 		
-		return view('admin.inventories.payment_history', compact('payment_arr'));
+		return view('admin.inventories.payment_history', compact('payment_arr', 'expense_id'));
 		
 	}
 	

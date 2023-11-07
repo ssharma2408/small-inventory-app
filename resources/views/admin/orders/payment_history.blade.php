@@ -7,6 +7,11 @@
 a.buttons-select-all, a.buttons-select-none{
 	display:none;
 }
+@if($order_id == "")
+	a.buttons-excel, a.buttons-pdf{
+		display:none;
+	}
+@endif
 </style>
 <div class="card">
     <div class="card-header">
@@ -15,114 +20,160 @@ a.buttons-select-all, a.buttons-select-none{
 
     <div class="card-body">
         <div class="table-responsive">
-            <p id="">
-				<span id="" class="">Order ID: </span><input class="" type="text" id="order_id" />				
-			</p>
-			<table class=" table table-bordered table-striped table-hover datatable datatable-Order">
-                <thead>
-                    <tr>
-						<th></th>
-                        <th>
-                            Order Number
-                        </th>
-                        <th>
-                            Order Total
-                        </th>
-						<th>
-                            Order Paid
-                        </th>
-                        <th>
-                            Order Pending
-                        </th>
-						<th>
-                            Payment Status
-                        </th>
-                        <th>
-                            Customer Name
-                        </th>
-                        <th>
-                            Customer Phone Number
-                        </th>
-                        <th>
-                            Customer Email
-                        </th>
-                        <th>
-                            Payment Detail
-                        </th>                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($payment_arr as $key => $payment)
-                        <tr data-entry-id="{{ $key }}">
-                            <td>
-                               
-                            </td>
-							<td>
-                                {{ $payment['order_number'] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $payment['order_total'] ?? '' }}
-                            </td>
-							<td>
-                                {{ $payment['order_paid'] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $payment['order_pending'] ?? '' }}
-                            </td>
-							<td>
-                                {{ $payment['payment_status'] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $payment['cust_name'] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $payment['phone_number'] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $payment['email'] ?? '' }}
-                            </td>
-                            <td>                                
-								<table class=" table table-bordered table-hover">
-									<thead>
-										<tr>												
-											<th>
-												Amount
-											</th>
-											<th>
-												Description
-											</th>
-											<th>
-												Date
-											</th>
-											<th>
-												Name
-											</th>												                       
-										</tr>
-									</thead>
-									<tbody>
-									@foreach($payment['payment_detail'] as $payment_detail)
-										<tr>
-											<td>
-												{{ $payment_detail['amount'] ?? '' }}
-											</td>
-											<td>
-												{{ $payment_detail['description'] ?? '' }}
-											</td>
-											<td>
-												{{ $payment_detail['date'] ?? '' }}
-											</td>
-											<td>
-												{{ $payment_detail['name'] ?? '' }}
-											</td>
-										</tr>
-									@endforeach
-									</tbody>
-								</table>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            @if($order_id == "")
+				<p id="">
+					<span id="" class="">Order ID: </span><input class="" type="text" id="order_id" />				
+				</p>
+				<table class=" table table-bordered table-striped table-hover datatable datatable-Order">
+					<thead>
+						<tr>
+							<th></th>
+							<th>
+								Order Number
+							</th>
+							<th>
+								Order Total
+							</th>
+							<th>
+								Order Paid
+							</th>
+							<th>
+								Order Pending
+							</th>
+							<th>
+								Payment Status
+							</th>
+							<th>
+								Customer Name
+							</th>
+							<th>
+								Customer Phone Number
+							</th>
+							<th>
+								Customer Email
+							</th>
+							<th>
+								Payment Detail
+							</th>                        
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($payment_arr as $key => $payment)
+							<tr data-entry-id="{{ $key }}">
+								<td>
+								   
+								</td>
+								<td>
+									{{ $payment['order_number'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['order_total'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['order_paid'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['order_pending'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['payment_status'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['cust_name'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['phone_number'] ?? '' }}
+								</td>
+								<td>
+									{{ $payment['email'] ?? '' }}
+								</td>
+								<td>                                
+									<table class=" table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>
+													Amount
+												</th>
+												<th>
+													Description
+												</th>
+												<th>
+													Date
+												</th>
+												<th>
+													Name
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+										@foreach($payment['payment_detail'] as $payment_detail)
+											<tr>
+												<td>
+													{{ $payment_detail['amount'] ?? '' }}
+												</td>
+												<td>
+													{{ $payment_detail['description'] ?? '' }}
+												</td>
+												<td>
+													{{ $payment_detail['date'] ?? '' }}
+												</td>
+												<td>
+													{{ $payment_detail['name'] ?? '' }}
+												</td>
+											</tr>
+										@endforeach
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
+			@else
+				<div class="mb-2">Order Number: <b>{{ $payment_arr[$order_id]['order_number'] ?? '' }}</b></div>
+				<table class=" table table-bordered table-striped table-hover datatable datatable-Order">
+					<thead>
+						<tr>
+							<th></th>
+							<th>
+								Amount
+							</th>
+							<th>
+								Description
+							</th>
+							<th>
+								Date
+							</th>
+							<th>
+								Name
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if(isset($payment_arr[$order_id]))
+							@foreach($payment_arr[$order_id]['payment_detail'] as $payment_detail)
+								<tr>
+									<td>
+									   
+									</td>
+									<td>
+										{{ $payment_detail['amount'] ?? '' }}
+									</td>
+									<td>
+										{{ $payment_detail['description'] ?? '' }}
+									</td>
+									<td>
+										{{ $payment_detail['date'] ?? '' }}
+									</td>
+									<td>
+										{{ $payment_detail['name'] ?? '' }}
+									</td>
+								</tr>
+							@endforeach
+						@endif
+					</tbody>
+				</table>
+			@endif
         </div>
     </div>
 </div>

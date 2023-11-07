@@ -392,7 +392,7 @@ class OrdersController extends Controller
             $payment_arr[$detail->order_number]['payment_detail'][] = array('amount' => $detail->amount, 'description' => $detail->description, 'date' => $detail->date, 'name' => $detail->name);
         }
 
-        return view('admin.orders.payment_history', compact('payment_arr'));
+        return view('admin.orders.payment_history', compact('payment_arr', 'order_id'));
 
     }
 
