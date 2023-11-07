@@ -111,3 +111,6 @@ div.dt-button-collection {
 .add_row, .remove_row{
 	font-size: 25px;
 }
+.credit_note_err{
+	color: #dc3545!important;
+}

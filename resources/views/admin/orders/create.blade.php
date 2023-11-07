@@ -75,7 +75,7 @@
 								<input class="form-check-input ml-2 mt-5" type="checkbox" name="use_credit" id="use_credit" />
 								<label class="form-check-label ml-4 mt-5">Use Credit Balance</label>
 								<input type="hidden" name="credit_balance_value" id="credit_balance_value" />
-								<span class="text-danger credit_note_err"></span>
+								<span class="credit_note_err"></span>
 							</div>
 						</div>
 					</div>
