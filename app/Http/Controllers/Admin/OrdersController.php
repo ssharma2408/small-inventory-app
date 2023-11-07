@@ -15,6 +15,8 @@ use App\Models\OrderPaymentMaster;
 use App\Models\Product;
 use App\Models\Tax;
 use App\Models\User;
+use App\Models\CreditNote;
+use App\Models\CreditNoteLog;
 use DB;
 use Gate;
 use Storage;
@@ -108,6 +110,36 @@ class OrdersController extends Controller
         if (!empty($data)) {
             OrderItem::insert($data);
         }
+		
+		// Credit Note
+		if(isset($request->use_credit)){
+			$customer = Customer::find($params['customer_id']);
+			$customer->decrement('credit_note_balance', $params['credit_balance_value']);
+			
+			$credit_notes = CreditNote::where('customer_id', $params['customer_id'])->get();
+			CreditNote::where('customer_id', $params['customer_id'])
+				   ->update([
+					   'deleted_at' => date('Y-m-d H:i:s')
+					]);
+			$credit_log_data = [];
+			$credit_balance_value = $params['credit_balance_value'];
+			foreach($credit_notes as $cn){
+				
+				$balance = $credit_balance_value - $cn->amount;
+				
+				$item = [];
+				$item['credit_order_id'] = $cn->order_id;
+				$item['debit_order_id'] = $order->id;
+				$item['customer_id'] = $params['customer_id'];
+				$item['amount'] = $cn->amount;
+				$item['balance'] = $balance;
+				
+				$credit_balance_value = $balance;
+				$credit_log_data[] = $item;
+			}
+			
+			CreditNoteLog::insert($credit_log_data);
+		}
 
         $order_pay_detail['customer_id'] = $params['customer_id'];
         $order_pay_detail['order_total'] = $params['order_total'];
@@ -166,8 +198,10 @@ class OrdersController extends Controller
             $order->load('sales_manager', 'customer');
 
             $taxes = Tax::select('title', 'id')->get();
+			
+			$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
 
-            return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'categories', 'order_items', 'delivery_agents', 'taxes'));
+            return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'categories', 'order_items', 'delivery_agents', 'taxes', 'credit_balance'));
         } else {
             return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
         }
@@ -241,8 +275,10 @@ class OrdersController extends Controller
             ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
             ->get()->toArray();
+			
+		$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
 
-        return view('admin.orders.show', compact('order', 'role'));
+        return view('admin.orders.show', compact('order', 'role', 'credit_balance'));
     }
 
     public function destroy(Order $order)
@@ -375,9 +411,11 @@ class OrdersController extends Controller
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
             ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
-            ->get()->toArray();        
+            ->get()->toArray();
 
-        $pdf = PDF::loadView('admin.orders.order_summary', compact('order'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+		$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
+
+        $pdf = PDF::loadView('admin.orders.order_summary', compact('order', 'credit_balance'))->setOptions(['dpi' => 150, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
 		
 		$store = Storage::disk('do')->put(
 				'/'.$_ENV['DO_FOLDER'].'/orders/order_'.$order->id.'.pdf',
@@ -387,5 +425,12 @@ class OrdersController extends Controller
 
         return $pdf->download('invoice.pdf');
     }
+	
+	public function get_credit_balance($cust_id){
+		$balance = Customer::select('credit_note_balance')->where('id', $cust_id)->first();
+		
+		$credt_balance =  ($balance->credit_note_balance == null) ? 0 : $balance->credit_note_balance;
+		return response()->json(array('success' => 1, 'credt_balance' => $credt_balance), 200);
+	}
 
 }

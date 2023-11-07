@@ -1,4 +1,4 @@
-	<?php
+<?php
 
 Route::redirect('/', '/login');
 Route::get('/home', function () {
@@ -47,6 +47,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
 	Route::get('orders/get_product_detail/{id}', 'OrdersController@get_product_detail')->name('orders.get_product_detail');
+	Route::get('orders/get_credit_balance/{id}', 'OrdersController@get_credit_balance')->name('orders.get_credit_balance');
 	Route::post('orders/complete_order', 'OrdersController@complete_order')->name('orders.complete');
 	Route::get('orders/payment/{id?}', 'OrdersController@payment')->name('orders.payment');
 	Route::get('orders/order_summary/{id?}', 'OrdersController@order_summary')->name('orders.order_summary');
@@ -92,6 +93,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	// Reports
 	Route::get('reports/get_expense_report', 'ReportsController@get_expense_report')->name('reports.get_expense_report');
 	Route::get('reports/get_order_report', 'ReportsController@get_order_report')->name('reports.get_order_report');
+	Route::get('reports/get_product_expiry_report', 'ReportsController@get_product_expiry_report')->name('reports.get_product_expiry_report');
+	
+	// Credit Note
+    Route::delete('credit-notes/destroy', 'CreditNoteController@massDestroy')->name('credit-notes.massDestroy');
+    Route::resource('credit-notes', 'CreditNoteController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

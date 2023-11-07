@@ -107,3 +107,7 @@ div.dt-button-collection {
 .buttons-copy, .buttons-csv, .buttons-print, .buttons-collection{
 	display:none;
 }
+
+.add_row, .remove_row{
+	font-size: 25px;
+}

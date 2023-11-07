@@ -199,6 +199,7 @@ return [
             'order_total_without_tax_helper'   => ' ',
 			'order_tax'          => 'Order Tax',
             'order_tax_helper'   => ' ',
+            'credit_balance'   => 'Credit Balance',
         ],
     ],
     'product' => [
@@ -371,5 +372,28 @@ return [
 		'order_history'          => 'Order History',
 		'order_history_singular' => 'Order History',
 	],
+	
+	'creditNote' => [
+        'title'          => 'Credit Note',
+        'title_singular' => 'Credit Note',
+        'fields'         => [
+            'id'                 => 'ID',
+            'id_helper'          => ' ',
+            'order'              => 'Order',
+            'order_helper'       => ' ',
+            'amount'             => 'Amount',
+            'amount_helper'      => ' ',
+            'description'        => 'Description',
+            'description_helper' => ' ',
+            'date'               => 'Date',
+            'date_helper'        => ' ',
+            'created_at'         => 'Created at',
+            'created_at_helper'  => ' ',
+            'updated_at'         => 'Updated at',
+            'updated_at_helper'  => ' ',
+            'deleted_at'         => 'Deleted at',
+            'deleted_at_helper'  => ' ',
+        ],
+    ],
 
 ];

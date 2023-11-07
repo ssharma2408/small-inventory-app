@@ -35,6 +35,7 @@ class Customer extends Model
         'pincode',
         'company_name',
         'payment_terms',
+        'credit_note_balance',
         'created_at',
         'updated_at',
         'deleted_at',

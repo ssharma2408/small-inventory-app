@@ -161,6 +161,16 @@
 								{{ $order->extra_discount }}
 							</td>
 						</tr>
+						@if($credit_balance > 0)
+							<tr>
+								<th>
+									{{ trans('cruds.order.fields.credit_balance') }}
+								</th>
+								<td>
+									{{ $credit_balance }}
+								</td>
+							</tr>
+						@endif
 						<tr>
 							<th>
 								{{ trans('cruds.order.fields.order_total') }}

@@ -37,17 +37,17 @@
             <div class="row">
 				<div class="col-lg-4">
 					<div class="form-group">
-					<label for="supplier_id">{{ trans('cruds.inventory.fields.supplier') }}</label>
-					<select class="form-control select2 {{ $errors->has('supplier') ? 'is-invalid' : '' }}" name="supplier_id" id="supplier_id">
-						@foreach($suppliers as $id => $entry)
-							<option value="{{ $id }}" {{ old('supplier_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-						@endforeach
-					</select>
-					@if($errors->has('supplier'))
-						<span class="text-danger">{{ $errors->first('supplier') }}</span>
-					@endif
-					<span class="help-block">{{ trans('cruds.inventory.fields.supplier_helper') }}</span>
-				</div>
+						<label for="supplier_id">{{ trans('cruds.inventory.fields.supplier') }}</label>
+						<select class="form-control select2 {{ $errors->has('supplier') ? 'is-invalid' : '' }}" name="supplier_id" id="supplier_id">
+							@foreach($suppliers as $id => $entry)
+								<option value="{{ $id }}" {{ old('supplier_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+							@endforeach
+						</select>
+						@if($errors->has('supplier'))
+							<span class="text-danger">{{ $errors->first('supplier') }}</span>
+						@endif
+						<span class="help-block">{{ trans('cruds.inventory.fields.supplier_helper') }}</span>
+					</div>
 				</div>
 				<div class="col-lg-4">
 					<div class="form-group">
@@ -100,10 +100,10 @@
 					<div class="col-md-2">
 						<b>Category Name</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Sub Category Name</b>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<b>Product Name</b>
 					</div>									
 					<div class="col-md-1">
@@ -117,6 +117,9 @@
 					</div>	
 					<div class="col-md-1">
 						<b>Tax</b>
+					</div>
+					<div class="col-md-2">
+						<b>Expiry Date</b>
 					</div>
 					<div class="col-md-1">
 						<b>Amount</b>
@@ -134,12 +137,12 @@
 								?>
 							</div>				
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<select class="subcat form-control select2" name="item_subcategory[]">
 								<option value="">Please select</option>
 							</select>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-1">
 							<select class="order_item form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="item_name[]" required>
 								<option value="">Please select</option>
 							</select>			
@@ -163,6 +166,9 @@
 							?>
 							<input type="hidden" class="tax_val" value="" />
 						</div>
+						<div class="col-md-2">
+							<input class="form-control exp_date" type="date" name="item_exp_date[]" required />
+						</div>
 						<div class="col-md-1">
 							<input class="form-control amount" type="text" name="item_amount[]" disabled />
 						</div>
@@ -174,7 +180,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="expense_total">{{ trans('cruds.inventory.fields.expense_total') }}</label>
-                <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number" name="expense_total" id="expense_total" value="{{ old('expense_total', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number" name="expense_total" id="expense_total" value="{{ old('expense_total', '') }}" step="0.01" required readonly>
                 @if($errors->has('expense_total'))
                     <span class="text-danger">{{ $errors->first('expense_total') }}</span>
                 @endif
@@ -182,7 +188,7 @@
             </div>
 			<div class="form-group">
                 <label class="required" for="expense_tax">{{ trans('cruds.inventory.fields.expense_tax') }}</label>
-                <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number" name="expense_tax" id="expense_tax" value="{{ old('expense_tax', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number" name="expense_tax" id="expense_tax" value="{{ old('expense_tax', '') }}" step="0.01" required readonly>
                 @if($errors->has('expense_tax'))
                     <span class="text-danger">{{ $errors->first('expense_tax') }}</span>
                 @endif
@@ -211,7 +217,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="final_price">{{ trans('cruds.inventory.fields.final_price') }}</label>
-                <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number" name="final_price" id="final_price" value="{{ old('final_price', '') }}" step="0.01" required>
+                <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number" name="final_price" id="final_price" value="{{ old('final_price', '') }}" step="0.01" required readonly>
                 @if($errors->has('final_price'))
                     <span class="text-danger">{{ $errors->first('final_price') }}</span>
                 @endif
@@ -290,7 +296,7 @@ $(".item_container").on('click','.remove_row',function(){
 });
 
 function row_html(){
-	return '<div class="row mb-3 item_row"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-2"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-2"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
+	return '<div class="row mb-3 item_row"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-2"><input class="form-control exp_date" type="date" name="item_exp_date[]" required /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
 }
 
 

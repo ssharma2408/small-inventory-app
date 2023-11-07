@@ -316,6 +316,26 @@ class PermissionsTableSeeder extends Seeder
             ],
 			[
                 'id'    => 77,
+                'title' => 'credit_note_create',
+            ],
+            [
+                'id'    => 78,
+                'title' => 'credit_note_edit',
+            ],
+            [
+                'id'    => 79,
+                'title' => 'credit_note_show',
+            ],
+            [
+                'id'    => 80,
+                'title' => 'credit_note_delete',
+            ],
+            [
+                'id'    => 81,
+                'title' => 'credit_note_access',
+            ],
+			[
+                'id'    => 82,
                 'title' => 'profile_password_edit',
             ],						
         ];

@@ -195,8 +195,8 @@
 					</li>
 				@endcan
 				@can('order_management_access')
-					<li class="nav-item has-treeview {{ request()->is("admin/customers*") ? "menu-open" : "" }} {{ request()->is("admin/orders*") ? "menu-open" : "" }} {{ request()->is("admin/order-payments*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/customers*") ? "active" : "" }} {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }}" href="#">
+					<li class="nav-item has-treeview {{ request()->is("admin/customers*") ? "menu-open" : "" }} {{ request()->is("admin/orders*") ? "menu-open" : "" }} {{ request()->is("admin/order-payments*") ? "menu-open" : "" }} {{ request()->is("admin/credit-notes*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/customers*") ? "active" : "" }} {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }} {{ request()->is("admin/credit-notes*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
@@ -241,7 +241,19 @@
 										</p>
 									</a>
 								</li>
-							@endcan							
+							@endcan
+							@can('credit_note_access')
+								<li class="nav-item">
+									<a href="{{ route("admin.credit-notes.index") }}" class="nav-link {{ request()->is("admin/credit-notes") || request()->is("admin/credit-notes/*") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('cruds.creditNote.title') }}
+										</p>
+									</a>
+								</li>
+							@endcan
 						</ul>
 					</li>				
 				@endcan			
@@ -292,6 +304,16 @@
 										</i>
 										<p>
 											{{ trans('reports.order_report.title') }}
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ route('admin.reports.get_product_expiry_report') }}" class="nav-link {{ request()->is("admin/reports/get_product_expiry_report") || request()->is("admin/reports/get_product_expiry_report") ? "active" : "" }}">
+										<i class="fa-fw nav-icon fas fa-cogs">
+
+										</i>
+										<p>
+											{{ trans('reports.product_expiry_report.title') }}
 										</p>
 									</a>
 								</li>

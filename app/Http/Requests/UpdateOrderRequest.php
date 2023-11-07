@@ -24,14 +24,17 @@ class UpdateOrderRequest extends FormRequest
 			'order_total_without_tax' => [
                 'numeric',
                 'required',
+				'min:0',
             ],
 			'order_tax' => [
                 'numeric',
                 'required',
+				'min:0',
             ],
             'order_total' => [
                 'numeric',
                 'required',
+				'min:0',
             ],
             'status' => [
                 'required',
