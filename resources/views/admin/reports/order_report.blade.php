@@ -14,7 +14,7 @@
         <div class="table-responsive">
             <p id="date_filter">
 				<span id="date-label-from" class="date-label">From: </span><input class="date_range_filter" type="text" id="datepicker_from" />
-				<span id="date-label-to" class="date-label">To:<input class="date_range_filter" type="text" id="datepicker_to" />
+				<span id="date-label-to" class="date-label">To: </span><input class="date_range_filter" type="text" id="datepicker_to" />
 				<span id="supplier_span" class="">Customer: </span>
 				<select id="customer">
 					<option value="">-- Please Select --</option>
