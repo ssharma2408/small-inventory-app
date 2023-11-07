@@ -47,9 +47,6 @@
                             Supplier ID
                         </th>
 						<th>
-                            {{ trans('reports.purchase_report.memo') }}
-                        </th>
-						<th>
                             {{ trans('reports.purchase_report.amount') }}
                         </th>
 						<th>
@@ -97,9 +94,6 @@
 							<td class="d-none">
 								{{ $inventory->supplier->id ?? '' }}		
 							</td>
-							<td>
-								
-                            </td>
 							<td>
 								{{ $inventory->final_price }}
                             </td>
