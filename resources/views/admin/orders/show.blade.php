@@ -155,6 +155,14 @@
 						</tr>
 						<tr>
 							<th>
+								{{ trans('cruds.order.fields.discount_type') }}
+							</th>
+							<td>
+								{{ App\Models\Order::DISCOUNT_TYPE_RADIO[$order->discount_type] ?? '' }}
+							</td>
+						</tr>
+						<tr>
+							<th>
 								{{ trans('cruds.order.fields.extra_discount') }}
 							</th>
 							<td>
@@ -201,6 +209,14 @@
 							</th>
 							<td>
 								{{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
+							</td>
+						</tr>
+						<tr>
+							<th>
+								{{ trans('cruds.order.fields.order_date') }}
+							</th>
+							<td>
+								{{ $order->order_date }}
 							</td>
 						</tr>
 					</tbody>
