@@ -24,7 +24,7 @@ class InventoryApiController extends Controller
     {
         $expense_id_arr = [];
         abort_if(Gate::denies('inventory_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $inventories = Inventory::with(['supplier', 'product', 'tax', 'media'])->get();
+        $inventories = Inventory::with(['supplier', 'media'])->get();
         $expense_id = $this->get_payments();
         foreach ($inventories as $rw) {
             $rw['edit_key'] = in_array($rw->id, $expense_id) ? 1 : 0;
