@@ -217,6 +217,19 @@
                 <span class="help-block">{{ trans('cruds.order.fields.order_tax_helper') }}</span>
             </div>
 			<div class="form-group">
+                <label class="required">{{ trans('cruds.order.fields.discount_type') }}</label>
+                @foreach(App\Models\Order::DISCOUNT_TYPE_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('discount_type') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="discount_type_{{ $key }}" name="discount_type" value="{{ $key }}" {{ old('discount_type', $order->discount_type) === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="discount_type_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('discount_type'))
+                    <span class="text-danger">{{ $errors->first('discount_type') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.discount_type_helper') }}</span>
+            </div>
+			<div class="form-group">
                 <label for="extra_discount">{{ trans('cruds.order.fields.extra_discount') }}</label>
                 <input class="form-control {{ $errors->has('extra_discount') ? 'is-invalid' : '' }}" type="number" name="extra_discount" id="extra_discount" value="{{ old('extra_discount', $order->extra_discount) }}" step="0.01">
                 @if($errors->has('extra_discount'))
@@ -286,7 +299,14 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.delivery_agent_helper') }}</span>
             </div>
-			
+			<div class="form-group">
+                <label class="required" for="order_date">{{ trans('cruds.order.fields.order_date') }}</label>
+                <input class="form-control datetime {{ $errors->has('order_date') ? 'is-invalid' : '' }}" type="text" name="order_date" id="order_date" value="{{ old('order_date', $order->order_date) }}" required readonly>
+                @if($errors->has('order_date'))
+                    <span class="text-danger">{{ $errors->first('order_date') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.order.fields.order_date_helper') }}</span>
+            </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
@@ -398,6 +418,9 @@
 			calculate_total();
 			
 		});
+		$(document).on("change", "#discount_type_0, #discount_type_1", function () {
+			calculate_total();
+		});
 		$(document).on("keyup", "#extra_discount", function () {
 			calculate_total();
 		});
@@ -451,8 +474,10 @@
 		});		
 		
 		function calculate_total(){
-			var order_total_without_tax = 0;			
+			var order_total_without_tax = 0, extra_discount;			
 			var order_total = 0;
+			
+			extra_discount = $("#extra_discount").val();
 			
 			$(".item_row").each(function() {
 				var checkb = $(this).find("input[type=checkbox]");
@@ -470,8 +495,16 @@
 			$("#order_total_without_tax").val(order_total_without_tax);
 			$("#order_tax").val(order_total - order_total_without_tax);
 			
-			if($("#extra_discount").val() > 0){
-				order_total = order_total - $("#extra_discount").val();
+			if(extra_discount > 0){
+				if($("#discount_type_0").is(":checked")){
+					if(extra_discount < order_total){
+						order_total = order_total - extra_discount;
+					}
+				}else{
+					if(((order_total * extra_discount) / 100) < order_total){
+						order_total = order_total - (order_total * extra_discount) / 100;
+					}
+				}
 			}
 			
 			if($('#credit_balance_container').is(':visible')){

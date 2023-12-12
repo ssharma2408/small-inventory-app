@@ -19,8 +19,8 @@
                 <span class="help-block">{{ trans('cruds.customer.fields.company_name_helper') }}</span>
             </div>
 			<div class="form-group">
-                <label class="required" for="contact_name">{{ trans('cruds.customer.fields.contact_name') }}</label>
-                <input class="form-control {{ $errors->has('contact_name') ? 'is-invalid' : '' }}" type="text" name="contact_name" id="contact_name" value="{{ old('contact_name', $customer->contact_name) }}" required>
+                <label for="contact_name">{{ trans('cruds.customer.fields.contact_name') }}</label>
+                <input class="form-control {{ $errors->has('contact_name') ? 'is-invalid' : '' }}" type="text" name="contact_name" id="contact_name" value="{{ old('contact_name', $customer->contact_name) }}">
                 @if($errors->has('contact_name'))
                     <span class="text-danger">{{ $errors->first('contact_name') }}</span>
                 @endif

@@ -18,9 +18,15 @@ class Order extends Model
 	];
 
     protected $dates = [
+        'order_date',
         'created_at',
         'updated_at',
         'deleted_at',
+    ];
+	
+	public const DISCOUNT_TYPE_RADIO = [
+        '0' => 'Fixed',
+        '1' => 'Percentage',
     ];
 
     protected $fillable = [
@@ -33,8 +39,10 @@ class Order extends Model
         'delivery_note',
         'customer_sign',
         'status',
+		'discount_type',
 		'extra_discount',
 		'delivery_agent_id',
+		'order_date',
 		'due_date',
         'created_at',
         'updated_at',

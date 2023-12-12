@@ -86,7 +86,7 @@ class OrdersController extends Controller
 
         $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
         $params['delivery_agent_id'] = null;
-        $params['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
+        $params['due_date'] = date('Y-m-d H:i:s', strtotime($request->order_date . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
 
         $order = Order::create($params);
 

@@ -41,8 +41,15 @@ class StoreOrderRequest extends FormRequest
                 'numeric',
                 'required',
             ],
+			'discount_type' => [
+                'required',
+            ],
             'status' => [
                 'required',
+            ],
+			'order_date' => [
+                'required',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
         ];
     }

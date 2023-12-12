@@ -17,11 +17,7 @@ class StoreCustomerRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'contact_name' => [
-                'string',
-                'required',
-            ],
+        return [            
             'name' => [
                 'string',
                 'required',
