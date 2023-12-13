@@ -1,3 +1,48 @@
+:focus-visible {
+    outline: 0;
+}
+
+::selection {
+    background-color: var(--primary-bg-subtle);
+}
+
+::marker {
+    color: var(--primary);
+}
+
+:is(
+        ::-webkit-calendar-picker-indicator,
+        ::-webkit-clear-button,
+        ::-webkit-inner-spin-button,
+        ::-webkit-outer-spin-button
+    ) {
+    color: var(--primary);
+}
+html {
+    scrollbar-width: 0.25rem;
+    scrollbar-color: var(--primary) var(--light);
+}
+
+::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 0.25rem;
+    transition: 0.2s ease-in-out;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
+}
+
 .ck-editor__editable,
 textarea {
     min-height: 150px;
@@ -60,19 +105,24 @@ table.dataTable thead .sorting_desc {
 .searchable-title {
     font-weight: bold;
 }
+
 .select2-container--open {
     z-index: 9999;
 }
+
 .searchable-fields {
-    padding-left:5px;
+    padding-left: 5px;
 }
+
 .searchable-link {
-    padding:0 5px 0 5px;
+    padding: 0 5px 0 5px;
 }
-.searchable-link:hover   {
+
+.searchable-link:hover {
     cursor: pointer;
     background: #eaeaea;
 }
+
 .select2-results__option {
     padding-left: 0px;
     padding-right: 0px;
@@ -88,7 +138,7 @@ table.dataTable thead .sorting_desc {
 }
 
 .dataTables_length label select {
-    width: 65px!important;
+    width: 65px !important;
 }
 
 div.dt-button-collection {
@@ -104,13 +154,31 @@ div.dt-button-collection {
     font-weight: bolder;
 }
 
-.buttons-copy, .buttons-csv, .buttons-print, .buttons-collection{
-	display:none;
+.buttons-copy,
+.buttons-csv,
+.buttons-print,
+.buttons-collection {
+    display: none;
 }
 
-.add_row, .remove_row{
-	font-size: 25px;
+.add_row,
+.remove_row {
+    font-size: 25px;
 }
-.credit_note_err{
-	color: #dc3545!important;
+
+.credit_note_err {
+    color: #dc3545 !important;
+}
+
+.order-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.order-content {
+    width: 2000px;
+}
+.add_row,
+.remove_row {
+    cursor: pointer;
 }
