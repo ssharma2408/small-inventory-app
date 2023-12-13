@@ -204,6 +204,8 @@ return [
             'credit_balance'   => 'Credit Balance',			
             'order_date'   => 'Order Date',
 			'order_date_helper'   => ' ',
+			'delivery_pic'   => 'Delivery Pic',
+			'delivery_pic_helper'   => ' ',			
         ],
     ],
     'product' => [

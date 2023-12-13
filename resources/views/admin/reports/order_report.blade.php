@@ -63,8 +63,8 @@
                 <tbody>
 					@foreach($orders as $key => $order)
                         @php
-							if(!empty($order->payment)){
-								$bgcolor = "";
+							$bgcolor = "";
+							if(!empty($order->payment)){								
 								if($order->payment->order_pending == 0 && $order->payment->payment_status == 1){
 									$bgcolor = "#75dc75";
 								}else{

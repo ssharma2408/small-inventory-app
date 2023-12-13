@@ -321,11 +321,27 @@ class OrdersController extends Controller
         if ($request->signature == "") {
             return false;
         }
+		$delivery_pic_url = "";
+		if($request->hasFile('delivery_pic')){
+				
+			$file = $request->file('delivery_pic');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('delivery_pic')->getRealPath()),
+				'public'
+				);
+			$delivery_pic_url = $name;
+		}
 
         Order::where('id', $request->id)
             ->update([
                 'status' => 1,
                 'customer_sign' => $request->signature,
+                'delivery_pic' => $delivery_pic_url,
             ]);
 
         return back();

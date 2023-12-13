@@ -48,7 +48,7 @@
                             {{ trans('cruds.order.fields.status') }}
                         </th>
 						<th>
-                            Date
+                            {{ trans('cruds.order.fields.order_date') }}
                         </th>
                         <th>
                             &nbsp;
@@ -83,7 +83,7 @@
                                 {{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
                             </td>
 							<td>
-                                {{ $order->created_at ?? '' }}
+                                {{ $order->order_date ?? '' }}
                             </td>
                             <td>
                                 @can('order_show')

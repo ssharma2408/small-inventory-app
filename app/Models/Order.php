@@ -6,16 +6,23 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Order extends Model
+class Order extends Model implements HasMedia
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, InteractsWithMedia, HasFactory;
 
     public $table = 'orders';
 	
 	protected $casts = [
 		'due_date' => 'datetime',
 	];
+	
+	protected $appends = [
+        'delivery_pic',
+    ];
 
     protected $dates = [
         'order_date',
@@ -42,6 +49,7 @@ class Order extends Model
 		'discount_type',
 		'extra_discount',
 		'delivery_agent_id',
+		'delivery_pic',
 		'order_date',
 		'due_date',
         'created_at',
@@ -79,5 +87,10 @@ class Order extends Model
 	public function payment()
     {
         return $this->belongsTo(OrderPaymentMaster::class, 'id');
+    }
+	
+	 public function getDeliveryPicAttribute()
+    {
+        return $this->getMedia('delivery_pic')->last();
     }
 }
