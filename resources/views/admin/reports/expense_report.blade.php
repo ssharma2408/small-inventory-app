@@ -62,7 +62,7 @@
 
 						@php
 							if(!empty($inventory->payment)){
-								$bgcolor = "";
+								$bgcolor = "#ffab00";
 								if($inventory->payment->expense_pending == 0 && $inventory->payment->payment_status == 1){
 									$bgcolor = "#75dc75";
 								}else{

@@ -30,7 +30,7 @@ class ReportsController extends Controller
 		$orders = Order::with(['sales_manager', 'customer', 'payment'])->get();
 		
 		$customers = Customer::select('name', 'id')->get();
-		
+
 		return view('admin.reports.order_report', compact('orders', 'status', 'customers'));
 	}
 	
