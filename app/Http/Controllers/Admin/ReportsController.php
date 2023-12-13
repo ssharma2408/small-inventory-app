@@ -18,8 +18,9 @@ class ReportsController extends Controller
     public function get_expense_report(){
 		
 		$status = ['Due', 'Closed',  'Overdue'];
-		
+
 		$inventories = Inventory::with(['supplier', 'media', 'payment'])->get();
+
 		$suppliers = Supplier::select('supplier_name', 'id')->get();
 		return view('admin.reports.expense_report', compact('inventories', 'status', 'suppliers'));
 	}
@@ -28,7 +29,7 @@ class ReportsController extends Controller
 		
 		$status = ['Due', 'Closed',  'Overdue'];
 		$orders = Order::with(['sales_manager', 'customer', 'payment'])->get();
-		
+
 		$customers = Customer::select('name', 'id')->get();
 
 		return view('admin.reports.order_report', compact('orders', 'status', 'customers'));

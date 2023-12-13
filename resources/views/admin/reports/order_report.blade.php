@@ -65,7 +65,7 @@
                         @php
 							$bgcolor = "#ffab00";
 							if(!empty($order->payment)){								
-								if($order->payment->order_pending == 0 && $order->payment->payment_status == 1){
+								if($order->payment->order_pending == 0){
 									$bgcolor = "#75dc75";
 								}else{
 									if(strtotime($order->due_date) < strtotime(date('Y-m-d H:i:s'))){

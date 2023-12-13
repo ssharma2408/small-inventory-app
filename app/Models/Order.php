@@ -86,7 +86,7 @@ class Order extends Model implements HasMedia
 	
 	public function payment()
     {
-        return $this->belongsTo(OrderPaymentMaster::class, 'id');
+        return $this->belongsTo(OrderPaymentMaster::class, 'id', 'order_number');
     }
 	
 	 public function getDeliveryPicAttribute()
