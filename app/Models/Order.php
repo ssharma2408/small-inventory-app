@@ -18,6 +18,7 @@ class Order extends Model implements HasMedia
 	
 	protected $casts = [
 		'due_date' => 'datetime',
+		'order_date' => 'datetime',
 	];
 	
 	protected $appends = [
