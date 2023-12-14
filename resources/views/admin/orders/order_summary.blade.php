@@ -99,7 +99,7 @@
                     background-color: #d4d9cf;
                     color: #2a3e10;
                   ">
-                                <p>DATE<br />{{$order->created_at->format('j F, Y')}}</p>
+                                <p>DATE<br />{{$order->order_date->format('j F, Y')}}</p>
                             </td>
                             <td style="
                     padding: 20px 10px;

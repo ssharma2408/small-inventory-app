@@ -182,3 +182,31 @@ div.dt-button-collection {
 .remove_row {
     cursor: pointer;
 }
+.cb_conatiner{
+	width: 100%;
+    display: inline-flex;
+}
+.cb_conatiner span{
+	display: inline-block;
+	height: 100%;
+    flex: 1 100%;
+	text-align: center;
+}
+.paid{
+	background-color:#75dc75;
+	padding:10px;
+	width: 150px;
+	margin: 0px 10px;
+}
+.unpaid{
+	background-color:#ffab00;
+	padding:10px;
+	width: 150px;
+	margin: 0px 10px;
+}
+.overdue{
+	background-color:#ff5050;
+	padding:10px;
+	width: 150px;
+	margin: 0px 10px;
+}
