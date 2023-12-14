@@ -9,8 +9,27 @@
 					<div class="card">
 						<div class="card-header">
 							Admin Dashboard
-						</div>
+						</div>						
 						<div class="card-body">
+							<div class="row">
+								<div class="col-md-6">
+									<h4>Expenses</h4>
+									<ul>
+										<li><a href="{{ route('admin.reports.get_expense_report') }}?status=0">Open</a></li>
+										<li><a href="{{ route('admin.reports.get_expense_report') }}?status=1">Paid</a></li>
+										<li><a href="{{ route('admin.reports.get_expense_report') }}?status=2">Over Due</a></li>
+									</ul>
+								</div>
+								<div class="col-md-6">
+									<h4>Orders</h4>
+									<ul>
+										<li><a href="{{ route('admin.reports.get_order_report') }}?status=0">Open</a></li>
+										<li><a href="{{ route('admin.reports.get_order_report') }}?status=1">Paid</a></li>
+										<li><a href="{{ route('admin.reports.get_order_report') }}?status=2">Over Due</a></li>
+									</ul>
+								</div>
+							</div>
+							<hr/>
 							<div><h5>Total Open Orders: {{$admin['total_open_order']}}</h5></div>
 							@if(!empty($admin['accepted_order']))
 								<div class="mt-2 mb-2"><h5>Last 3 Accepted Order:</h5> 

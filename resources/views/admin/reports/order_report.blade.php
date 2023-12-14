@@ -222,7 +222,17 @@
 	buttons: dtButtons,
 
   });
-
+	var urlParams = new URLSearchParams(window.location.search); //get all parameters
+	var status = urlParams.get('status');
+	if(status) {
+		if(status == 1){
+			$('#paid').prop("checked", true).on("change", function() {paidFilter = "1"}).trigger("change");
+		}else if(status == 0){
+			$('#unpaid').prop("checked", true).on("change", function() {unpaidFilter = "0"}).trigger("change");
+		}else{
+			$('#overdue').prop("checked", true).on("change", function() {overdueFilter = "2"}).trigger("change");
+		}
+	}
   $("#datepicker_from").datepicker({
     showOn: "button",
     //buttonImage: "images/calendar.gif",
