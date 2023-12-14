@@ -26,6 +26,7 @@ return [
 		'amount'		=>  'AMOUNT',
 		'status'		=>  'STATUS',
 		'action'		=>  'ACTION',
+		'order_date'	=>  'Order Date',
 		
 	],
 	'product_expiry_report' 	=>
