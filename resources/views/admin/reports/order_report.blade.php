@@ -42,7 +42,7 @@
 
                         </th>
                         <th>
-                            {{ trans('reports.order_report.date') }}
+                            {{ trans('reports.order_report.order_date') }}
                         </th>
                         <th>
                             {{ trans('reports.order_report.type') }}
@@ -94,7 +94,7 @@
 
                             </td>
 							<td>
-								{{ date('d/m/Y', strtotime($order->created_at)) }}
+								{{ date('d/m/Y', strtotime($order->order_date)) }}
                             </td>
 							<td>
 								Order
