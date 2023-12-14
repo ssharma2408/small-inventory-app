@@ -221,7 +221,7 @@
 						</tr>
 					</tbody>
 				</table>				
-				@if($order->status == 4 && ($role['title'] == 'Delivery Agent' || $role['title'] == 'Admin'))
+				@if($order->status == 4 && ($role['title'] == 'Delivery Agent' || $role['title'] == 'Admin' || $role['title'] == 'Website Admin'))
 					<div class="form-group">
 						<label for="delivery_pic">{{ trans('cruds.order.fields.delivery_pic') }}</label>
 						<input class="form-control" type="file" name="delivery_pic" id="delivery_pic" />
