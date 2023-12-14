@@ -60,6 +60,7 @@
                         <a href="mailto:trueleafretailinc@gmail.com">trueleafretailinc@gmail.com</a>
                     </p>
                     <p>GST/HST Registration No.: <br />727197303RT0001</p>
+					<p>Sales Person: {{$order->sales_manager->name}}</p>
                 </td>
                 <td style="
               text-align: left;
