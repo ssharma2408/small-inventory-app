@@ -48,7 +48,7 @@ class ProductApiController extends Controller
     public function update(Request $request, Product $product)
     {
         $product_detail = $request->all();
-        $product->update($product_detail);  
+		$product->update($product_detail);
         return (new ProductResource($product))
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);

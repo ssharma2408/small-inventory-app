@@ -7,6 +7,9 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\Admin\OrderResource;
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\CreditNote;
+use App\Models\CreditNoteLog;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
@@ -64,44 +67,76 @@ class OrdersApiController extends Controller
 	public function store(StoreOrderRequest $request)
 	{
 		$order_pay_detail = [];
-		$params = 	$request->all();
-		$due_date_arr = Customer::PAYMENT_TERMS_SELECT;
-		$due_days = Customer::select('payment_terms')->where('id', $request->customer_id)->first()->toArray();
-		$params['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
+        $params = $request->all();
+        $due_date_arr = Customer::PAYMENT_TERMS_SELECT;
 
-		$params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
-		$params['delivery_agent_id'] = null;
+        $due_days = Customer::select('payment_terms')->where('id', $request->customer_id)->first()->toArray();
 
-		$order = Order::create($params);
+        $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
+        $params['delivery_agent_id'] = null;
+        $params['due_date'] = date('Y-m-d H:i:s', strtotime($request->order_date . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
 
-		$data = [];
-		for ($i = 0; $i < count($request['item_name']); $i++) {
-			if (!empty($request['item_name']) && !empty($request['item_quantity'])) {
+        $order = Order::create($params);
+
+        $data = [];
+        for ($i = 0; $i < count($request['item_name']); $i++) {
+            if (!empty($request['item_name']) && !empty($request['item_quantity'])) {
+                $item = [];
+                $item['product_id'] = $request['item_name'][$i];
+                $item['order_id'] = $order->id;
+                $item['quantity'] = $request['item_quantity'][$i];
+                $item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i];
+                $item['sale_price'] = $request['item_sale_priec'][$i];
+                $item['tax_id'] = $request['item_tax_id'][$i];
+                $item['is_box'] = $request['is_box'][$i];
+                $data[] = $item;
+            }
+
+        }
+
+        if (!empty($data)) {
+            OrderItem::insert($data);
+        }
+		
+		// Credit Note
+		if(isset($request->use_credit)){
+			$customer = Customer::find($params['customer_id']);
+			$customer->decrement('credit_note_balance', $params['credit_balance_value']);
+			
+			$credit_notes = CreditNote::where('customer_id', $params['customer_id'])->get();
+			CreditNote::where('customer_id', $params['customer_id'])
+				   ->update([
+					   'deleted_at' => date('Y-m-d H:i:s')
+					]);
+			$credit_log_data = [];
+			$credit_balance_value = $params['credit_balance_value'];
+			foreach($credit_notes as $cn){
+				
+				$balance = $credit_balance_value - $cn->amount;
+				
 				$item = [];
-				$item['product_id'] = $request['item_name'][$i];
-				$item['order_id'] = $order->id;
-				$item['quantity'] = $request['item_quantity'][$i];
-				$item['category_id'] = $request['item_category'][$i];
-				$item['sub_category_id'] = $request['item_subcategory'][$i];
-				$item['sale_price'] = $request['item_sale_priec'][$i];
-				$item['tax_id'] = $request['item_tax_id'][$i];
-				$item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
-				$data[] = $item;
+				$item['credit_order_id'] = $cn->order_id;
+				$item['debit_order_id'] = $order->id;
+				$item['customer_id'] = $params['customer_id'];
+				$item['amount'] = $cn->amount;
+				$item['balance'] = $balance;
+				
+				$credit_balance_value = $balance;
+				$credit_log_data[] = $item;
 			}
+			
+			CreditNoteLog::insert($credit_log_data);
 		}
 
-		if (!empty($data)) {
-			OrderItem::insert($data);
-		}
+        $order_pay_detail['customer_id'] = $params['customer_id'];
+        $order_pay_detail['order_total'] = $params['order_total'];
+        $order_pay_detail['order_paid'] = 0;
+        $order_pay_detail['order_pending'] = $params['order_total'];
+        $order_pay_detail['payment_status'] = 0;
+        $order_pay_detail['order_number'] = $order->id;
 
-		$order_pay_detail['customer_id'] = $params['customer_id'];
-		$order_pay_detail['order_total'] = $params['order_total'];
-		$order_pay_detail['order_paid'] = 0;
-		$order_pay_detail['order_pending'] = $params['order_total'];
-		$order_pay_detail['payment_status'] = 0;
-		$order_pay_detail['order_number'] = $order->id;
-
-		$order = OrderPaymentMaster::create($order_pay_detail);
+        OrderPaymentMaster::create($order_pay_detail);
 
 		return (new OrderResource($order))
 			->response()
@@ -128,7 +163,9 @@ class OrdersApiController extends Controller
 		$order['order_item'] = DB::table('order_items')
 			->join('products', 'order_items.product_id', '=', 'products.id')
 			->join('categories', 'order_items.category_id', '=', 'categories.id')
-			->select('categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name')
+			->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
+            ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
+			 ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
 			->where('order_items.order_id', $order->id)
 			->get()->toArray();
 
@@ -157,7 +194,7 @@ class OrdersApiController extends Controller
                 $item['sub_category_id'] = $request['item_subcategory'][$i];
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
-                $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+                $item['is_box'] = $request['is_box'][$i];
                 $data[] = $item;
             }
 

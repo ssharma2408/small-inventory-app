@@ -10,11 +10,13 @@ use App\Http\Resources\Admin\InventoryResource;
 use App\Models\Inventory;
 use App\Models\ExpensePaymentMaster;
 use App\Models\ExpensePayment;
+use App\Models\ExpenseItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use DB;
 
 class InventoryApiController extends Controller
 {
@@ -36,38 +38,75 @@ class InventoryApiController extends Controller
     public function store(StoreInventoryRequest $request)
     {
 
-        $expense_master = ExpensePaymentMaster::where(['supplier_id' => $request->supplier_id, 'invoice_number' => $request->invoice_number])->first();
-
-        if (empty($expense_master)) {
-            $expense_pay_detail = [];
-
-            $due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
-
+        $expense_master = ExpensePaymentMaster::where(['supplier_id'=>$request->supplier_id , 'invoice_number'=>$request->invoice_number])->first();		
+		
+		if(empty($expense_master)){
             $expense_detail = $request->all();
+			$expense_pay_detail = [];
+			$due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;	
+			$expense_detail['image_url'] = "";
 
-            $expense_detail['image_url'] = $request->po_file;
-            $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
+			if($request->hasFile('po_file')){
+				
+				$file = $request->file('po_file');
+				
+				$extension  = $file->getClientOriginalExtension();
+				$name = time() . '.' . $extension;
+				
+				$store = Storage::disk('do')->put(
+					'/'.$_ENV['DO_FOLDER'].'/'.$name,
+					file_get_contents($request->file('po_file')->getRealPath()),
+					'public'
+					);
+				$expense_detail['image_url'] = $name;
+			}			
+			
+			$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
 
-            if ($request->box_or_unit == "0") {
-                $pro = Product::where('id', $request->product_id)->first();
-                $request->stock = $request->stock * $pro->box_size;
-            }
+			$inventory = Inventory::create($expense_detail);
+			
+			$expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
+			$expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
+			$expense_pay_detail['expense_total'] = $expense_detail['final_price'];
+			$expense_pay_detail['expense_paid'] = 0;
+			$expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
+			$expense_pay_detail['payment_status'] = 0;
+			$expense_pay_detail['expense_id'] = $inventory->id;
+			
+			ExpensePaymentMaster::create($expense_pay_detail);
 
-            $inventory = Inventory::create($expense_detail);
+			$data = [];
+			for ($i = 0; $i < count($request['item_name']); $i++) {
+				if (!empty($request['item_name']) && !empty($request['item_stock'])) {						
+					
+					$stock = $request['item_stock'][$i];
+					
+					if($request['box_or_unit'][$i] == "1"){
+						$stock = $request['item_stock'][$i] * $request['package_val'][$i];
+					}
+					
+					$item = [];
+					$item['product_id'] = $request['item_name'][$i];
+					$item['expense_id'] = $inventory->id;
+					$item['stock'] = $request['item_stock'][$i];
+					$item['category_id'] = $request['item_category'][$i];
+					$item['sub_category_id'] = $request['item_subcategory'][$i];
+					$item['purchase_price'] = $request['item_price'][$i];
+					$item['tax_id'] = $request['item_tax_id'][$i];
+					$item['is_box'] = $request['box_or_unit'][$i];
+					$item['exp_date'] = $request['item_exp_date'][$i];
+					$data[] = $item;
+					
+					$product = Product::find($request['item_name'][$i]);
+					$product->increment('stock', $stock);
+				}
 
-            $expense_pay_detail['supplier_id'] = $expense_detail['supplier_id'];
-            $expense_pay_detail['invoice_number'] = $expense_detail['invoice_number'];
-            $expense_pay_detail['expense_total'] = $expense_detail['final_price'];
-            $expense_pay_detail['expense_paid'] = 0;
-            $expense_pay_detail['expense_pending'] = $expense_detail['final_price'];
-            $expense_pay_detail['payment_status'] = 0;
-            $expense_pay_detail['expense_id'] = $inventory->id;
+			}
 
-            ExpensePaymentMaster::create($expense_pay_detail);
-
-            $product = Product::find($request->product_id);
-            $product->increment('stock', $request->stock);
-            $inventories = Inventory::where('id', $inventory->id)->with(['supplier', 'product', 'tax', 'media'])->get();
+			if (!empty($data)) {
+				ExpenseItem::insert($data);
+			}
+            $inventories = Inventory::where('id', $inventory->id)->with(['supplier'])->get();
             return (new InventoryResource($inventories))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
@@ -77,61 +116,104 @@ class InventoryApiController extends Controller
     public function show(Inventory $inventory)
     {
         abort_if(Gate::denies('inventory_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$inventory = $inventory->load('supplier');
+		
+		$inventory['order_item'] = DB::table('expense_items')
+                ->join('products', 'expense_items.product_id', '=', 'products.id')
+                ->join('categories', 'expense_items.category_id', '=', 'categories.id')
+                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
+                ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
+                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'taxes.title')
+                ->where('expense_items.expense_id', $inventory->id)
+                ->get();
 
-        return new InventoryResource($inventory->load(['supplier', 'product', 'tax']));
+        return new InventoryResource($inventory);
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
     {
         $due_date_arr = Inventory::DAYS_PAYABLE_OUTSTANDING_SELECT;
-        $product = Product::find($request->product_id);
-
-        if (($inventory->stock != $request->stock) || ($inventory->box_or_unit != $request->box_or_unit)) {
-
-            $inc_stock = 0;
-            $dec_stock = 0;
-
-            /* 	if($inventory->box_or_unit != $request->box_or_unit){
 				
-				if($request->box_or_unit == "0"){
-					$inc_stock = $request->stock * $request->package_val;
-					$dec_stock = $request->stock;
-				}else{
-					$dec_stock = $request->stock * $request->package_val;
-					$inc_stock = $request->stock;
+		$expense_detail = $request->all();
+		
+		if($request->hasFile('po_file')){
+			
+			$file = $request->file('po_file');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('po_file')->getRealPath()),
+				'public'
+				);
+			$expense_detail['image_url'] = $name;
+		}
+		
+		if(($inventory->final_price != $request->final_price)){
+			ExpensePaymentMaster::where('expense_id', $inventory->id)
+				   ->update([
+					   'expense_total' => $request->final_price,
+					   'expense_pending' => $request->final_price
+					]);
+		}
+		
+		$expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at. ' + '.explode(" ", $due_date_arr[$request->days_payable_outstanding])[0].' days'));
+
+		$inventory->update($expense_detail);
+		
+		$expense_items = DB::table('expense_items')
+                ->join('products', 'expense_items.product_id', '=', 'products.id')
+				->select('expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size')
+                ->where('expense_items.expense_id', $inventory->id)
+                ->get();				
+		
+		foreach($expense_items as $ei){
+			$old_stock = $ei->stock;
+			
+			if($ei->is_box){
+				$old_stock = $old_stock * $ei->box_size;
+			}
+			$product = Product::find($ei->product_id);
+			$product->decrement('stock', $old_stock);
+		}
+
+		DB::table('expense_items')->where('expense_id', $inventory->id)->delete();
+		
+		$data = [];
+		for ($i = 0; $i < count($request['item_name']); $i++) {
+			if (!empty($request['item_name']) && !empty($request['item_stock'])) {
+				
+				$stock = $request['item_stock'][$i];
+				
+				if($request['box_or_unit'][$i] == "1"){
+					$stock = $request['item_stock'][$i] * $request['package_val'][$i];
 				}
-			} */
+				
+				$item = [];
+				$item['product_id'] = $request['item_name'][$i];
+				$item['expense_id'] = $inventory->id;
+				$item['stock'] = $request['item_stock'][$i];
+				$item['category_id'] = $request['item_category'][$i];
+				$item['sub_category_id'] = $request['item_subcategory'][$i];
+				$item['purchase_price'] = $request['item_price'][$i];
+				$item['tax_id'] = $request['item_tax_id'][$i];
+				$item['is_box'] = $request['box_or_unit'][$i];
+				$item['exp_date'] = $request['item_exp_date'][$i];
+				$data[] = $item;
+				
+				// Stock Mgmt				
+				$product = Product::find($request['item_name'][$i]);
+				$product->increment('stock', $stock);
+			}
 
-            if ($inventory->stock != $request->stock) {
+		}
 
-                if ($request->box_unit == "0") {
-                    $pro = Product::where('id', $request->product_id)->first();
-                    $dec_stock = $inventory->stock * $pro->box_size;
-                    $inc_stock = $request->stock * $pro->box_size;
-                } else {
-                    $dec_stock = $inventory->stock;
-                    $inc_stock = $request->stock;
-                }
-            }
-
-            $product->decrement('stock', $dec_stock);
-            $product->increment('stock', $inc_stock);
-        }
-
-        $expense_detail = $request->all();
-        $expense_detail['image_url'] = $request->po_file;
-
-        if (($inventory->final_price != $request->final_price)) {
-            ExpensePaymentMaster::where('expense_id', $inventory->id)
-                ->update([
-                    'expense_total' => $request->final_price,
-                    'expense_pending' => $request->final_price
-                ]);
-        }
-
-        $expense_detail['due_date'] = date('Y-m-d H:i:s', strtotime($inventory->created_at . ' + ' . explode(" ", $due_date_arr[$request->days_payable_outstanding])[0] . ' days'));
-
-        $inventory->update($expense_detail);
+		if (!empty($data)) {
+			ExpenseItem::insert($data);
+		}
 
         return (new InventoryResource($inventory))
             ->response()
