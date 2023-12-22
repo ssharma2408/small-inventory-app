@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\TempInsuranceData;
+use Hash;
 
 class AuthController extends Controller
 {
@@ -50,4 +51,24 @@ class AuthController extends Controller
             'data'=> $userdata
         ], 200);
     }
+	
+	public function change_password(Request $request){
+		$request->validate([			
+			'email' => 'email|required',
+			'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
+			'password_confirmation' => 'min:6'
+        ]);
+		
+		User::where('email', $request->email)
+		   ->update([
+			   'password' => Hash::make($request->password)
+			]);
+			
+		return response()->json([
+            'message' => "Password updated successfully",            
+        ], 200);
+		
+	}
+	
+	
 }

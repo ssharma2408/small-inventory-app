@@ -50,6 +50,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	
 	// Credit Note
     Route::apiResource('credit-notes', 'CreditNoteApiController');
+	
+	// Profile
+	Route::post('change_password','AuthController@change_password');
 });
 
 Route::controller(Api\V1\Admin\RegisterController::class)->group(function(){	
