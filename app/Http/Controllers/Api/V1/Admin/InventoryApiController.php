@@ -90,7 +90,7 @@ class InventoryApiController extends Controller
 					$item['expense_id'] = $inventory->id;
 					$item['stock'] = $request['item_stock'][$i];
 					$item['category_id'] = $request['item_category'][$i];
-					$item['sub_category_id'] = $request['item_subcategory'][$i];
+					$item['sub_category_id'] = isset($request['item_subcategory'][$i]) ? $request['item_subcategory'][$i] : null;
 					$item['purchase_price'] = $request['item_price'][$i];
 					$item['tax_id'] = $request['item_tax_id'][$i];
 					$item['is_box'] = $request['box_or_unit'][$i];
