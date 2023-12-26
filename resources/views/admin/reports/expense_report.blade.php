@@ -15,7 +15,7 @@
 			<div class="row">
 				<div class="col-md-5">
 					<span id="date-label-from" class="date-label">From: </span><input class="date_range_filter" type="text" id="datepicker_from" />
-					<span id="date-label-to" class="date-label">To:<input class="date_range_filter" type="text" id="datepicker_to" />
+					<span id="date-label-to" class="date-label">To: </span><input class="date_range_filter" type="text" id="datepicker_to" />
 				</div>
 				<div class="col-md-2">
 					<select id="supplier">
