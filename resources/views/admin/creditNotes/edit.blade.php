@@ -27,7 +27,7 @@
                     @endif
                     <span class="help-block">{{ trans('cruds.creditNote.fields.order_helper') }}</span>
                 </div>
-                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group col-lg-3 col-md-3 col-sm-12">
                     <label class="required" for="amount">{{ trans('cruds.creditNote.fields.amount') }}</label>
                     <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $creditNote->amount) }}" step="0.01" required>
                     @if($errors->has('amount'))
@@ -35,7 +35,7 @@
                     @endif
                     <span class="help-block">{{ trans('cruds.creditNote.fields.amount_helper') }}</span>
                 </div>
-                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group col-lg-3 col-md-3 col-sm-12">
                     <label class="required" for="date">{{ trans('cruds.creditNote.fields.date') }}</label>
                     <input class="form-control datetime {{ $errors->has('date') ? 'is-invalid' : '' }}" type="text" name="date" id="date" value="{{ old('date', $creditNote->date) }}" required>
                     @if($errors->has('date'))
