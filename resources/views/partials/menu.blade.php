@@ -86,7 +86,7 @@
                 @can('product_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.products.index") }}" class="nav-link {{ request()->is("admin/products") || request()->is("admin/products/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fab fa-product-hunt">
 
                             </i>
                             <p>
@@ -110,7 +110,7 @@
                 @can('payment_method_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.payment-methods.index") }}" class="nav-link {{ request()->is("admin/payment-methods") || request()->is("admin/payment-methods/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fas fa-money-check-alt">
 
                             </i>
                             <p>
@@ -122,7 +122,7 @@
 				 @can('shrinkage_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.shrinkages.index") }}" class="nav-link {{ request()->is("admin/shrinkages") || request()->is("admin/shrinkages/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fas fa-compress-arrows-alt">
 
                             </i>
                             <p>
@@ -146,7 +146,7 @@
 							@can('supplier_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.suppliers.index") }}" class="nav-link {{ request()->is("admin/suppliers") || request()->is("admin/suppliers/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-truck-container">
+										<i class="fas fa-industry">
 
 										</i>
 										<p>
@@ -209,7 +209,7 @@
 							@can('customer_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.customers.index") }}" class="nav-link {{ request()->is("admin/customers") || request()->is("admin/customers/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fas fa-user-tag">
 
 										</i>
 										<p>
