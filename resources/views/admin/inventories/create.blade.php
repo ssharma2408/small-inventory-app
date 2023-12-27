@@ -34,7 +34,7 @@
             <form method="POST" id="expensefrm" action="{{ route('admin.inventories.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
                             <label for="supplier_id">{{ trans('cruds.inventory.fields.supplier') }}</label>
                             <select class="form-control select2 {{ $errors->has('supplier') ? 'is-invalid' : '' }}"
@@ -50,7 +50,7 @@
                             <span class="help-block">{{ trans('cruds.inventory.fields.supplier_helper') }}</span>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
                             <label class="required"
                                 for="invoice_number">{{ trans('cruds.inventory.fields.invoice_number') }}</label>
@@ -63,7 +63,7 @@
                             <span class="help-block">{{ trans('cruds.inventory.fields.invoice_number_helper') }}</span>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
                             <label class="required">{{ trans('cruds.inventory.fields.days_payable_outstanding') }}</label>
                             <select class="form-control {{ $errors->has('days_payable_outstanding') ? 'is-invalid' : '' }}"
@@ -84,9 +84,7 @@
                                 class="help-block">{{ trans('cruds.inventory.fields.days_payable_outstanding_helper') }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3 col-md-3">
                         <div class="form-group">
                             <label for="po_file">{{ trans('cruds.inventory.fields.po_file') }}</label>
                             <input class="form-control" type="file" name="po_file" id="po_file" />
@@ -96,6 +94,9 @@
                             <span class="help-block">{{ trans('cruds.inventory.fields.po_file_helper') }}</span>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                   
                     <div class="col-lg-4">
                     </div>
                     <div class="col-lg-4">
@@ -197,66 +198,70 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="required"
-                        for="expense_total">{{ trans('cruds.inventory.fields.expense_total') }}</label>
-                    <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number"
-                        name="expense_total" id="expense_total" value="{{ old('expense_total', '') }}" step="0.01"
-                        required readonly>
-                    @if ($errors->has('expense_total'))
-                        <span class="text-danger">{{ $errors->first('expense_total') }}</span>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.inventory.fields.expense_total_helper') }}</span>
+                <div class="row">
+                    <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                        <label class="required"
+                            for="expense_total">{{ trans('cruds.inventory.fields.expense_total') }}</label>
+                        <input class="form-control {{ $errors->has('expense_total') ? 'is-invalid' : '' }}" type="number"
+                            name="expense_total" id="expense_total" value="{{ old('expense_total', '') }}" step="0.01"
+                            required readonly>
+                        @if ($errors->has('expense_total'))
+                            <span class="text-danger">{{ $errors->first('expense_total') }}</span>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.inventory.fields.expense_total_helper') }}</span>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                        <label class="required" for="expense_tax">{{ trans('cruds.inventory.fields.expense_tax') }}</label>
+                        <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number"
+                            name="expense_tax" id="expense_tax" value="{{ old('expense_tax', '') }}" step="0.01"
+                            required readonly>
+                        @if ($errors->has('expense_tax'))
+                            <span class="text-danger">{{ $errors->first('expense_tax') }}</span>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.inventory.fields.expense_tax_helper') }}</span>
+                    </div>
+                    
+                    <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                        <label for="discount">{{ trans('cruds.inventory.fields.discount') }}</label>
+                        <input class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number"
+                            name="discount" id="discount" value="{{ old('discount', '0') }}" step="0.01">
+                        @if ($errors->has('discount'))
+                            <span class="text-danger">{{ $errors->first('discount') }}</span>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.inventory.fields.discount_helper') }}</span>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                        <label class="required" for="final_price">{{ trans('cruds.inventory.fields.final_price') }}</label>
+                        <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number"
+                            name="final_price" id="final_price" value="{{ old('final_price', '') }}" step="0.01"
+                            required readonly>
+                        @if ($errors->has('final_price'))
+                            <span class="text-danger">{{ $errors->first('final_price') }}</span>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.inventory.fields.final_price_helper') }}</span>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                        <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>
+                        @foreach (App\Models\Inventory::DISCOUNT_TYPE_RADIO as $key => $label)
+                            <div class="form-check {{ $errors->has('discount_type') ? 'is-invalid' : '' }}">
+                                <input class="form-check-input" type="radio" id="discount_type_{{ $key }}"
+                                    name="discount_type" value="{{ $key }}"
+                                    {{ old('discount_type', '0') === (string) $key ? 'checked' : '' }} required>
+                                <label class="form-check-label"
+                                    for="discount_type_{{ $key }}">{{ $label }}</label>
+                            </div>
+                        @endforeach
+                        @if ($errors->has('discount_type'))
+                            <span class="text-danger">{{ $errors->first('discount_type') }}</span>
+                        @endif
+                        <span class="help-block">{{ trans('cruds.inventory.fields.discount_type_helper') }}</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="required" for="expense_tax">{{ trans('cruds.inventory.fields.expense_tax') }}</label>
-                    <input class="form-control {{ $errors->has('expense_tax') ? 'is-invalid' : '' }}" type="number"
-                        name="expense_tax" id="expense_tax" value="{{ old('expense_tax', '') }}" step="0.01"
-                        required readonly>
-                    @if ($errors->has('expense_tax'))
-                        <span class="text-danger">{{ $errors->first('expense_tax') }}</span>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.inventory.fields.expense_tax_helper') }}</span>
-                </div>
-                <div class="form-group">
-                    <label class="required">{{ trans('cruds.inventory.fields.discount_type') }}</label>
-                    @foreach (App\Models\Inventory::DISCOUNT_TYPE_RADIO as $key => $label)
-                        <div class="form-check {{ $errors->has('discount_type') ? 'is-invalid' : '' }}">
-                            <input class="form-check-input" type="radio" id="discount_type_{{ $key }}"
-                                name="discount_type" value="{{ $key }}"
-                                {{ old('discount_type', '0') === (string) $key ? 'checked' : '' }} required>
-                            <label class="form-check-label"
-                                for="discount_type_{{ $key }}">{{ $label }}</label>
-                        </div>
-                    @endforeach
-                    @if ($errors->has('discount_type'))
-                        <span class="text-danger">{{ $errors->first('discount_type') }}</span>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.inventory.fields.discount_type_helper') }}</span>
-                </div>
-                <div class="form-group">
-                    <label for="discount">{{ trans('cruds.inventory.fields.discount') }}</label>
-                    <input class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number"
-                        name="discount" id="discount" value="{{ old('discount', '0') }}" step="0.01">
-                    @if ($errors->has('discount'))
-                        <span class="text-danger">{{ $errors->first('discount') }}</span>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.inventory.fields.discount_helper') }}</span>
-                </div>
-                <div class="form-group">
-                    <label class="required" for="final_price">{{ trans('cruds.inventory.fields.final_price') }}</label>
-                    <input class="form-control {{ $errors->has('final_price') ? 'is-invalid' : '' }}" type="number"
-                        name="final_price" id="final_price" value="{{ old('final_price', '') }}" step="0.01"
-                        required readonly>
-                    @if ($errors->has('final_price'))
-                        <span class="text-danger">{{ $errors->first('final_price') }}</span>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.inventory.fields.final_price_helper') }}</span>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-danger" type="submit">
+                <div class="form-group col-lg-12">
+                    <button class="btn btn-danger mr-2" type="submit">
                         {{ trans('global.save') }}
                     </button>
+                    <a href="{{url()->previous()}}" class="btn btn-default ">{{ trans('global.cancel') }}</a>
                 </div>
             </form>
         </div>
