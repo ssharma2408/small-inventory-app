@@ -13,9 +13,13 @@
             <div class="row">
                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label class="required" for="order_id">{{ trans('cruds.creditNote.fields.order') }}</label>
+                  
                     <select class="form-control select2 {{ $errors->has('order') ? 'is-invalid' : '' }}" name="order_id" id="order_id" required>
-                        @foreach($orders as $id => $entry)
-                            <option value="{{ $id }}" {{ (old('order_id') ? old('order_id') : $creditNote->order->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                       
+                   
+                    @foreach($orders as $id => $entry)
+                  
+                            <option value="{{ $id }}" {{ (old('order_id') ? old('order_id') : $creditNote->order->id ?? '') == $id ? 'selected' : '' }}>{{$entry->id}} -> {{ $entry->name }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('order'))
