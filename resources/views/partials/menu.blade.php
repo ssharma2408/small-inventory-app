@@ -28,7 +28,7 @@
                             </i>
                             <p>
                                 {{ trans('cruds.userManagement.title') }}
-                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                <i class="left fa fa-fw fa-angle-right nav-icon"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
@@ -139,7 +139,7 @@
                             </i>
                             <p>
                                 {{ trans('cruds.expenseManagement.title') }}
-                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                <i class="left fa fa-fw fa-angle-right nav-icon"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
@@ -197,12 +197,12 @@
 				@can('order_management_access')
 					<li class="nav-item has-treeview {{ request()->is("admin/customers*") ? "menu-open" : "" }} {{ request()->is("admin/orders*") ? "menu-open" : "" }} {{ request()->is("admin/order-payments*") ? "menu-open" : "" }} {{ request()->is("admin/credit-notes*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/customers*") ? "active" : "" }} {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }} {{ request()->is("admin/credit-notes*") ? "active" : "" }}" href="#">
-                            <i class="fa-fw nav-icon fas fa-users">
+                            <i class="fa-fw nav-icon fas fa-cart-plus">
 
                             </i>
                             <p>
                                 {{ trans('cruds.orderManagement.title') }}
-                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                <i class="left fa fa-fw fa-angle-right nav-icon"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
@@ -280,7 +280,7 @@
                             </i>
                             <p>
                                 {{ trans('reports.title') }}
-                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                <i class="left fa fa-fw fa-angle-right nav-icon"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
