@@ -74,7 +74,7 @@
 				 @can('category_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.categories.index") }}" class="nav-link {{ request()->is("admin/categories") || request()->is("admin/categories/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fa-fw nav-icon fas fa-list">
 
                             </i>
                             <p>
@@ -98,7 +98,7 @@
 				@can('tax_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.taxes.index") }}" class="nav-link {{ request()->is("admin/taxes") || request()->is("admin/taxes/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fa-fw nav-icon fas fa-dollar-sign">
 
                             </i>
                             <p>
@@ -146,7 +146,7 @@
 							@can('supplier_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.suppliers.index") }}" class="nav-link {{ request()->is("admin/suppliers") || request()->is("admin/suppliers/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-truck-container">
 
 										</i>
 										<p>
@@ -158,7 +158,7 @@
 							@can('inventory_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.inventories.index") }}" class="nav-link {{ request()->is("admin/inventories") || request()->is("admin/inventories/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-wallet">
 
 										</i>
 										<p>
@@ -221,7 +221,7 @@
 							@can('order_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.orders.index") }}" class="nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-cart-plus">
 
 										</i>
 										<p>
@@ -245,7 +245,7 @@
 							@can('credit_note_access')
 								<li class="nav-item">
 									<a href="{{ route("admin.credit-notes.index") }}" class="nav-link {{ request()->is("admin/credit-notes") || request()->is("admin/credit-notes/*") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-sticky-note">
 
 										</i>
 										<p>
@@ -275,7 +275,7 @@
 				@can('report_access')
 					<li class="nav-item has-treeview {{ request()->is("admin/reports*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/reports*") ? "active" : "" }}" href="#">
-                            <i class="fa-fw nav-icon fas fa-users">
+                            <i class="fa-fw nav-icon fas fa-file-invoice">
 
                             </i>
                             <p>
@@ -287,7 +287,7 @@
 							<!--@can('customer_access') -->
 								<li class="nav-item">
 									<a href="{{ route('admin.reports.get_expense_report') }}" class="nav-link {{ request()->is("admin/reports/get_expense_report") || request()->is("admin/reports/get_expense_report") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-file-invoice">
 
 										</i>
 										<p>
@@ -299,7 +299,7 @@
 							<!--@can('customer_access') -->
 								<li class="nav-item">
 									<a href="{{ route('admin.reports.get_order_report') }}" class="nav-link {{ request()->is("admin/reports/get_order_report") || request()->is("admin/reports/get_order_report") ? "active" : "" }}">
-										<i class="fa-fw nav-icon fas fa-cogs">
+										<i class="fa-fw nav-icon fas fa-file-invoice">
 
 										</i>
 										<p>
