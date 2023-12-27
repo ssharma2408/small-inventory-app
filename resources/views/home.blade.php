@@ -6,44 +6,61 @@
 	@if(\Auth::user()->roles()->first()->title != "Sales Manager")
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="card">
-				<div class="card-header">
-					Admin Dashboard
+			<h4 class="mb-4">Total Open Orders: {{$admin['total_open_order']}}</h4>
+			@if(!empty($admin['accepted_order']))
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card card-outline card-info">
+						<div class="card-header">
+							<h3 class="card-title">Last 3 Accepted Order:</h3>
+						</div>
+						<div class="card-body p-0">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Order ID</th>
+										<th>Order Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($admin['accepted_order'] as $ord)
+									<tr>
+										<td>{{$ord['id']}}</td>
+										<td>{{$ord['order_total']}}</td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+							@endif
+						</div>
+					</div>
 				</div>
-				<div class="card-body">
-					<div>
-						<h5>Total Open Orders: {{$admin['total_open_order']}}</h5>
+				@if(!empty($admin['expenses']))
+				<div class="col-md-6">
+					<div class="card card-outline card-info">
+						<div class="card-header">
+							<h3 class="card-title">Last 3 Expense:</h3>
+						</div>
+						<div class="card-body p-0">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Invoice Number</th>
+										<th>Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($admin['expenses'] as $exp)
+									<tr>
+										<td>{{$exp['invoice_number']}}</td>
+										<td>{{$exp['final_price']}}</td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+							@endif
+						</div>
 					</div>
-					@if(!empty($admin['accepted_order']))
-					<div class="mt-2 mb-2">
-						<h5>Last 3 Accepted Order:</h5>
-						<div class="row">
-							<div class="col-lg-6"><b>Order ID</b></div>
-							<div class="col-lg-6"><b>Order Amount</b></div>
-						</div>
-						@foreach($admin['accepted_order'] as $ord)
-						<div class="row">
-							<div class="col-lg-6">{{$ord['id']}}</div>
-							<div class="col-lg-6">{{$ord['order_total']}}</div>
-						</div>
-						@endforeach
-					</div>
-					@endif
-					@if(!empty($admin['expenses']))
-					<div>
-						<h5>Last 3 Expense:</h5>
-						<div class="row">
-							<div class="col-lg-6"><b>Invoice Number</b></div>
-							<div class="col-lg-6"><b>Amount</b></div>
-						</div>
-						@foreach($admin['expenses'] as $exp)
-						<div class="row">
-							<div class="col-lg-6">{{$exp['invoice_number']}}</div>
-							<div class="col-lg-6">{{$exp['final_price']}}</div>
-						</div>
-						@endforeach
-					</div>
-					@endif
 				</div>
 			</div>
 		</div>
@@ -51,26 +68,86 @@
 	@else
 	<div class="row">
 		<div class="col-lg-12">
+			<h4 class="mb-4">Sales Dashboard</h4>
+			@if(!empty($sales['accepted_order']))
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Last 3 Accepted Order:</h3>
+						</div>
+						<div class="card-body p-0">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Order ID</th>
+										<th>Order Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($sales['accepted_order'] as $ord)
+									<tr>
+										<td>{{$ord['id']}}</td>
+										<td>{{$ord['order_total']}}</td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+							@endif
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@endif
+
+	@if(\Auth::user()->roles()->first()->title != "Sales Manager")
+
+	<h4 class="mb-4">Reports</h4>
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				
+				<div class="card-body p-0">
+					<table class="table table-striped">
+						
+						<tbody>
+						
+							<tr>
+								<td>Purchase Report</td>
+								<td class="bg-success"><a href="#">Paid</a></td>
+								<td class="bg-warning"><a href="#">Un Paid</a></td>
+								<td class="bg-danger"><a href="#">Overdue</a></td>
+							</tr>
+							<tr>
+								<td>Order Report</td>
+								<td class="bg-success"><a href="#">Paid</a></td>
+								<td class="bg-warning"><a href="#">Un Paid</a></td>
+								<td class="bg-danger"><a href="#">Overdue</a></td>
+							</tr>
+						
+						</tbody>
+					</table>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	@endif
+	@else
+	<div class="row">
+		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-header">
-					Sales Dashboard
+					Dashboard
 				</div>
 				<div class="card-body">
-					@if(!empty($sales['accepted_order']))
 					<div>
-						<h5>Last 3 Accepted Order:</h5>
-						<div class="row">
-							<div class="col-lg-6"><b>Order ID</b></div>
-							<div class="col-lg-6"><b>Order Amount</b></div>
-						</div>
-						@foreach($sales['accepted_order'] as $ord)
-						<div class="row">
-							<div class="col-lg-6">{{$ord['id']}}</div>
-							<div class="col-lg-6">{{$ord['order_total']}}</div>
-						</div>
-						@endforeach
+						<h5>Total Open Orders: {{$del_agent['total_assigned_orders']}}</h5>
 					</div>
-					@endif
 				</div>
 			</div>
 		</div>
@@ -192,39 +269,6 @@
 		@endif
 	</div>
 
-	@if(\Auth::user()->roles()->first()->title != "Sales Manager")
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="card">
-				<div class="card-header">
-					<h4 class="mb-0">Reports</h4>
-				</div>
-				<div class="card-footer p-0">
-					<ul class="nav flex-column">
-						<li class="nav-item"><a href="{{ route('admin.reports.get_expense_report') }}" class="nav-link">Purchase Report</a></li>
-						<li class="nav-item"><a href="{{ route('admin.reports.get_order_report') }}" class="nav-link">Order Report</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	@endif
-	@else
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="card">
-				<div class="card-header">
-					Dashboard
-				</div>
-				<div class="card-body">
-					<div>
-						<h5>Total Open Orders: {{$del_agent['total_assigned_orders']}}</h5>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	@endif
 </div>
 @endsection
 @section('scripts')
