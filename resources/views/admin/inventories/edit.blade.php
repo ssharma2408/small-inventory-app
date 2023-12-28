@@ -306,6 +306,7 @@
                     <button class="btn btn-danger" type="submit">
                         {{ trans('global.save') }}
                     </button>
+					<a href="{{url()->previous()}}" class="btn btn-default ">{{ trans('global.cancel') }}</a>
                     <input type="hidden" name="image_url" value="{{ $inventory->image_url }}">
                 </div>
                 

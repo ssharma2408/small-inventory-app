@@ -65,6 +65,10 @@ return [
             'deleted_at_helper'        => ' ',
         ],
     ],
+	'settingManagement' => [
+        'title'          => 'Site Settings',
+        'title_singular' => 'Site Settings',	
+    ],
 	'expenseManagement' => [
         'title'          => 'Expense management',
         'title_singular' => 'Expense management',	

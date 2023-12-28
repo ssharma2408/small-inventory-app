@@ -12,7 +12,10 @@
 				<div class="col-md-6">
 					<div class="card card-outline card-info">
 						<div class="card-header">
-							<h3 class="card-title">Last 3 Accepted Order:</h3>
+							<h3 class="card-title">Total Order: {{$admin['total_order']}} <a class="btn btn-success" href="{{ route('admin.orders.create') }}">Create Order</a></h3>
+						</div>
+						<div class="card-header">
+							<h3 class="card-title">Last 5 Accepted Order:</h3>
 						</div>
 						<div class="card-body p-0">
 							<table class="table table-striped">
@@ -39,7 +42,10 @@
 				<div class="col-md-6">
 					<div class="card card-outline card-info">
 						<div class="card-header">
-							<h3 class="card-title">Last 3 Expense:</h3>
+							<h3 class="card-title">Total Expense: {{$admin['total_expenses']}} <a class="btn btn-success" href="{{ route('admin.inventories.create') }}">Create Expense</a></h3>
+						</div>
+						<div class="card-header">
+							<h3 class="card-title">Last 5 Expense:</h3>
 						</div>
 						<div class="card-body p-0">
 							<table class="table table-striped">
@@ -74,7 +80,7 @@
 				<div class="col-12">
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Last 3 Accepted Order:</h3>
+							<h3 class="card-title">Last 5 Accepted Order:</h3>
 						</div>
 						<div class="card-body p-0">
 							<table class="table table-striped">
@@ -116,15 +122,15 @@
 						
 							<tr>
 								<td>Purchase Report</td>
-								<td class="bg-success"><a href="#">Paid</a></td>
-								<td class="bg-warning"><a href="#">Un Paid</a></td>
-								<td class="bg-danger"><a href="#">Overdue</a></td>
+								<td class="bg-success"><a href="{{ route('admin.reports.get_expense_report') }}?status=1">Paid</a></td>
+								<td class="bg-warning"><a href="{{ route('admin.reports.get_expense_report') }}?status=0">Un Paid</a></td>
+								<td class="bg-danger"><a href="{{ route('admin.reports.get_expense_report') }}?status=2">Overdue</a></td>
 							</tr>
 							<tr>
 								<td>Order Report</td>
-								<td class="bg-success"><a href="#">Paid</a></td>
-								<td class="bg-warning"><a href="#">Un Paid</a></td>
-								<td class="bg-danger"><a href="#">Overdue</a></td>
+								<td class="bg-success"><a href="{{ route('admin.reports.get_order_report') }}?status=1">Paid</a></td>
+								<td class="bg-warning"><a href="{{ route('admin.reports.get_order_report') }}?status=0">Un Paid</a></td>
+								<td class="bg-danger"><a href="{{ route('admin.reports.get_order_report') }}?status=2">Overdue</a></td>
 							</tr>
 						
 						</tbody>
