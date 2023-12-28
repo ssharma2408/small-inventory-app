@@ -98,15 +98,10 @@
                     <div class="order-container mb-2">
                         <div class="order-content">
                             <div class="row mb-1">
-                                <div class="col-md-1">
-                                    <b>Category Name</b>
+                                <div class="col-md-3">
+                                    <b>Category/Sub Category/Product</b>
                                 </div>
-                                <div class="col-md-1">
-                                    <b>Sub Category Name</b>
-                                </div>
-                                <div class="col-md-1">
-                                    <b>Product Name</b>
-                                </div>
+                                
                                 <div class="col-md-1">
                                     <b>In Stock</b>
                                 </div>
@@ -140,26 +135,26 @@
                                 echo '<div class="item_container">';
                                 $cnt = 0;
                                 foreach ($order_items as $order_item) {
-                                    echo '<div class="row mb-1 item_row">
+                                    echo '<div class="row mb-1 item_row '.(($cnt!==0)?"border-top mt-3 pt-3 ":"").'">
                             
-                                                                                                                                                                									<div class="col-md-1"><select class="form-control select2" name="item_category[]" required><option value="' .
+                                                                                                                                                                									<div class="col-md-3"><div class="form-group"><select class="form-control select2" name="item_category[]" required><option value="' .
                                         $order_item->category_id .
                                         '">' .
                                         $order_item->category_name .
                                         '</option></select></div>
                             
-                                                                                                                                                                									<div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="' .
+                                                                                                                                                                									<div class="form-group"><select class="subcat form-control select2" name="item_subcategory[]"><option value="' .
                                         $order_item->sub_category_id .
                                         '">' .
                                         $order_item->sub_category_name .
                                         '</option></select>
                                                                                                                                                                 									</div>
                             
-                                                                                                                                                                									<div class="col-md-1"><select class="form-control select2" name="item_name[]" required><option value="' .
+                                                                                                                                                                									<div class="form-group  "><select class="form-control select2" name="item_name[]" required><option value="' .
                                         $order_item->product_id .
                                         '">' .
                                         $order_item->name .
-                                        '</option></select></div>
+                                        '</option></select></div></div>
                                                                                                                                                                 									<div class="col-md-1">
                                                                                                                                                                 										<input class="form-control in_stock" type="number" name="item_stock[]" disabled value="' .
                                         $order_item->stock .
@@ -346,7 +341,7 @@
                                     </option>
                                 @else
                                     @foreach (App\Models\Order::STATUS_SELECT as $key => $label)
-                                        <option value="{{ $key }}"
+                                        <    value="{{ $key }}"
                                             {{ old('status', $order->status) === (string) $key ? 'selected' : '' }}>
                                             {{ $label }}</option>
                                     @endforeach
@@ -419,12 +414,12 @@
         });
 
         function row_html() {
-            return '<div class="row mb-3 item_row"><div class="cat_container col-md-1"><?php echo $ddl_html; ?></div><div class="col-md-1"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="col-md-1"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+            return '<div class="row mb-3 item_row mt-3 pt-3 border-top"><div class="cat_container col-md-3"><div class="form-group"><?php echo $ddl_html; ?></div> <div class="form-group"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="form-group"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
         }
 
         $(document).on("change", ".order_item", function() {
             if ($(this).val() != "") {
-                var stock = $(this).parent().next().find('input');
+                var stock = $(this).parents('.item_row').find('.in_stock');
                 var min_selling_price = stock.parent().next().find('input');
                 var max_selling_price = min_selling_price.parent().next().find('input');
                 var package_val = max_selling_price.parent().next().find('input[type=hidden]');
@@ -608,8 +603,8 @@
         });
 
         $(document).on("change", ".subcat", function() {
-            var cat_id = $(this).parent().prev('div').find('.category').val();
-            var pdod_ddl = $(this).parent().next('div').find('.order_item');
+            var cat_id = $(this).parents('.item_row').find('.category').val();
+            var pdod_ddl = $(this).parents('.item_row').find('.order_item');
             if (cat_id != "" && $(this).val() != "") {
                 populate_products(cat_id, $(this).val(), pdod_ddl);
             }
@@ -620,8 +615,8 @@
             if ($(this).val() != "") {
 
                 var cat_id = $(this).val();
-                var subcat_ddl = $(this).closest('.cat_container').next('div').find(".subcat");
-                var product_ddl = $(this).closest('.cat_container').next('div').next('div').find(".order_item");
+                var subcat_ddl = $(this).parents('.item_row').find(".subcat");
+                var product_ddl = $(this).parents('.item_row').find(".order_item");
 
                 $.ajax({
                     url: '/admin/categories/get_sub_category/' + cat_id,
@@ -666,38 +661,38 @@
 
             var tax_id;
             tax_id = $(this).val();
-            var qty = $(this).parent().parent().find(".quantity").val();
-            var sale_price = $(this).parent().parent().find(".sale_price").val();
+            var qty = $(this).parents('.item_row').find(".quantity").val();
+            var sale_price = $(this).parents('.item_row').find(".sale_price").val();
 
-            var min_sale_price = $(this).parent().parent().find(".min").val();
-            var in_stock = $(this).parent().parent().find(".in_stock").val();
+            var min_sale_price = $(this).parents('.item_row').find(".min").val();
+            var in_stock = $(this).parents('.item_row').find(".in_stock").val();
             var quantity = 0;
 
             if ((parseFloat(sale_price) < parseFloat(min_sale_price))) {
-                $(this).parent().parent().find(".sale_price_err").html(
+                $(this).parents('.item_row').find(".sale_price_err").html(
                     "Sales Price can't be less than Min Selling Price");
             } else {
-                $(this).parent().parent().find(".sale_price_err").html("");
+                $(this).parents('.item_row').find(".sale_price_err").html("");
             }
 
 
-            if ($(this).parent().parent().find(".cb").is(':checked')) {
-                quantity = qty * $(this).parent().parent().find("#package_val").val();
+            if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
+                quantity = qty *  $(this).parents('.item_row').find("#package_val").val();
             } else {
                 quantity = qty;
             }
 
             if ((parseFloat(quantity) > parseFloat(in_stock))) {
-                $(this).parent().parent().find(".qty_err").html("Quantity can't be greater than In Stock");
+                $(this).parents('.item_row').find(".qty_err").html("Quantity can't be greater than In Stock");
             } else {
-                $(this).parent().parent().find(".qty_err").html("");
+                $(this).parents('.item_row').find(".qty_err").html("");
             }
 
             //if(tax_id != "" && qty != "" && sale_price != ""){
             if (tax_id != "") {
 
-                if ($(this).parent().parent().find(".cb").is(':checked')) {
-                    qty = qty * $(this).parent().parent().find("#package_val").val();
+                if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
+                    qty = qty *  $(this).parents('.item_row').find("#package_val").val();
                 }
 
                 var tax = $(this).parent().find(".tax_val");
