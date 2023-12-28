@@ -103,7 +103,7 @@
 								{{ $order->id }}
                             </td>
 							<td>
-								{{ $order->customer->name }}
+								{{ $order->customer->name  ?? ''}}
                             </td>
 							<td class="d-none">
 								{{ $order->customer->id ?? '' }}		

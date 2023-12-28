@@ -47,7 +47,8 @@ class HomeController
 		$order['latest'] = Order::select('created_at')->orderBy('id','DESC')->take(5)->get()->toArray();
 		
 		$admin = [];
-		$admin['total_open_order'] = OrderPaymentMaster::whereIn('payment_status', array(0, 2))->count();
+		//$admin['total_open_order'] = OrderPaymentMaster::whereIn('payment_status', array(0, 2))->count();
+		$admin['total_open_order'] = DB::table('order_payment_master')->select('orders.id')->join('orders', 'order_payment_master.order_number', '=', 'orders.id')->whereIn('order_payment_master.payment_status', array(0, 2))->get()->count();
 		$admin['total_order'] = Order::count();
 		$admin['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->orderBy('id','DESC')->take(5)->get()->toArray();
 		$admin['expenses'] = Inventory::select('invoice_number', 'final_price')->orderBy('id','DESC')->take(5)->get()->toArray();
