@@ -124,7 +124,7 @@ class InventoryApiController extends Controller
                 ->join('categories', 'expense_items.category_id', '=', 'categories.id')
                 ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
                 ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'taxes.title')
+                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.exp_date', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'taxes.title')
                 ->where('expense_items.expense_id', $inventory->id)
                 ->get();
 
