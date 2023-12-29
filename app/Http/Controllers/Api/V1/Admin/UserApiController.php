@@ -40,7 +40,7 @@ class UserApiController extends Controller
         return new UserResource($user);
     }
 
-    public function update(UpdateTaxRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
