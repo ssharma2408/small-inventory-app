@@ -51,6 +51,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	// Credit Note
     Route::apiResource('credit-notes', 'CreditNoteApiController');
 	
+	// Reports
+	Route::get('reports/get_expense_report', 'ReportsApiController@get_expense_report')->name('reports.get_expense_report');
+	Route::get('reports/get_order_report', 'ReportsApiController@get_order_report')->name('reports.get_order_report');
+	Route::get('reports/get_product_expiry_report', 'ReportsApiController@get_product_expiry_report')->name('reports.get_product_expiry_report');
+	
 	// Profile
 	Route::post('change_password','AuthController@change_password');
 });
