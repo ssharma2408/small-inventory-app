@@ -184,8 +184,8 @@
 					</li>
 				@endcan
 				@can('expense_management_access')
-					<li class="nav-item has-treeview {{ request()->is("admin/inventories*") ? "menu-open" : "" }} {{ request()->is("admin/expense-payments*") ? "menu-open" : "" }} {{ request()->is("admin/inventories/payment*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/suppliers*") ? "active" : "" }} {{ request()->is("admin/inventories*") ? "active" : "" }} {{ request()->is("admin/expense-payments*") ? "active" : "" }}" href="#">
+					<li class="nav-item has-treeview {{ request()->is("admin/inventories*") ? "menu-open" : "" }} {{ request()->is("admin/expense-payments*") ? "menu-open" : "" }} ">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/inventories*") ? "active" : "" }} {{ request()->is("admin/expense-payments*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-wallet">
 
                             </i>
@@ -236,7 +236,7 @@
 				@endcan
 				@can('order_management_access')
 					<li class="nav-item has-treeview {{ request()->is("admin/orders*") ? "menu-open" : "" }} {{ request()->is("admin/order-payments*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/customers*") ? "active" : "" }} {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }}" href="#">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/orders*") ? "active" : "" }} {{ request()->is("admin/order-payments*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-cart-plus">
 
                             </i>
