@@ -36,8 +36,10 @@ class UserApiController extends Controller
     public function show(User $user)
     {
         abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$user_details = User::where('id', $user->id)->with(['roles'])->get();
 
-        return new UserResource($user);
+        return new UserResource($user_details);
     }
 
     public function update(UpdateUserRequest $request, User $user)
