@@ -5,13 +5,15 @@
 
 		@if(\Auth::user()->roles()->first()->title != "Sales Manager")
 			<div class="row">
-				<div class="col-lg-12">
-					<h4 class="mb-4">Total Open Orders: {{$admin['total_open_order']}}</h4>					
+				<div class="col-lg-12">					
 					<div class="row">
 						<div class="col-md-6">
 							<div class="card card-outline card-info">
 								<div class="card-header">
 									<h3 class="card-title">Total Order: {{$admin['total_order']}} <a class="btn btn-success" href="{{ route('admin.orders.create') }}">Create Order</a></h3>
+								</div>
+								<div class="card-header">
+									<h3 class="card-title">Total Open Orders: {{$admin['total_open_order']}} <a class="btn btn-success" href="{{ route('admin.orders.index') }}">View Orders</a></h3>
 								</div>
 								@if(!empty($admin['accepted_order']))
 								<div class="card-header">

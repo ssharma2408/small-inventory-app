@@ -6,6 +6,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // User
     Route::apiResource('users', 'UserApiController');
 	
+	// Roles
+	Route::resource('roles', 'RolesApiController');
+	
 	// Supplier
     Route::apiResource('suppliers', 'SupplierApiController');
 
