@@ -46,8 +46,10 @@ class UserApiController extends Controller
     {
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
+		
+		$user_details = User::where('id', $user->id)->with(['roles'])->get();
 
-        return (new UserResource($user))
+        return (new UserResource($user_details))
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
