@@ -37,35 +37,35 @@
 								</div>
 								@endif
 							</div>
-						</div>
-						@if(!empty($admin['expenses']))
+						</div>						
 						<div class="col-md-6">
 							<div class="card card-outline card-info">
 								<div class="card-header">
 									<h3 class="card-title">Total Expense: {{$admin['total_expenses']}} <a class="btn btn-success" href="{{ route('admin.inventories.create') }}">Create Expense</a></h3>
 								</div>
-								<div class="card-header">
-									<h3 class="card-title">Last 5 Expense:</h3>
-								</div>
-								<div class="card-body p-0">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Invoice Number</th>
-												<th>Amount</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach($admin['expenses'] as $exp)
-											<tr>
-												<td>{{$exp['invoice_number']}}</td>
-												<td>{{$exp['final_price']}}</td>
-											</tr>
-											@endforeach
-										</tbody>
-									</table>
-									@endif
-								</div>
+								@if(!empty($admin['expenses']))
+									<div class="card-header">
+										<h3 class="card-title">Last 5 Expense:</h3>
+									</div>
+									<div class="card-body p-0">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th>Invoice Number</th>
+													<th>Amount</th>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach($admin['expenses'] as $exp)
+												<tr>
+													<td>{{$exp['invoice_number']}}</td>
+													<td>{{$exp['final_price']}}</td>
+												</tr>
+												@endforeach
+											</tbody>
+										</table>									
+									</div>
+								@endif
 							</div>
 						</div>
 					</div>
