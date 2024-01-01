@@ -35,7 +35,7 @@ class OrdersController extends Controller
 
         $is_admin = false;
 
-        if ($role['title'] == 'Admin') {
+        if ($role['title'] == 'Admin' || $role['title'] == 'Website Admin') {
             $is_admin = true;
         }
 
@@ -86,7 +86,7 @@ class OrdersController extends Controller
 
         $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
         $params['delivery_agent_id'] = null;
-        $params['due_date'] = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
+        $params['due_date'] = date('Y-m-d H:i:s', strtotime($request->order_date . ' + ' . explode(" ", $due_date_arr[$due_days['payment_terms']])[0] . ' days'));
 
         $order = Order::create($params);
 
@@ -160,7 +160,7 @@ class OrdersController extends Controller
         $user = \Auth::user();
         $role = $user->roles()->first()->toArray();
 
-        if ($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id || $order->delivery_agent_id === \Auth::user()->id) {
+        if ($role['title'] == 'Admin' || $role['title'] == 'Website Admin' || $order->sales_manager_id === \Auth::user()->id || $order->delivery_agent_id === \Auth::user()->id) {
 
             if ($role['title'] == 'Sales Manager') {
                 $sales_managers = User::whereHas(
@@ -288,7 +288,7 @@ class OrdersController extends Controller
         $user = \Auth::user();
         $role = $user->roles()->first()->toArray();
 
-        if ($role['title'] == 'Admin' || $order->sales_manager_id === \Auth::user()->id) {
+        if ($role['title'] == 'Admin' || $role['title'] == 'Website Admin' || $order->sales_manager_id === \Auth::user()->id) {
 
             $order->delete();
         } else {
@@ -321,11 +321,27 @@ class OrdersController extends Controller
         if ($request->signature == "") {
             return false;
         }
+		$delivery_pic_url = "";
+		if($request->hasFile('delivery_pic')){
+				
+			$file = $request->file('delivery_pic');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('delivery_pic')->getRealPath()),
+				'public'
+				);
+			$delivery_pic_url = $name;
+		}
 
         Order::where('id', $request->id)
             ->update([
                 'status' => 1,
                 'customer_sign' => $request->signature,
+                'delivery_pic' => $delivery_pic_url,
             ]);
 
         return back();

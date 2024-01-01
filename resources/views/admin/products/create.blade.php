@@ -9,7 +9,8 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.products.store") }}" enctype="multipart/form-data">
             @csrf
-			<div class="form-group">
+			<div class="row">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>
                 <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
                     <option value="" >Select Option</option> 
@@ -25,7 +26,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
             </div>
-			<div class="form-group">
+			<div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label for="sub_category_id">{{ trans('cruds.category.fields.sub_category') }}</label>
                 <select class="form-control select2 {{ $errors->has('subcategory') ? 'is-invalid' : '' }}" name="sub_category_id" id="sub_category_id">
                     <option value="" >Please select</option>                      
@@ -37,7 +38,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.category.fields.sub_category_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="name">{{ trans('cruds.product.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
                 @if($errors->has('name'))
@@ -45,7 +46,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.name_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="maximum_selling_price">{{ trans('cruds.product.fields.maximum_selling_price') }}</label>
                 <input class="form-control {{ $errors->has('maximum_selling_price') ? 'is-invalid' : '' }}" type="number" name="maximum_selling_price" id="maximum_selling_price" value="{{ old('maximum_selling_price', '') }}" step="0.01" required>
                 @if($errors->has('maximum_selling_price'))
@@ -53,7 +54,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.maximum_selling_price_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="selling_price">{{ trans('cruds.product.fields.selling_price') }}</label>
                 <input class="form-control {{ $errors->has('selling_price') ? 'is-invalid' : '' }}" type="number" name="selling_price" id="selling_price" value="{{ old('selling_price', '') }}" step="0.01" required>
                 @if($errors->has('selling_price'))
@@ -61,7 +62,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.selling_price_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label for="stock">{{ trans('cruds.product.fields.stock') }}</label>
                 <input class="form-control {{ $errors->has('stock') ? 'is-invalid' : '' }}" type="number" name="stock" id="stock" value="0" disabled>
                 @if($errors->has('stock'))
@@ -69,7 +70,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.stock_helper') }}</span>
             </div>
-			<div class="form-group">
+			<div class="form-groupcol-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="tax_id">{{ trans('cruds.product.fields.tax') }}</label>
                 <select class="form-control select2 {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id" required>
                     @foreach($taxes as $id => $entry)
@@ -81,7 +82,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.tax_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="product_image">{{ trans('cruds.product.fields.product_image') }}</label>                
 				<input class="form-control" type="file" name="product_image" id="product_image" required />
                 @if($errors->has('product_image'))
@@ -89,7 +90,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.product_image_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="box_size">{{ trans('cruds.product.fields.box_size') }}</label>
                 <input class="form-control {{ $errors->has('box_size') ? 'is-invalid' : '' }}" type="number" name="box_size" id="box_size" value="{{ old('box_size', '') }}" step="1" required>
                 @if($errors->has('box_size'))
@@ -97,11 +98,13 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.box_size_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
+            <div class="form-group col-lg-12">
+                <button class="btn btn-danger mr-2" type="submit">
                     {{ trans('global.save') }}
                 </button>
+                <a href="{{url()->previous()}}" class="btn btn-default ">{{ trans('global.cancel') }}</a>
             </div>
+</div>
         </form>
     </div>
 </div>

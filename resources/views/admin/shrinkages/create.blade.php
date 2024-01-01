@@ -9,7 +9,8 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.shrinkages.store") }}" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
+            <div class="row">
+            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                 <label class="required" for="product_id">{{ trans('cruds.shrinkage.fields.product') }}</label>
                 <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
                     @foreach($products as $id => $entry)
@@ -21,7 +22,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.shrinkage.fields.product_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                 <label class="required" for="number">{{ trans('cruds.shrinkage.fields.number') }}</label>
                 <input class="form-control {{ $errors->has('number') ? 'is-invalid' : '' }}" type="number" name="number" id="number" value="{{ old('number', '') }}" step="1" required>
                 @if($errors->has('number'))
@@ -29,7 +30,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.shrinkage.fields.number_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                 <label class="required" for="date">{{ trans('cruds.shrinkage.fields.date') }}</label>
                 <input class="form-control date {{ $errors->has('date') ? 'is-invalid' : '' }}" type="text" name="date" id="date" value="{{ old('date') }}" required>
                 @if($errors->has('date'))
@@ -37,7 +38,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.shrinkage.fields.date_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-lg-12">
                 <label for="description">{{ trans('cruds.shrinkage.fields.description') }}</label>
                 <textarea class="form-control ckeditor {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
                 @if($errors->has('description'))
@@ -45,11 +46,13 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.shrinkage.fields.description_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
+            <div class="form-group col-lg-12">
+                <button class="btn btn-danger mr-2" type="submit">
                     {{ trans('global.save') }}
                 </button>
+                <a href="{{url()->previous()}}" class="btn btn-default ">{{ trans('global.cancel') }}</a>
             </div>
+          </div>
         </form>
     </div>
 </div>

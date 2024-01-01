@@ -39,6 +39,13 @@ class UpdateOrderRequest extends FormRequest
             'status' => [
                 'required',
             ],
+			'discount_type' => [
+                'required',
+            ],	
+			'order_date' => [
+                'required',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            ],
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,9 +11,11 @@ use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Product;
 
+use Symfony\Component\HttpFoundation\Response;
+
 use DB;
 
-class ReportsController extends Controller
+class ReportsApiController extends Controller
 {
     public function get_expense_report(){
 		
@@ -22,7 +24,12 @@ class ReportsController extends Controller
 		$inventories = Inventory::with(['supplier', 'media', 'payment'])->get();
 
 		$suppliers = Supplier::select('supplier_name', 'id')->get();
-		return view('admin.reports.expense_report', compact('inventories', 'status', 'suppliers'));
+
+		return response()->json([
+            'inventories' => $inventories,
+            'status'=> $status,
+            'suppliers'=> $suppliers			
+        ], 200);
 	}
 	
 	public function get_order_report(){
@@ -31,8 +38,12 @@ class ReportsController extends Controller
 		$orders = Order::with(['sales_manager', 'customer', 'payment'])->get();
 
 		$customers = Customer::select('name', 'id')->get();
-
-		return view('admin.reports.order_report', compact('orders', 'status', 'customers'));
+		
+		return response()->json([
+            'orders' => $orders,
+            'status'=> $status,
+            'customers'=> $customers,
+        ], 200);
 	}
 	
 	public function get_product_expiry_report(){
@@ -45,7 +56,11 @@ class ReportsController extends Controller
                 ->get();
 		
 		$products = Product::select('name', 'id')->get();
-		
-		return view('admin.reports.product_expiry_report', compact('expense_items', 'status', 'products'));
+
+		return response()->json([
+            'expense_items' => $expense_items,
+            'status'=> $status,
+            'products'=> $products
+        ], 200);
 	}
 }

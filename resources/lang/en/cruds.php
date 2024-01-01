@@ -65,6 +65,10 @@ return [
             'deleted_at_helper'        => ' ',
         ],
     ],
+	'settingManagement' => [
+        'title'          => 'Site Settings',
+        'title_singular' => 'Site Settings',	
+    ],
 	'expenseManagement' => [
         'title'          => 'Expense management',
         'title_singular' => 'Expense management',	
@@ -175,6 +179,8 @@ return [
             'sales_manager_helper' => ' ',
             'customer'             => 'Store Name',
             'customer_helper'      => ' ',
+			'discount_type'                   => 'Discount Type',
+            'discount_type_helper'            => ' ',
 			'extra_discount'      => 'Extra Discount',
 			'extra_discount_helper'   => ' ',
             'order_total'          => 'Order Final Total',
@@ -199,7 +205,11 @@ return [
             'order_total_without_tax_helper'   => ' ',
 			'order_tax'          => 'Order Tax',
             'order_tax_helper'   => ' ',
-            'credit_balance'   => 'Credit Balance',
+            'credit_balance'   => 'Credit Balance',			
+            'order_date'   => 'Order Date',
+			'order_date_helper'   => ' ',
+			'delivery_pic'   => 'Delivery Pic',
+			'delivery_pic_helper'   => ' ',			
         ],
     ],
     'product' => [

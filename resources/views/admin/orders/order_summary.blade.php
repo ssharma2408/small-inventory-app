@@ -60,6 +60,7 @@
                         <a href="mailto:trueleafretailinc@gmail.com">trueleafretailinc@gmail.com</a>
                     </p>
                     <p>GST/HST Registration No.: <br />727197303RT0001</p>
+					<p>Sales Person: {{$order->sales_manager->name}}</p>
                 </td>
                 <td style="
               text-align: left;
@@ -99,7 +100,7 @@
                     background-color: #d4d9cf;
                     color: #2a3e10;
                   ">
-                                <p>DATE<br />{{$order->created_at->format('j F, Y')}}</p>
+                                <p>DATE<br />{{$order->order_date->format('j F, Y')}}</p>
                             </td>
                             <td style="
                     padding: 20px 10px;

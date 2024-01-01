@@ -10,7 +10,8 @@
         <form method="POST" action="{{ route("admin.categories.update", [$category->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
-            <div class="form-group">
+            <div class="row">
+            <div class="form-group  col-lg-6 col-md-6 col-sm-12 ">
                 <label for="category_id">{{ trans('cruds.category.fields.category') }}</label>
                 <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id">
 
@@ -26,7 +27,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.category.fields.category_helper') }}</span>
             </div>
-			<div class="form-group">
+			<div class="form-group  col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="name">{{ trans('cruds.category.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required>
                 @if($errors->has('name'))
@@ -35,10 +36,13 @@
                 <span class="help-block">{{ trans('cruds.category.fields.name_helper') }}</span>
             </div>         
 			
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
+            <div class="form-group  col-lg-12 ">
+                <button class="btn btn-danger mr-2" type="submit">
                     {{ trans('global.save') }}
                 </button>
+                
+                <a href="{{url()->previous()}}" class="btn btn-default">{{ trans('global.cancel') }}</a>
+            </div>
             </div>
         </form>
     </div>

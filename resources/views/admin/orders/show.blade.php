@@ -155,6 +155,14 @@
 						</tr>
 						<tr>
 							<th>
+								{{ trans('cruds.order.fields.discount_type') }}
+							</th>
+							<td>
+								{{ App\Models\Order::DISCOUNT_TYPE_RADIO[$order->discount_type] ?? '' }}
+							</td>
+						</tr>
+						<tr>
+							<th>
 								{{ trans('cruds.order.fields.extra_discount') }}
 							</th>
 							<td>
@@ -203,9 +211,25 @@
 								{{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
 							</td>
 						</tr>
+						<tr>
+							<th>
+								{{ trans('cruds.order.fields.order_date') }}
+							</th>
+							<td>
+								{{ $order->order_date }}
+							</td>
+						</tr>
 					</tbody>
 				</table>				
-				@if($order->status == 4 && ($role['title'] == 'Delivery Agent' || $role['title'] == 'Admin'))
+				@if($order->status == 4 && ($role['title'] == 'Delivery Agent' || $role['title'] == 'Admin' || $role['title'] == 'Website Admin'))
+					<div class="form-group">
+						<label for="delivery_pic">{{ trans('cruds.order.fields.delivery_pic') }}</label>
+						<input class="form-control" type="file" name="delivery_pic" id="delivery_pic" />
+						@if ($errors->has('delivery_pic'))
+							<span class="text-danger">{{ $errors->first('delivery_pic') }}</span>
+						@endif
+						<span class="help-block">{{ trans('cruds.order.fields.delivery_pic_helper') }}</span>
+					</div>	
 					<div class="m-signature-pad mb-4" id="signature-pad">
 						<div class="m-signature-pad--body">
 							<canvas id="canvas" width="611" height="150"></canvas>						

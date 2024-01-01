@@ -12,19 +12,29 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <p id="date_filter">
-				<span id="date-label-from" class="date-label">From: </span><input class="date_range_filter" type="text" id="datepicker_from" />
-				<span id="date-label-to" class="date-label">To: </span><input class="date_range_filter" type="text" id="datepicker_to" />
-				<span id="supplier_span" class="">Customer: </span>
-				<select id="customer">
-					<option value="">-- Please Select --</option>
-					@if(!empty($customers))
-						@foreach($customers as $customer)
-							<option value="{{$customer->id}}">{{$customer->name}}</option>
-						@endforeach
-					@endif
-				</select>
-			</p>
+			<div class="row">
+				<div class="col-md-5">            
+					<span id="date-label-from" class="date-label">From: </span><input class="date_range_filter" type="text" id="datepicker_from" />
+					<span id="date-label-to" class="date-label">To: </span><input class="date_range_filter" type="text" id="datepicker_to" />
+				</div>
+				<div class="col-md-2">					
+					<select id="customer">
+						<option value="">-- Select Customer --</option>
+						@if(!empty($customers))
+							@foreach($customers as $customer)
+								<option value="{{$customer->id}}">{{$customer->name}}</option>
+							@endforeach
+						@endif
+					</select>
+				</div>
+				<div class="5">
+					<span class="cb_conatiner">
+						<span class="paid"><input type="checkbox" id="paid" name="paid" value="1" /> Paid</span>
+						<span class="unpaid"><input type="checkbox" id="unpaid" name="unpaid" value="0" /> Un Paid</span>
+						<span class="overdue"><input type="checkbox" id="overdue" name="overdue" value="2" /> Over Due</span>
+					</span>
+				</div>
+			</div>
 			<table class=" table table-bordered table-striped table-hover datatable datatable-Tax">
                 <thead>
                     <tr>
@@ -32,7 +42,7 @@
 
                         </th>
                         <th>
-                            {{ trans('reports.order_report.date') }}
+                            {{ trans('reports.order_report.order_date') }}
                         </th>
                         <th>
                             {{ trans('reports.order_report.type') }}
@@ -55,6 +65,9 @@
 						<th>
                             {{ trans('reports.order_report.status') }}
                         </th>
+						<th class="d-none">
+                            Status ID
+                        </th>
                         <th>
                             {{ trans('reports.order_report.action') }}
                         </th>
@@ -63,9 +76,9 @@
                 <tbody>
 					@foreach($orders as $key => $order)
                         @php
-							if(!empty($order->payment)){
-								$bgcolor = "";
-								if($order->payment->order_pending == 0 && $order->payment->payment_status == 1){
+							$bgcolor = "#ffab00";
+							if(!empty($order->payment)){								
+								if($order->payment->order_pending == 0){
 									$bgcolor = "#75dc75";
 								}else{
 									if(strtotime($order->due_date) < strtotime(date('Y-m-d H:i:s'))){
@@ -81,7 +94,7 @@
 
                             </td>
 							<td>
-								{{ date('d/m/Y', strtotime($order->created_at)) }}
+								{{ date('d/m/Y', strtotime($order->order_date)) }}
                             </td>
 							<td>
 								Order
@@ -90,7 +103,7 @@
 								{{ $order->id }}
                             </td>
 							<td>
-								{{ $order->customer->name }}
+								{{ $order->customer->name  ?? ''}}
                             </td>
 							<td class="d-none">
 								{{ $order->customer->id ?? '' }}		
@@ -120,6 +133,21 @@
 									@endif
 								@endif
                             </td>
+							<td class="d-none">
+								@php($status_val = 0)
+								@if(!empty($order->payment))
+									@if($order->payment->order_pending == 0 && $order->payment->payment_status == 1)
+										@php($status_val = 1)
+									@else
+										@if(strtotime($order->due_date) < strtotime(date('Y-m-d H:i:s')))
+											@if(!empty($order->due_date))
+												@php($status_val = 2)											
+											@endif										
+										@endif
+									@endif
+								@endif
+								{{ $status_val }}
+							</td>
 							<td>
 								<a class="btn btn-xs btn-primary" href="{{ route('admin.orders.show', $order->id) }}">
 									{{ trans('global.view') }}
@@ -194,7 +222,17 @@
 	buttons: dtButtons,
 
   });
-
+	var urlParams = new URLSearchParams(window.location.search); //get all parameters
+	var status = urlParams.get('status');
+	if(status) {
+		if(status == 1){
+			$('#paid').prop("checked", true).on("change", function() {paidFilter = "1"}).trigger("change");
+		}else if(status == 0){
+			$('#unpaid').prop("checked", true).on("change", function() {unpaidFilter = "0"}).trigger("change");
+		}else{
+			$('#overdue').prop("checked", true).on("change", function() {overdueFilter = "2"}).trigger("change");
+		}
+	}
   $("#datepicker_from").datepicker({
     showOn: "button",
     //buttonImage: "images/calendar.gif",
@@ -226,12 +264,42 @@
 	  oTable.draw();
   });
   
+  $('#paid').change(function() {
+        if(this.checked) {			
+			paidFilter = "1"
+		}else{
+			paidFilter = "";
+		}
+		oTable.draw();
+  });
+  
+  $('#unpaid').change(function() {
+        if(this.checked) {			
+			unpaidFilter = "0"
+		}else{
+			unpaidFilter = "";
+		}
+		oTable.draw();
+  });
+  
+  $('#overdue').change(function() {
+        if(this.checked) {			
+			overdueFilter = "2"
+		}else{
+			overdueFilter = "";
+		}
+		oTable.draw();
+  });
+  
 })
 
 // Date range filter
 minDateFilter = "";
 maxDateFilter = "";
 customerFilter = "";
+paidFilter = "";
+unpaidFilter = "";
+overdueFilter = "";
 
 $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
@@ -242,6 +310,10 @@ $.fn.dataTableExt.afnFiltering.push(
 	if (typeof aData._customer == 'undefined') {		
 	  aData._customer = aData[5];
     }
+	if (typeof aData._pay_status == 'undefined') {		
+	  aData._pay_status = aData[9];
+    }
+
     if (minDateFilter && !isNaN(minDateFilter)) {
       if (aData._date < minDateFilter) {
         return false;
@@ -256,6 +328,24 @@ $.fn.dataTableExt.afnFiltering.push(
 	
 	if (customerFilter && !isNaN(customerFilter)) {
       if (aData._customer != customerFilter) {
+        return false;
+      }
+    }
+	
+	if (paidFilter && !isNaN(paidFilter)) {
+      if (aData._pay_status != paidFilter) {
+        return false;
+      }
+    }
+	
+	if (unpaidFilter && !isNaN(unpaidFilter)) {
+      if (aData._pay_status != unpaidFilter) {
+        return false;
+      }
+    }
+	
+	if (overdueFilter && !isNaN(overdueFilter)) {
+      if (aData._pay_status != overdueFilter) {
         return false;
       }
     }
