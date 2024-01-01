@@ -21,8 +21,8 @@
                     </a>
                 </li>
                 @can('user_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/permissions*") ? "menu-open" : "" }} {{ request()->is("admin/roles*") ? "menu-open" : "" }} {{ request()->is("admin/users*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/permissions*") ? "active" : "" }} {{ request()->is("admin/roles*") ? "active" : "" }} {{ request()->is("admin/users*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/permissions*") ? "menu-open" : "" }} {{ request()->is("admin/roles*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/permissions*") ? "active" : "" }} {{ request()->is("admin/roles*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
@@ -55,22 +55,22 @@
                                         </p>
                                     </a>
                                 </li>
-                            @endcan
-                            @can('user_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.users.index") }}" class="nav-link {{ request()->is("admin/users") || request()->is("admin/users/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-user">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.user.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
+                            @endcan                            
                         </ul>
                     </li>
                 @endcan
+				@can('user_access')
+					<li class="nav-item">
+						<a href="{{ route("admin.users.index") }}" class="nav-link {{ request()->is("admin/users") || request()->is("admin/users/*") ? "active" : "" }}">
+							<i class="fa-fw nav-icon fas fa-user">
+
+							</i>
+							<p>
+								{{ trans('cruds.user.title') }}
+							</p>
+						</a>
+					</li>
+				@endcan
 				@can('setting_management_access')
 					 <li class="nav-item has-treeview {{ request()->is("admin/taxes*") ? "menu-open" : "" }} {{ request()->is("admin/payment-methods*") ? "menu-open" : "" }} {{ request()->is("admin/shrinkages*") ? "menu-open" : "" }} {{ request()->is("admin/credit-notes*") ? "menu-open" : "" }}">
 						<a class="nav-link nav-dropdown-toggle {{ request()->is("admin/taxes*") ? "active" : "" }} {{ request()->is("admin/payment-methods*") ? "active" : "" }} {{ request()->is("admin/shrinkages*") ? "active" : "" }} {{ request()->is("admin/credit-notes*") ? "active" : "" }}" href="#">

@@ -144,7 +144,7 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Supplier:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-Supplier:not(.ajaxTable)').DataTable({ buttons: [] })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

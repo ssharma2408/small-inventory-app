@@ -70,8 +70,8 @@ return [
         'title_singular' => 'Site Settings',	
     ],
 	'expenseManagement' => [
-        'title'          => 'Expense management',
-        'title_singular' => 'Expense management',	
+        'title'          => 'Expense module',
+        'title_singular' => 'Expense module',	
     ],
     'supplier' => [
         'title'          => 'Supplier',
@@ -94,8 +94,8 @@ return [
         ],
     ],
 	'orderManagement' => [
-        'title'          => 'Order management',
-        'title_singular' => 'Order management',
+        'title'          => 'Order module',
+        'title_singular' => 'Order module',
     ],
     'customer' => [
         'title'          => 'Customers',

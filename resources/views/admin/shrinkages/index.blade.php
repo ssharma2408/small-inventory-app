@@ -153,7 +153,7 @@
     },
     "iDisplayLength": -1,
     "sPaginationType": "full_numbers",
-	buttons: dtButtons,
+	buttons: [],
 
   });
 
