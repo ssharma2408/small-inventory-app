@@ -3,7 +3,10 @@ use App\Http\Controllers\Api\V1\Admin\AuthController;
 
 Route::post('/v1/login', [AuthController::class, 'login']);
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:sanctum']], function () {
-    // User
+    // Dashboard
+	Route::resource('dashboard', 'DashboardApiController');
+	
+	// User
     Route::apiResource('users', 'UserApiController');
 	
 	// Roles
