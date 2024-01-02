@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateSupplierRequest;
 use App\Http\Resources\Admin\SupplierResource;
 use App\Models\Supplier;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,9 +16,30 @@ class SupplierApiController extends Controller
 {
     public function index()
     {
-        //abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $payment_arr = [];
+		//abort_if(Gate::denies('supplier_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$suppliers = Supplier::all();
+		 
+		$payments = DB::table('suppliers')
+				->select('expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'suppliers.id')
+				->join('expense_payment_master','expense_payment_master.supplier_id','=','suppliers.id')
+				->get()->toArray();
 
-        return new SupplierResource(Supplier::all());
+		
+		foreach($payments as $pay){
+			$pay = (array) $pay;
+			if(!array_key_exists($pay['id'], $payment_arr)) {				
+				$payment_arr[$pay['id']] = 0;
+			}
+
+			$payment_arr[$pay['id']] += $pay['expense_total'];
+		}
+		
+		return response()->json([
+            'suppliers' => $suppliers,
+            'payment_arr'=> $payment_arr
+        ], 200);       
     }
 
     public function store(StoreSupplierRequest $request)
