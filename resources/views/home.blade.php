@@ -168,7 +168,7 @@
 			<div class="col-lg-3 col-6">
 				<div class="small-box bg-info">
 					<div class="inner">
-						<h3>16</h3>
+						<h3>{{$category['total']}}</h3>
 						<p>Category</p>
 					</div>
 					<a href="{{route('admin.categories.index')}}" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
@@ -225,7 +225,7 @@
 						<h3>{{$expense['total']}}</h3>
 						<p>Expenses</p>
 					</div>
-					<a href="{{route('admin.suppliers.index')}}" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+					<a href="{{route('admin.inventories.index')}}" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
 				</div>
 			</div>
 			<div class="col-lg-3 col-6">
