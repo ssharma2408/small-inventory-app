@@ -55,7 +55,7 @@ class HomeController
 		$admin['total_expenses'] = Inventory::count();
 		
 		$sales = [];		
-		$sales['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->where('sales_manager_id', \Auth::user()->id)->orderBy('id','DESC')->take(3)->get()->toArray();
+		$sales['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->where('sales_manager_id', \Auth::user()->id)->orderBy('id','DESC')->take(5)->get()->toArray();
 		
 		$del_agent = [];		
 		$del_agent['total_assigned_orders'] = Order::where('status', '4')->where('delivery_agent_id', \Auth::user()->id)->count();
