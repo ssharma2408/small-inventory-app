@@ -75,4 +75,19 @@ class SupplierApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function expenses($supplier_id){
+		if($supplier_id ==""){
+			return;
+		}
+		
+		$payments = DB::table('suppliers')
+				->select('expense_payment_master.invoice_number', 'expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'expense_payment_master.expense_id', 'suppliers.supplier_name', 'suppliers.supplier_number', 'suppliers.supplier_email')
+				->join('expense_payment_master','expense_payment_master.supplier_id','=','suppliers.id')
+				->where('expense_payment_master.supplier_id','=',$supplier_id)->get()->toArray();
+		
+		return response()->json([
+            'payments' => $payments,
+        ], 200);
+	}
 }

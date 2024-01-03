@@ -247,4 +247,39 @@ class OrdersApiController extends Controller
 		}
 		return $order_id_arr;
 	}
+	
+	public function payment($order_id = "")
+    {
+
+        $status_arr = array("Unpaid", "Paid", "Partial Paid");
+
+        $payment_arr = [];
+        $payment_query = DB::table('order_payments')
+            ->select('order_payments.amount', 'order_payments.description', 'order_payments.date', 'order_payment_master.order_number', 'order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'order_payment_master.payment_status', 'customers.name as cust_name', 'customers.phone_number', 'customers.email', 'payment_methods.name')
+            ->leftJoin('order_payment_master', 'order_payment_master.order_number', '=', 'order_payments.order_id')
+            ->join('customers', 'customers.id', '=', 'order_payment_master.customer_id')
+            ->join('payment_methods', 'payment_methods.id', '=', 'order_payments.payment_id');
+
+        if ($order_id != "") {
+            $payment_query->where('order_payment_master.order_number', '=', $order_id);
+        }
+
+        $payment_details = $payment_query->get()->toArray();
+
+        foreach ($payment_details as $detail) {
+
+            $payment_arr[$detail->order_number] = array('order_number' => $detail->order_number, 'order_total' => $detail->order_total, 'order_paid' => $detail->order_paid, 'order_pending' => $detail->order_pending, 'payment_status' => $status_arr[$detail->payment_status], 'cust_name' => $detail->cust_name, 'phone_number' => $detail->phone_number, 'email' => $detail->email, 'payment_detail' => []);
+        }
+
+        foreach ($payment_details as $detail) {
+
+            $payment_arr[$detail->order_number]['payment_detail'][] = array('amount' => $detail->amount, 'description' => $detail->description, 'date' => $detail->date, 'name' => $detail->name);
+        }
+
+		return response()->json([
+            'payment_arr' => $payment_arr,
+            'order_id' => $order_id,
+        ], 200);
+
+    }
 }

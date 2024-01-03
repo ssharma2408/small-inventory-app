@@ -14,6 +14,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	
 	// Supplier
     Route::apiResource('suppliers', 'SupplierApiController');
+	Route::get('suppliers/expenses/{id}', 'SupplierApiController@expenses')->name('suppliers.expenses');
 
     // Customers
     Route::post('upload-image','CustomersApiController@uploaddata');
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Inventory
     Route::post('inventories/media', 'InventoryApiController@storeMedia')->name('inventories.storeMedia');
+	Route::get('inventories/payment/{id?}', 'InventoryApiController@payment')->name('inventories.payment');
     Route::apiResource('inventories', 'InventoryApiController');
 
     // Payment Methods
@@ -29,6 +31,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Orders
     Route::get('sales-manager','OrdersApiController@get_supplier');
+	Route::get('orders/payment/{id?}', 'OrdersApiController@payment')->name('orders.payment');
     Route::apiResource('orders', 'OrdersApiController');
 
     // Product
