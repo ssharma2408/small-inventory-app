@@ -17,6 +17,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Customers
     Route::post('upload-image','CustomersApiController@uploaddata');
+	Route::get('revenue/{id}', 'CustomersApiController@revenue')->name('customers.revenue');
     Route::apiResource('customers', 'CustomersApiController');
 
     // Inventory

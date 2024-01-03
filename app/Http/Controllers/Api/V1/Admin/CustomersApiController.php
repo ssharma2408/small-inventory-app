@@ -98,4 +98,17 @@ class CustomersApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function revenue($customer_id){
+		if($customer_id ==""){
+			return;
+		}
+		
+		$payments = DB::table('customers')
+				->select('order_payment_master.order_number', 'order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'customers.name', 'customers.phone_number', 'customers.email')
+				->join('order_payment_master','order_payment_master.customer_id','=','customers.id')
+				->where('order_payment_master.customer_id','=',$customer_id)->get()->toArray();
+		return new CustomerResource($payments);
+		
+	}
 }
