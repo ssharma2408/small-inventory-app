@@ -10,6 +10,7 @@ use App\Http\Resources\Admin\CustomerResource;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Storage;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,8 +40,29 @@ class CustomersApiController extends Controller
 
     public function index()
     {
-        abort_if($this->can('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        return new CustomerResource(Customer::all());
+        $payment_arr = [];
+		abort_if($this->can('customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $customers = Customer::all();
+		
+		$payments = DB::table('customers')
+				->select('order_payment_master.order_total', 'order_payment_master.order_paid', 'order_payment_master.order_pending', 'customers.id')
+				->join('order_payment_master','order_payment_master.customer_id','=','customers.id')
+				->get()->toArray();
+
+		
+		foreach($payments as $pay){
+			$pay = (array) $pay;			
+			if(!array_key_exists($pay['id'], $payment_arr)) {				
+				$payment_arr[$pay['id']] = 0;
+			}
+			
+			$payment_arr[$pay['id']] += $pay['order_total'];
+		}
+		
+		return response()->json([
+            'customers' => $customers,
+            'payment_arr'=> $payment_arr
+        ], 200);
     }
 
     public function store(StoreCustomerRequest $request)
