@@ -21,7 +21,7 @@ class ProductApiController extends Controller
     {
         abort_if(Gate::denies('product_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$products = Product::with(['media', 'tax'])->get();
+		$products = Product::with(['media', 'tax_details'])->get();
 
         return new ProductResource($products);
     }
