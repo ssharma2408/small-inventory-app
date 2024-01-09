@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Gate;
+use Storage;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,17 +34,34 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create($request->all());		
-		
-		if ($request->redirect !="") {
-		   if(request()->redirect == "add-product"){
-			  return redirect()->route('admin.products.create'); 
-		   }else{
-			   return redirect("admin/products/".request()->redirect_id."/edit");			   
-		   }
-		}
+        if($request->hasFile('category_image')){
+			$file = $request->file('category_image');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() .'_' . str_replace(" ", "_", $request->name) . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('category_image')->getRealPath()),
+				'public'
+				);
+			
+			$category_detail = $request->all();
+			
+			$category_detail['image_url'] = $name;
+			
+			$category = Category::create($category_detail);		
+			
+			if ($request->redirect !="") {
+			   if(request()->redirect == "add-product"){
+				  return redirect()->route('admin.products.create'); 
+			   }else{
+				   return redirect("admin/products/".request()->redirect_id."/edit");			   
+			   }
+			}
 
-        return redirect()->route('admin.categories.index');
+			return redirect()->route('admin.categories.index');
+		}
     }
 
     public function edit(Category $category)
@@ -57,7 +75,24 @@ class CategoryController extends Controller
 
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->update($request->all());
+        $category_detail = $request->all();
+		
+		if($request->hasFile('category_image')){
+			$file = $request->file('category_image');
+			
+			$extension  = $file->getClientOriginalExtension();
+			$name = time() .'_' . str_replace(" ", "_", $request->name) . '.' . $extension;
+			
+			$store = Storage::disk('do')->put(
+				'/'.$_ENV['DO_FOLDER'].'/'.$name,
+				file_get_contents($request->file('category_image')->getRealPath()),
+				'public'
+				);	
+			
+			$category_detail['image_url'] = $name;
+		}
+		
+		$category->update($category_detail);
 
         return redirect()->route('admin.categories.index');
     }

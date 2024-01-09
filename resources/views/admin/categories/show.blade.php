@@ -38,7 +38,15 @@
                         <td>
                             {{ $category->category->name ?? '' }}
                         </td>
-                    </tr>                   
+                    </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.category.fields.category_image') }}
+                        </th>
+                        <td>
+                            <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$category->image_url }}">
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
