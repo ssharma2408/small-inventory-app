@@ -22,11 +22,8 @@ class UpdateCategoryRequest extends FormRequest
                 'required',
                 'unique:categories,name,' . request()->route('category')->id,
             ],
-            'category_order' => [
+			'image_url' => [
                 'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
             ],
         ];
     }

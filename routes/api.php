@@ -3,7 +3,10 @@ use App\Http\Controllers\Api\V1\Admin\AuthController;
 
 Route::post('/v1/login', [AuthController::class, 'login']);
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:sanctum']], function () {
-    // User
+    // Dashboard
+	Route::resource('dashboard', 'DashboardApiController');
+	
+	// User
     Route::apiResource('users', 'UserApiController');
 	
 	// Roles
@@ -11,13 +14,16 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	
 	// Supplier
     Route::apiResource('suppliers', 'SupplierApiController');
+	Route::get('suppliers/expenses/{id}', 'SupplierApiController@expenses')->name('suppliers.expenses');
 
     // Customers
     Route::post('upload-image','CustomersApiController@uploaddata');
+	Route::get('revenue/{id}', 'CustomersApiController@revenue')->name('customers.revenue');
     Route::apiResource('customers', 'CustomersApiController');
 
     // Inventory
     Route::post('inventories/media', 'InventoryApiController@storeMedia')->name('inventories.storeMedia');
+	Route::get('inventories/payment/{id?}', 'InventoryApiController@payment')->name('inventories.payment');
     Route::apiResource('inventories', 'InventoryApiController');
 
     // Payment Methods
@@ -25,6 +31,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Orders
     Route::get('sales-manager','OrdersApiController@get_supplier');
+	Route::get('orders/payment/{id?}', 'OrdersApiController@payment')->name('orders.payment');
     Route::apiResource('orders', 'OrdersApiController');
 
     // Product

@@ -254,6 +254,8 @@ return [
             'category_helper' 		=> ' ',
             'sub_category' 			=> 'Sub Category',
             'sub_category_helper' 	=> ' ',
+			'category_image'        => 'Category Image',
+            'category_image_helper' => ' ',
             'created_at'            => 'Created at',
             'created_at_helper'     => ' ',
             'updated_at'            => 'Updated at',

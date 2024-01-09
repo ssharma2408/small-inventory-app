@@ -78,4 +78,8 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsTo(Category::class, 'sub_category_id');
     }
+	
+	public function tax_details(){
+        return $this->tax();
+    }
 }

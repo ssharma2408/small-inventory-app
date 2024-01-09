@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\V1\Admin;
 use DB;
-
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\DashboardResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tax;
@@ -14,7 +15,11 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderPaymentMaster;
 
-class HomeController
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+
+class DashboardApiController extends Controller
 {
     public function index()
     {
@@ -55,10 +60,25 @@ class HomeController
 		$admin['total_expenses'] = Inventory::count();
 		
 		$sales = [];		
-		$sales['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->where('sales_manager_id', \Auth::user()->id)->orderBy('id','DESC')->take(5)->get()->toArray();
+		$sales['accepted_order'] = Order::select('id', 'order_total')->where('status', '4')->where('sales_manager_id', \Auth::user()->id)->orderBy('id','DESC')->take(3)->get()->toArray();
 		
 		$del_agent = [];		
 		$del_agent['total_assigned_orders'] = Order::where('status', '4')->where('delivery_agent_id', \Auth::user()->id)->count();
+		
+		 return response()->json([
+            'category' => $category,
+            'product'=> $product,
+			'tax' => $tax,
+            'payment_method'=> $payment_method,
+			'shrinkage' => $shrinkage,
+            'supplier'=> $supplier,
+			'expense' => $expense,
+            'customer'=> $customer,
+			'order' => $order,
+            'admin'=> $admin,
+			'sales' => $sales,
+            'del_agent'=> $del_agent
+        ], 200);
 		
 		return view('home', compact('category', 'product', 'tax', 'payment_method', 'shrinkage', 'supplier', 'expense', 'customer', 'order', 'admin', 'sales', 'del_agent'));
     }

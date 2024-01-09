@@ -22,6 +22,9 @@ class StoreCategoryRequest extends FormRequest
                 'required',
                 'unique:categories',
             ],
+			'category_image' => [
+                'required',				
+            ],
             
         ];
     }

@@ -30,7 +30,10 @@
                         </th>
 						<th>
 							{{ trans('cruds.category.fields.category') }}
-						</th>                        
+						</th>
+						<th>
+                            {{ trans('cruds.category.fields.category_image') }}
+                        </th>                        
                         <th>
                             &nbsp;
                         </th>
@@ -50,7 +53,10 @@
                             </td>
 							 <td>
                                 {{ $category->category->name ?? '' }}
-                            </td>                            
+                            </td>
+							<td>
+                                <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$category->image_url }}">
+                            </td>
                             <td>
                                 @can('category_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.categories.show', $category->id) }}">

@@ -20,8 +20,10 @@ class ProductApiController extends Controller
     public function index()
     {
         abort_if(Gate::denies('product_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$products = Product::with(['media', 'tax_details'])->get();
 
-        return new ProductResource(Product::all());
+        return new ProductResource($products);
     }
 
     public function store(StoreProductRequest $request)

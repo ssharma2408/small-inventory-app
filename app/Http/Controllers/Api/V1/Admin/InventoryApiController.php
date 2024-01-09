@@ -243,4 +243,38 @@ class InventoryApiController extends Controller
 
         return $expense_id_arr;
     }
+	
+	public function payment($expense_id=""){		
+		
+			$status_arr = array("Unpaid", "Paid", "Partial Paid");
+			
+			$payment_arr = [];			
+			$payment_query = DB::table('expense_payments')
+				->select('expense_payments.amount', 'expense_payments.description', 'expense_payments.date', 'expense_payment_master.invoice_number', 'expense_payment_master.expense_total', 'expense_payment_master.expense_paid', 'expense_payment_master.expense_pending', 'expense_payment_master.payment_status', 'expense_payment_master.expense_id', 'suppliers.supplier_name', 'suppliers.supplier_number', 'suppliers.supplier_email', 'payment_methods.name')
+				->leftJoin('expense_payment_master','expense_payment_master.expense_id','=','expense_payments.expense_id')
+				->join('suppliers','suppliers.id','=','expense_payment_master.supplier_id')
+				->join('payment_methods','payment_methods.id','=','expense_payments.payment_id');
+				
+			if($expense_id != ""){
+				$payment_query->where('expense_payment_master.expense_id','=',$expense_id);
+			}
+			
+			$payment_details = $payment_query->get()->toArray();
+				
+			foreach($payment_details as $detail){
+				
+				$payment_arr[$detail->expense_id] = array('invoice_number'=>$detail->invoice_number, 'expense_total'=>$detail->expense_total, 'expense_paid'=>$detail->expense_paid, 'expense_pending'=>$detail->expense_pending, 'payment_status'=>$status_arr[$detail->payment_status], 'supplier_name'=>$detail->supplier_name, 'supplier_number'=>$detail->supplier_number, 'supplier_email'=>$detail->supplier_email, 'payment_detail'=>[]);				
+			}
+
+			foreach($payment_details as $detail){
+				
+				$payment_arr[$detail->expense_id]['payment_detail'][] = array('amount'=>$detail->amount, 'description'=>$detail->description, 'date'=>$detail->date, 'name'=>$detail->name);				
+			}	
+		
+		return response()->json([
+            'payment_arr' => $payment_arr,
+            'expense_id' => $expense_id,
+        ], 200);
+		
+	}
 }
