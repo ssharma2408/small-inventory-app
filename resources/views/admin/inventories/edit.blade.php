@@ -1,12 +1,13 @@
 @extends('layouts.admin')
 @section('content')
 <?php
-    $ddl_html = 'No Category Found';
-    if (!empty($categories)) {
-        $ddl_html = '<select class="category form-control select2" name="item_category[]" required>';
-        $ddl_html .= '<option value="" >Select Option</option>';
-        foreach ($categories as $cat_id => $val) {
-            $ddl_html .= '<option value="' . $cat_id . '">' . $val . '</option>';
+    $ddl_html = 'No Product Found';
+    
+    if (!empty($products)) {
+        $ddl_html = '<select class="order_item form-control select2" name="item_name[]" required>';
+        $ddl_html .= '<option value="" >Select Product</option>';
+        foreach ($products as $prod_id => $val) {
+            $ddl_html .= '<option value="' . $prod_id . '">' . $val . '</option>';
         }
         $ddl_html .= '</select>';
     }
@@ -111,7 +112,7 @@
                     <div class="order-content">
                         <div class="row mb-1">
                             <div class="col-md-3">
-                            <b>Category/Sub Category/Product</b>
+                            <b>Product</b>
                             </div>
                          
                             <div class="col-md-1">
@@ -142,20 +143,7 @@
                                 $cnt = 0;
                                 foreach ($expense_items as $expense_item) {
                                     echo '<div class="row mb-1 item_row '.(($cnt!==0)?"border-top mt-3 pt-3 ":"").'">
-                                                                                                									<div class="cat_container col-md-3"> <div class="form-group">
-                                                                                                										<select class="form-control select2" name="item_category[]" required><option value="' .
-                                        $expense_item->category_id .
-                                        '">' .
-                                        $expense_item->category_name .
-                                        '</option></select>
-                                                                                                									</div>
-                                                                                                									<div class="form-group">
-                                                                                                                                    <select class="subcat form-control select2" name="item_subcategory[]"><option value="' .
-                                                                                                                                    $expense_item->sub_category_id .
-                                                                                                                                    '">' .
-                                                                                                                                    $expense_item->sub_category_name .
-                                                                                                                                    '</option></select>
-                                                                                                									</div>
+                                                                                                									<div class="cat_container col-md-3"> 
                                                                                                 									<div class="form-group">
                                                                                                 										<select class="form-control select2" name="item_name[]" required><option value="' .
                                         $expense_item->product_id .
@@ -226,7 +214,7 @@
                                                                                                 									</div>
                                                                                                 									<div class="col-md-1">';
                                     if (!$cnt) {
-                                        echo '<span class="add_row" id="add_row" data-key ="">+</span>';
+                                        echo '';
                                     } else {
                                         echo '<span class="remove_row" id="remove_row">-</span>';
                                     }
@@ -235,7 +223,9 @@
                                                                                                 								</div>';
                                     $cnt++;
                                 }
-                                echo '</div>';
+                                echo '</div><div class="text-center">
+												<span class="add_row" id="add_row" data-key ="">+</span>
+											</div>';
                             }
                             ?>
 
@@ -368,8 +358,8 @@
     }
         }
 
-    $(".add_row").click(function () {
-        $(this).parent().parent().parent().append(row_html());
+    $(".add_row").click(function() {
+        $(".item_container").append(row_html());
     });
     $(".item_container").on('click', '.remove_row', function () {
         $(this).parent().parent().remove();
@@ -377,8 +367,8 @@
     });
 
     function row_html() {
-        return '<div class="row mb-3 item_row mt-3 pt-3 border-top"><div class="cat_container col-md-3"><div class="form-group"><?php echo $ddl_html; ?></div><div class="form-group"><select class="subcat form-control select2" name="item_subcategory[]"><option value="">Please select</option></select></div><div class="form-group"><select class="order_item form-control select2" name="item_name[]" required><option value="">Please select</option></select></div></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-2"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-2"><input class="form-control exp_date" type="date" name="item_exp_date[]" required /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
-    }
+			return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-3"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val[]" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control stock" type="number" name="item_stock[]" /></div><div class="col-md-1"><input class="form-control price" type="text" name="item_price[]" /></div><div class="col-md-2"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-2"><input class="form-control exp_date" type="date" name="item_exp_date[]" required /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row" data-key ="">-</span></div></div>';
+        }
 
     $(document).on("change", ".order_item", function () {
         if ($(this).val() != "") {

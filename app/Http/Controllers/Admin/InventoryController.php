@@ -45,11 +45,11 @@ class InventoryController extends Controller
 
         $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 		
-		$categories = Category::where('category_id', null)->pluck('name', 'id');
+		$products = Product::where('stock', '<>', 0)->pluck('name', 'id');
 		
 		$taxes = Tax::select('title', 'id')->get();
 
-        return view('admin.inventories.create', compact('suppliers', 'categories', 'taxes'));
+        return view('admin.inventories.create', compact('suppliers', 'products', 'taxes'));
     }
 
     public function store(StoreInventoryRequest $request)
@@ -94,7 +94,7 @@ class InventoryController extends Controller
 
 			$data = [];
 			for ($i = 0; $i < count($request['item_name']); $i++) {
-				if (!empty($request['item_name']) && !empty($request['item_stock'])) {						
+				if (!empty($request['item_name']) && !empty($request['item_stock'])) {
 					
 					$stock = $request['item_stock'][$i];
 					
@@ -106,8 +106,8 @@ class InventoryController extends Controller
 					$item['product_id'] = $request['item_name'][$i];
 					$item['expense_id'] = $inventory->id;
 					$item['stock'] = $request['item_stock'][$i];
-					$item['category_id'] = $request['item_category'][$i];
-					$item['sub_category_id'] = $request['item_subcategory'][$i];
+					//$item['category_id'] = $request['item_category'][$i];
+					//$item['sub_category_id'] = $request['item_subcategory'][$i];
 					$item['purchase_price'] = $request['item_price'][$i];
 					$item['tax_id'] = $request['item_tax_id'][$i];
 					$item['is_box'] = $request['box_or_unit'][$i];
@@ -145,20 +145,20 @@ class InventoryController extends Controller
 
         $inventory->load('supplier');		
 		
-		$categories = Category::where('category_id', null)->pluck('name', 'id');
+		$products = Product::where('stock', '<>', 0)->pluck('name', 'id');
 		
 		$expense_items = DB::table('expense_items')
                 ->join('products', 'expense_items.product_id', '=', 'products.id')
-                ->join('categories', 'expense_items.category_id', '=', 'categories.id')
-                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
+                /* ->join('categories', 'expense_items.category_id', '=', 'categories.id')
+                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id') */
                 ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'expense_items.exp_date')
+                ->select('products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'expense_items.exp_date')
                 ->where('expense_items.expense_id', $inventory->id)
                 ->get();
 		
 		$taxes = Tax::select('title', 'id')->get();
 
-        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'categories', 'taxes', 'expense_items'));
+        return view('admin.inventories.edit', compact('inventory', 'suppliers', 'products', 'taxes', 'expense_items'));
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory)
@@ -226,8 +226,8 @@ class InventoryController extends Controller
 				$item['product_id'] = $request['item_name'][$i];
 				$item['expense_id'] = $inventory->id;
 				$item['stock'] = $request['item_stock'][$i];
-				$item['category_id'] = $request['item_category'][$i];
-				$item['sub_category_id'] = $request['item_subcategory'][$i];
+				/* $item['category_id'] = $request['item_category'][$i];
+				$item['sub_category_id'] = $request['item_subcategory'][$i]; */
 				$item['purchase_price'] = $request['item_price'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = $request['box_or_unit'][$i];
@@ -256,10 +256,10 @@ class InventoryController extends Controller
 		
 		$expense_items = DB::table('expense_items')
                 ->join('products', 'expense_items.product_id', '=', 'products.id')
-                ->join('categories', 'expense_items.category_id', '=', 'categories.id')
-                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id')
+                /* ->join('categories', 'expense_items.category_id', '=', 'categories.id')
+                ->join('categories as c', 'expense_items.sub_category_id', '=', 'c.id') */
                 ->join('taxes', 'taxes.id', '=', 'expense_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'taxes.title')
+                ->select('products.name', 'expense_items.product_id', 'expense_items.stock', 'expense_items.is_box', 'expense_items.purchase_price', 'expense_items.tax_id', 'products.box_size', 'taxes.tax', 'taxes.title')
                 ->where('expense_items.expense_id', $inventory->id)
                 ->get();
 
