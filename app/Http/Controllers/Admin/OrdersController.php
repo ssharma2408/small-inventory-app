@@ -69,11 +69,11 @@ class OrdersController extends Controller
 
         $customers = Customer::pluck('company_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = Category::where('category_id', null)->pluck('name', 'id');
+        $products = Product::where('stock', '<>', 0)->pluck('name', 'id');
 
         $taxes = Tax::select('title', 'id')->get();
 
-        return view('admin.orders.create', compact('customers', 'sales_managers', 'categories', 'taxes'));
+        return view('admin.orders.create', compact('customers', 'sales_managers', 'products', 'taxes'));
     }
 
     public function store(StoreOrderRequest $request)
@@ -97,8 +97,8 @@ class OrdersController extends Controller
                 $item['product_id'] = $request['item_name'][$i];
                 $item['order_id'] = $order->id;
                 $item['quantity'] = $request['item_quantity'][$i];
-                $item['category_id'] = $request['item_category'][$i];
-                $item['sub_category_id'] = $request['item_subcategory'][$i];
+               /*  $item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i]; */
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
@@ -184,14 +184,14 @@ class OrdersController extends Controller
 
             $customers = Customer::pluck('company_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-            $categories = Category::where('category_id', null)->pluck('name', 'id');
+            $products = Product::where('stock', '<>', 0)->pluck('name', 'id');
 
             $order_items = DB::table('order_items')
                 ->join('products', 'order_items.product_id', '=', 'products.id')
-                ->join('categories', 'order_items.category_id', '=', 'categories.id')
-                ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
+                /* ->join('categories', 'order_items.category_id', '=', 'categories.id')
+                ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
                 ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
+                ->select('products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
                 ->where('order_items.order_id', $order->id)
                 ->get();
 
@@ -201,7 +201,7 @@ class OrdersController extends Controller
 			
 			$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
 
-            return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'categories', 'order_items', 'delivery_agents', 'taxes', 'credit_balance'));
+            return view('admin.orders.edit', compact('customers', 'order', 'sales_managers', 'products', 'order_items', 'delivery_agents', 'taxes', 'credit_balance'));
         } else {
             return redirect()->route('admin.orders.index')->withErrors('You are not authorized to perform this action');
         }
@@ -214,7 +214,16 @@ class OrdersController extends Controller
         $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
         $params['delivery_agent_id'] = ($params['status'] == 4) ? $params['delivery_agent_id'] : null;
 
-        $order->update($params);
+        
+		if (($order->order_total != $request->order_total)) {
+            OrderPaymentMaster::where('order_number', $order->id)
+                ->update([
+                    'order_total' => $request->order_total,
+                    'order_pending' => $request->order_total,
+                ]);
+        }
+		
+		$order->update($params);
 
         DB::table('order_items')->where('order_id', $order->id)->delete();
 
@@ -225,8 +234,8 @@ class OrdersController extends Controller
                 $item['product_id'] = $request['item_name'][$i];
                 $item['order_id'] = $order->id;
                 $item['quantity'] = $request['item_quantity'][$i];
-                $item['category_id'] = $request['item_category'][$i];
-                $item['sub_category_id'] = $request['item_subcategory'][$i];
+                /* $item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i]; */
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
@@ -245,15 +254,7 @@ class OrdersController extends Controller
                 $product = Product::find($ord_item['product_id']);
                 $product->decrement('stock', $ord_item['quantity']);
             }
-        }
-
-        if (($order->order_total != $request->order_total)) {
-            OrderPaymentMaster::where('order_id', $order->id)
-                ->update([
-                    'order_total' => $request->order_total,
-                    'order_pending' => $request->order_total,
-                ]);
-        }
+        }        
 
         return redirect()->route('admin.orders.index');
     }
@@ -269,10 +270,10 @@ class OrdersController extends Controller
 
         $order['order_item'] = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
-            ->join('categories', 'order_items.category_id', '=', 'categories.id')
-            ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
+           /*  ->join('categories', 'order_items.category_id', '=', 'categories.id')
+            ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-            ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+            ->select('order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
             ->get()->toArray();
 			
@@ -422,10 +423,10 @@ class OrdersController extends Controller
 
         $order['order_item'] = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
-            ->join('categories', 'order_items.category_id', '=', 'categories.id')
-            ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
+            /* ->join('categories', 'order_items.category_id', '=', 'categories.id')
+            ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-            ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+            ->select('order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
             ->where('order_items.order_id', $order->id)
             ->get()->toArray();
 

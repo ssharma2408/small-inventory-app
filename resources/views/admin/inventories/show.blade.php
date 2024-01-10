@@ -46,13 +46,7 @@
 						<td>
 							<table class="table table-bordered table-striped">
 								<tbody>
-									<tr>
-										<th>
-											Category Name
-										</th>
-										<th>
-											Sub Category Name
-										</th>
+									<tr>										
 										<th>
 											Product Name
 										</th>
@@ -73,13 +67,7 @@
 										</th>										
 									</tr>
 									@foreach($expense_items as $item)
-										<tr>
-											<td>
-											{{ $item->category_name }}
-											</td>
-											<td>
-											{{ $item->sub_category_name }}
-											</td>
+										<tr>											
 											<td>
 											{{ $item->name }}
 											</td>
