@@ -69,7 +69,12 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	Route::get('reports/get_order_report', 'ReportsApiController@get_order_report')->name('reports.get_order_report');
 	Route::get('reports/get_product_expiry_report', 'ReportsApiController@get_product_expiry_report')->name('reports.get_product_expiry_report');
 	
-	// Profile
+	
+    // Reports
+	Route::get('get_sales_person_orderreport', 'ReportsApiController@get_sales_person_orderreport');
+
+
+    // Profile
 	Route::post('change_password','AuthController@change_password');
 });
 
