@@ -37,9 +37,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Product
     Route::post('products/media', 'ProductApiController@storeMedia')->name('products.storeMedia');
     Route::apiResource('products', 'ProductApiController');
-    Route::get('product-by-category/{id}','ProductApiController@getproductbycategory');
+    Route::get('product-by-subcategory/{id}','ProductApiController@getproductbysubcategory');
 
     // Category
+    Route::get('categories/{id}','CategoryApiController@index');
     Route::apiResource('categories', 'CategoryApiController');
 
     Route::get('product-category','CategoryApiController@getcategory');

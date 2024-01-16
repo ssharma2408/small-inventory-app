@@ -26,11 +26,21 @@ class CategoryApiController extends Controller
      return new CategoryResource($get_subcategory);
     }
 
-    public function index()
+    /*public function index()
     {
         abort_if(Gate::denies('category_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new CategoryResource(Category::all());
+    }*/
+
+    public function index($id)
+    {
+        if($id==0){
+            $category = Category::where('category_id',NULL)->get();
+        }else{
+            $category = Category::where('category_id',$id)->get();
+        }
+        return new CategoryResource($category);
     }
 
     public function store(StoreCategoryRequest $request)

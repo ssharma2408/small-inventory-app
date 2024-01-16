@@ -26,6 +26,12 @@ class ProductApiController extends Controller
         return new ProductResource($products);
     }
 
+    public function getproductbysubcategory($id)
+    {
+        $products = Product::where('sub_category_id',$id)->with(['media', 'tax_details'])->get();
+        return new ProductResource($products);
+    }
+
     public function store(StoreProductRequest $request)
     {
             /* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
