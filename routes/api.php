@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('payment-methods', 'PaymentMethodApiController');
 
     // Orders
+    Route::get('supplier-dashboard','OrdersApiController@getsupplierdash');
     Route::get('sales-manager','OrdersApiController@get_supplier');
 	Route::get('orders/payment/{id?}', 'OrdersApiController@payment')->name('orders.payment');
     Route::apiResource('orders', 'OrdersApiController');
