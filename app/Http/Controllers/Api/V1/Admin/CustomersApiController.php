@@ -100,7 +100,7 @@ class CustomersApiController extends Controller
             'total_order' => $unpaid + $paid,
 			'orders' => $orders,
 			'status' => $status,
-			'customers' => $customers,
+			'customer_details' => $customers,
 		], $status_code);
 
       /*  return new CustomerResource($customer);*/
