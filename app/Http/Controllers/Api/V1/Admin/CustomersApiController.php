@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\Admin\CustomerResource;
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Support\Facades\Storage;
 use Gate;
 use DB;
@@ -76,9 +77,33 @@ class CustomersApiController extends Controller
 
     public function show(Customer $customer)
     {
-        abort_if($this->can('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       // abort_if($this->can('customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $unpaid = 0;
+		$paid = 0;
+		$status = [];
+		$customers = [];
+		$orders = [];
+		$user = \Auth::user();
+		$status_code = 401;
+		$role = $user->roles()->first()->toArray();
+		if ($role['title'] == 'Sales Manager') {
+			$status_code = 200;
+			$status = ['Due', 'Closed',  'Overdue'];
+			$customers = Customer::select('name', 'id')->get();
+			$unpaid = Order::where('customer_id', $customer->id)->where('status',4)->sum('order_total');
+			$paid = Order::where('customer_id', $customer->id)->whereIn('status',[1,3])->sum('order_total');
+			$orders = Order::where('customer_id', $customer->id)->with(['sales_manager', 'customer', 'payment'])->orderBy('id', 'desc')->get();
+		}
+		return response()->json([
+			'unpaid' => $unpaid,
+			'paid' => $paid,
+            'total_order' => $unpaid + $paid,
+			'orders' => $orders,
+			'status' => $status,
+			'customers' => $customers,
+		], $status_code);
 
-        return new CustomerResource($customer);
+      /*  return new CustomerResource($customer);*/
     }
 
     public function update(UpdateCustomerRequest $request, Customer $customer)
