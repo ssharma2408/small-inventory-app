@@ -89,7 +89,7 @@ class CustomersApiController extends Controller
 		if ($role['title'] == 'Sales Manager') {
 			$status_code = 200;
 			$status = ['Due', 'Closed',  'Overdue'];
-			$customers = Customer::select('name', 'id')->get();
+			$customers = Customer::where('id',$customer->id)->first();
 			$unpaid = Order::where('customer_id', $customer->id)->where('status',4)->sum('order_total');
 			$paid = Order::where('customer_id', $customer->id)->whereIn('status',[1,3])->sum('order_total');
 			$orders = Order::where('customer_id', $customer->id)->with(['sales_manager', 'customer', 'payment'])->orderBy('id', 'desc')->get();
