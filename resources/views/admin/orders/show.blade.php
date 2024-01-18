@@ -117,7 +117,7 @@
 														
 														$total = $amount + (($amount * $item->tax)/100);
 													@endphp
-													{{ $total }}
+													{{ sprintf('%0.2f', $total) }}
 												</td>
 											</tr>
 										@endforeach

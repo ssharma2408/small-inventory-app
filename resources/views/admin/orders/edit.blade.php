@@ -209,7 +209,7 @@
                             
                                     $item_with_tax = $item_value + ($item_value * $order_item->tax) / 100;
                                     echo '<input class="form-control amount" type="text" name="item_amount[]" disabled value="' .
-                                        $item_with_tax .
+                                        sprintf('%0.2f', $item_with_tax) .
                                         '" />
                                                                                                                                                                 									</div>
                                                                                                                                                                 									<div class="col-md-1">';
@@ -472,7 +472,7 @@
 
                 amount = amount + ((amount * tax) / 100);
 
-                $(this).parent().parent().find(".amount").val(amount);
+                $(this).parent().parent().find(".amount").val(amount.toFixed(2));
             }
             calculate_total();
 
@@ -528,7 +528,7 @@
 
                 amount = amount + ((amount * tax) / 100);
 
-                $(this).parent().parent().find(".amount").val(amount);
+                $(this).parent().parent().find(".amount").val(amount.toFixed(2));
             }
             calculate_total();
         });
@@ -553,8 +553,8 @@
                 order_total += parseFloat(amount);
             });
 
-            $("#order_total_without_tax").val(order_total_without_tax);
-            $("#order_tax").val(order_total - order_total_without_tax);
+            $("#order_total_without_tax").val(order_total_without_tax.toFixed(2));
+            $("#order_tax").val((order_total - order_total_without_tax).toFixed(2));
 
             if (extra_discount > 0) {
                 if ($("#discount_type_0").is(":checked")) {
@@ -573,7 +573,7 @@
                 order_total = order_total - credit_balance_value;
             }
 
-            $("#order_total").val(order_total);
+            $("#order_total").val(order_total.toFixed(2));
         }
 
         $("#status").change(function() {
@@ -690,7 +690,7 @@
                         if (data.success) {
                             tax.val(data.tax.tax);
                             var item_total = qty * sale_price;
-                            amount.val(item_total + ((item_total * data.tax.tax) / 100))
+                            amount.val((item_total + ((item_total * data.tax.tax) / 100)).toFixed(2))
                             calculate_total();
                         }
                     }
