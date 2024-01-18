@@ -396,7 +396,7 @@
 
                 amount = amount + ((amount * tax) / 100);
 
-                $(this).parent().parent().find(".amount").val(amount);
+                $(this).parent().parent().find(".amount").val(amount.toFixed(2));
             }
             calculate_total();
 
@@ -452,7 +452,7 @@
 
                 amount = amount + ((amount * tax) / 100);
 
-                $(this).parent().parent().find(".amount").val(amount);
+                $(this).parent().parent().find(".amount").val(amount.toFixed(2));
             }
             calculate_total();
         });
@@ -476,8 +476,8 @@
                 order_total += parseFloat(amount);
             });
 
-            $("#order_total_without_tax").val(order_total_without_tax);
-            $("#order_tax").val(order_total - order_total_without_tax);
+            $("#order_total_without_tax").val(order_total_without_tax.toFixed(2));
+            $("#order_tax").val((order_total - order_total_without_tax).toFixed(2));
 
             if (extra_discount > 0) {
                 if ($("#discount_type_0").is(":checked")) {
@@ -500,7 +500,7 @@
                 }
             }
 
-            $("#order_total").val(order_total);
+            $("#order_total").val(order_total.toFixed(2));
         }
 
         $(document).on("change", ".subcat", function() {
@@ -607,7 +607,7 @@
                         if (data.success) {
                             tax.val(data.tax.tax);
                             var item_total = qty * sale_price;
-                            amount.val(item_total + ((item_total * data.tax.tax) / 100))
+                            amount.val((item_total + ((item_total * data.tax.tax) / 100)).toFixed(2))
                             calculate_total();
                         }
                     }

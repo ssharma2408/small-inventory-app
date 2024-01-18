@@ -209,7 +209,7 @@
                             
                                     $item_with_tax = $item_value + ($item_value * $expense_item->tax) / 100;
                                     echo '<input class="form-control amount" type="text" name="item_amount[]" disabled value="' .
-                                        $item_with_tax .
+                                        sprintf('%0.2f',$item_with_tax) .
                                         '" />
                                                                                                 									</div>
                                                                                                 									<div class="col-md-1">';
@@ -498,7 +498,7 @@
             total = stock * purchase_price;
 
             amount_total = total + ((total * tax) / 100);
-            amount.val(amount_total);
+            amount.val(amount_total.toFixed(2));
             calculate_total();
         }
 
@@ -528,8 +528,8 @@
             final_price += parseFloat(amount);
         });
 
-        $("#expense_total").val(expense_total);
-        $("#expense_tax").val(final_price - expense_total);
+        $("#expense_total").val(expense_total.toFixed(2));
+        $("#expense_tax").val(final_price - expense_total.toFixed(2));
 
 
         if (discount > 0) {
@@ -544,7 +544,7 @@
             }
         }
 
-        $("#final_price").val(final_price);
+        $("#final_price").val(final_price.toFixed(2));
 
     }
 </script>
