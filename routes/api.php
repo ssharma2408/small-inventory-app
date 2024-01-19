@@ -35,6 +35,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	Route::get('orders/payment/{id?}', 'OrdersApiController@payment')->name('orders.payment');
     Route::apiResource('orders', 'OrdersApiController');
 
+    Route::get('driver-dashboard', 'OrdersApiController@driver_dashboard');
+
     // Product
     Route::post('products/media', 'ProductApiController@storeMedia')->name('products.storeMedia');
     Route::apiResource('products', 'ProductApiController');

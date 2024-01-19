@@ -63,8 +63,8 @@ class OrdersApiController extends Controller
 			$status_code = 200;
 			$status = ['Due', 'Closed',  'Overdue'];
 			$customers = Customer::select('name', 'id')->get();
-			$accept = Order::where('sales_manager_id', $user->id)->where('status',4)->count();
-			$review = Order::where('sales_manager_id', $user->id)->where('status',3)->count();
+			$accept = Order::where('sales_manager_id', $user->id)->where('status', 4)->count();
+			$review = Order::where('sales_manager_id', $user->id)->where('status', 3)->count();
 			$orders = Order::where('sales_manager_id', $user->id)->with(['sales_manager', 'customer', 'payment'])->orderBy('id', 'desc')->take(5)->get();
 		}
 		return response()->json([
@@ -89,6 +89,36 @@ class OrdersApiController extends Controller
 		}
 
 		return new OrderResource($ord_arr);
+	}
+
+	public function driver_dashboard()
+	{
+		$total_order = 0;
+		$deliver = 0;
+		$pending = 0;
+		$order = [];
+		$user = \Auth::user();
+		$status_code = 401;
+		$role = $user->roles()->first()->toArray();
+		if ($role['title'] == 'Delivery Agent') {
+			$status_code = 200;
+			$order_id_arr = $this->get_payments();
+			$ord_arr = [];
+			$order = Order::where('delivery_agent_id',$user->id)->with(['sales_manager', 'customer'])->get();
+			$pending = Order::where('delivery_agent_id',$user->id)->where('status',4)->count();
+			$deliver = Order::where('delivery_agent_id',$user->id)->where('status',1)->count();
+			$total_order = Order::where('delivery_agent_id',$user->id)->whereIn('status',[1,4])->count();
+			foreach ($order as $rw) {
+				$rw['edit_key'] = in_array($rw->id, $order_id_arr) ? 1 : 0;
+				array_push($ord_arr, $rw);
+			}
+		}
+		return response()->json([
+			'total_order' => $total_order,
+			'deliver' => $deliver,
+			'pending' => $pending,
+			'data' => $order,
+		], $status_code);
 	}
 
 	public function store(StoreOrderRequest $request)
@@ -191,7 +221,7 @@ class OrdersApiController extends Controller
 			->join('categories', 'order_items.category_id', '=', 'categories.id')
 			->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
 			->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'products.image_url','order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'products.image_url', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
 			->where('order_items.order_id', $order->id)
 			->get()->toArray();
 
