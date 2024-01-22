@@ -210,6 +210,8 @@ return [
 			'order_date_helper'   => ' ',
 			'delivery_pic'   => 'Delivery Pic',
 			'delivery_pic_helper'   => ' ',			
+			'min_usp'   => 'Min USP',			
+			'max_usp'   => 'Max USP',			
         ],
     ],
     'product' => [

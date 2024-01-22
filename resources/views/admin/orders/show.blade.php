@@ -56,10 +56,10 @@
 												In Stock
 											</th>
 											<th>
-												Min Selling Price
+												{{ trans('cruds.order.fields.min_usp') }}
 											</th>
 											<th>
-												Max Selling Price
+												{{ trans('cruds.order.fields.max_usp') }}
 											</th>											
 											<th>
 												Box or unit
