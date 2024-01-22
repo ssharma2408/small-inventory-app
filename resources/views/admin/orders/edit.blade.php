@@ -107,10 +107,10 @@
                                     <b>In Stock</b>
                                 </div>
                                 <div class="col-md-1">
-                                    <b>Min Selling Price</b>
+                                    <b>{{ trans('cruds.order.fields.min_usp') }}</b>
                                 </div>
                                 <div class="col-md-1">
-                                    <b>Max Selling Price</b>
+                                    <b>{{ trans('cruds.order.fields.max_usp') }}</b>
                                 </div>
                                 <div class="col-md-1">
                                     <b>Box or unit</b>
