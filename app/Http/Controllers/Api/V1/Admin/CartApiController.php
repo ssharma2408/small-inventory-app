@@ -20,9 +20,9 @@ class CartApiController extends Controller
         abort_if(Gate::denies('cart_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
 		$cart = Cart::where('customer_id', $cust_id)->get();        
-		
+		$data = array('customer_id' => $cust_id, 'cart_details' => $cart);
 		return response()->json([            
-            'data'=> $cart
+            'data'=> $data
         ], 200);
     }
 
@@ -35,9 +35,9 @@ class CartApiController extends Controller
 		
 		foreach($current_cart as $current){
 			$current_array[] = $current->product_id;
-			if(! in_array($current->product_id, $request['product_id'])){
+			/* if(! in_array($current->product_id, $request['product_id'])){
 				Cart::where([['customer_id', '=', $request['customer_id']], ['product_id', '=', $current->product_id]])->delete();
-			}
+			} */
 		}		
 		
 		for ($i = 0; $i < count($request['product_id']); $i++) {
