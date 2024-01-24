@@ -25,6 +25,7 @@ class CartApiController extends Controller
 			->join('taxes', 'taxes.id', '=', 'cart.tax_id')
 			->select('cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name')
 			->where('cart.customer_id', $cust_id)
+			->where('cart.deleted_at', null)
 			->get()->toArray();
 		
 		$data = array('customer_id' => $cust_id, 'cart_details' => $cart);
@@ -74,12 +75,17 @@ class CartApiController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    public function destroy(Cart $cart)
+    public function destroy($cust_id)
     {
         abort_if(Gate::denies('cart_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $cart->delete();
+        Cart::where('customer_id', $cust_id)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function delete_cart_item($cust_id, $prod_id){
+		Cart::where([['customer_id', '=', $cust_id], ['product_id', '=', $prod_id]])->delete();
+		return response(null, Response::HTTP_NO_CONTENT);
+	}
 }

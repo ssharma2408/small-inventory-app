@@ -70,6 +70,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	
 	// Cart
 	Route::get('cart/{id}','CartApiController@index');
+	Route::delete('cart/{cust_id}/{prod_id}','CartApiController@delete_cart_item');
+	Route::delete('cart/{cust_id}','CartApiController@destroy');
     Route::apiResource('cart', 'CartApiController');
 	
 	// Reports
