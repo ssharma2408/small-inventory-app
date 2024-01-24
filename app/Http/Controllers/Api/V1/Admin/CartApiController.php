@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCartRequest;
 use App\Http\Resources\Admin\CartResource;
 use App\Models\Cart;
 use Gate;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +23,10 @@ class CartApiController extends Controller
 
     public function store(StoreCartRequest $request)
     {
-        $data = [];
+        
+		DB::table('cart')->where('customer_id', $request['customer_id'])->delete();
+		
+		$data = [];
 		for ($i = 0; $i < count($request['product_id']); $i++) {
 			if (!empty($request['product_id']) && !empty($request['customer_id'])) {
 				$item = [];
