@@ -19,7 +19,14 @@ class CartApiController extends Controller
     {
         abort_if(Gate::denies('cart_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$cart = Cart::where('customer_id', $cust_id)->get();        
+		$cart = DB::table('cart')
+			->join('products', 'cart.product_id', '=', 'products.id')
+			->join('customers', 'cart.customer_id', '=', 'customers.id')			
+			->join('taxes', 'taxes.id', '=', 'cart.tax_id')
+			->select('cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name')
+			->where('cart.customer_id', $cust_id)
+			->get()->toArray();
+		
 		$data = array('customer_id' => $cust_id, 'cart_details' => $cart);
 		return response()->json([            
             'data'=> $data
