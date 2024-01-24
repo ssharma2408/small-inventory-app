@@ -14,14 +14,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CartApiController extends Controller
 {
-    public function index()
+    
+	public function index($cust_id)
     {
-        abort_if(Gate::denies('cart_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('cart_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$cart = Cart::where('customer_id', $cust_id)->get();
 
-        return new CartResource(Cart::all());
+        return new CartResource($cart);
     }
 
-    public function store(StoreCartRequest $request)
+	public function store(StoreCartRequest $request)
     {
         
 		DB::table('cart')->where('customer_id', $request['customer_id'])->delete();
@@ -49,22 +52,6 @@ class CartApiController extends Controller
         return (new CartResource($cart))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
-    }
-
-    public function show(Cart $cart)
-    {
-        abort_if(Gate::denies('cart_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return new CartResource($cart);
-    }
-
-    public function update(UpdateCartRequest $request, Cart $cart)
-    {
-        $cart->update($request->all());
-
-        return (new CartResource($cart))
-            ->response()
-            ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
     public function destroy(Cart $cart)
