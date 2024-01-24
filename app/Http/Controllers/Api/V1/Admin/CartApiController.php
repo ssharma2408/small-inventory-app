@@ -19,32 +19,45 @@ class CartApiController extends Controller
     {
         abort_if(Gate::denies('cart_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
-		$cart = Cart::where('customer_id', $cust_id)->get();
-
-        return new CartResource($cart);
+		$cart = Cart::where('customer_id', $cust_id)->get();        
+		
+		return response()->json([            
+            'data'=> $cart
+        ], 200);
     }
 
 	public function store(StoreCartRequest $request)
     {
         
-		DB::table('cart')->where('customer_id', $request['customer_id'])->delete();
+		$current_cart = Cart::select('product_id')->where('customer_id', $request['customer_id'])->get();
 		
-		$data = [];
-		for ($i = 0; $i < count($request['product_id']); $i++) {
-			if (!empty($request['product_id']) && !empty($request['customer_id'])) {
-				$item = [];
-				$item['customer_id'] = $request['customer_id'];
-				$item['product_id'] = $request['product_id'][$i];
-				$item['price'] = $request['price'][$i];
-				$item['quantity'] = $request['quantity'][$i];
-				$item['tax_id'] = $request['tax_id'][$i];				
-				$item['is_box'] = $request['is_box'][$i];
-				$data[] = $item;
+		$current_array = [];
+		
+		foreach($current_cart as $current){
+			$current_array[] = $current->product_id;
+			if(! in_array($current->product_id, $request['product_id'])){
+				Cart::where([['customer_id', '=', $request['customer_id']], ['product_id', '=', $current->product_id]])->delete();
 			}
-		}
-
-		if (!empty($data)) {
-			Cart::insert($data);
+		}		
+		
+		for ($i = 0; $i < count($request['product_id']); $i++) {
+			if (!empty($request['product_id']) && !empty($request['customer_id'])) {				
+				if(in_array($request['product_id'][$i], $current_array)){
+					Cart::where([['customer_id', '=', $request['customer_id']], ['product_id', '=', $request['product_id'][$i]]])
+					   ->update([
+						   'quantity' => $request['quantity'][$i]
+						]);
+				}else{
+					$item = [];
+					$item['customer_id'] = $request['customer_id'];
+					$item['product_id'] = $request['product_id'][$i];
+					$item['price'] = $request['price'][$i];
+					$item['quantity'] = $request['quantity'][$i];
+					$item['tax_id'] = $request['tax_id'][$i];
+					$item['is_box'] = $request['is_box'][$i];
+					Cart::insert($item);
+				}
+			}
 		}
 		
 		$cart = Cart::where('customer_id', $request['customer_id'])->get();
