@@ -68,6 +68,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	// Credit Note
     Route::apiResource('credit-notes', 'CreditNoteApiController');
 	
+	// Cart
+    Route::apiResource('cart', 'CartApiController');
+	
 	// Reports
 	Route::get('reports/get_expense_report', 'ReportsApiController@get_expense_report')->name('reports.get_expense_report');
 	Route::get('reports/get_order_report', 'ReportsApiController@get_order_report')->name('reports.get_order_report');

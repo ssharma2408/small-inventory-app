@@ -342,6 +342,26 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => 83,
                 'title' => 'profile_password_edit',
             ],
+			[
+                'id'    => 84,
+                'title' => 'cart_create',
+            ],
+            [
+                'id'    => 85,
+                'title' => 'cart_edit',
+            ],
+            [
+                'id'    => 86,
+                'title' => 'cart_show',
+            ],
+            [
+                'id'    => 87,
+                'title' => 'cart_delete',
+            ],
+            [
+                'id'    => 88,
+                'title' => 'cart_access',
+            ],
 					
         ];
 
