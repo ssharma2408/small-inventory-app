@@ -21,9 +21,11 @@ class CartApiController extends Controller
 		
 		$cart = DB::table('cart')
 			->join('products', 'cart.product_id', '=', 'products.id')
+			->join('categories', 'cart.category_id', '=', 'categories.id')
+			->join('categories as c', 'cart.sub_category_id', '=', 'c.id')
 			->join('customers', 'cart.customer_id', '=', 'customers.id')			
 			->join('taxes', 'taxes.id', '=', 'cart.tax_id')
-			->select('cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name')
+			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name', 'products.box_size', 'products.image_url', 'cart.sales_manager_id')
 			->where('cart.customer_id', $cust_id)
 			->where('cart.deleted_at', null)
 			->get()->toArray();
@@ -58,6 +60,9 @@ class CartApiController extends Controller
 				}else{
 					$item = [];
 					$item['customer_id'] = $request['customer_id'];
+					$item['sales_manager_id'] = $request['sales_manager_id'];
+					$item['category_id'] = $request['category_id'][$i];
+					$item['sub_category_id'] = $request['sub_category_id'][$i];
 					$item['product_id'] = $request['product_id'][$i];
 					$item['price'] = $request['price'][$i];
 					$item['quantity'] = $request['quantity'][$i];

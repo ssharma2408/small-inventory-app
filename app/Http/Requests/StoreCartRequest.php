@@ -21,8 +21,17 @@ class StoreCartRequest extends FormRequest
                 'required',
                 'integer',
             ],
+			'category_id' => [
+                'required',
+            ],
+			'sub_category_id' => [
+                'required',
+            ],
+			'sales_manager_id' => [
+                'required',
+            ],			
 			'product_id' => [
-                'required',                
+                'required',
             ],
 			'price' => [
                 'required',                
