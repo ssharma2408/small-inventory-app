@@ -25,7 +25,7 @@ class CartApiController extends Controller
 			->join('categories as c', 'cart.sub_category_id', '=', 'c.id')
 			->join('customers', 'cart.customer_id', '=', 'customers.id')			
 			->join('taxes', 'taxes.id', '=', 'cart.tax_id')
-			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name', 'products.box_size', 'products.image_url', 'cart.sales_manager_id')
+			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'cart.customer_id', 'cart.product_id', 'cart.quantity', 'products.name as product_name', 'cart.is_box', 'cart.price', 'cart.tax_id', 'taxes.title', 'taxes.tax', 'customers.name as customer_name', 'products.box_size', 'products.image_url', 'cart.sales_manager_id', 'products.stock')
 			->where('cart.customer_id', $cust_id)
 			->where('cart.deleted_at', null)
 			->get()->toArray();
