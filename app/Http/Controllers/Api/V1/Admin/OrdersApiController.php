@@ -147,6 +147,7 @@ class OrdersApiController extends Controller
 				$item['sale_price'] = $request['item_sale_priec'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = $request['is_box'][$i];
+				$item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
 				$data[] = $item;
 			}
 		}
@@ -221,7 +222,7 @@ class OrdersApiController extends Controller
 			->join('categories', 'order_items.category_id', '=', 'categories.id')
 			->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
 			->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'products.image_url', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'products.image_url', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax', 'order_items.comment')
 			->where('order_items.order_id', $order->id)
 			->get()->toArray();
 
@@ -251,6 +252,7 @@ class OrdersApiController extends Controller
 				$item['sale_price'] = $request['item_sale_priec'][$i];
 				$item['tax_id'] = $request['item_tax_id'][$i];
 				$item['is_box'] = $request['is_box'][$i];
+				$item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
 				$data[] = $item;
 			}
 		}

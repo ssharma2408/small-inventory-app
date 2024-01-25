@@ -28,6 +28,7 @@ class OrderItem extends Model
         'category_id',
         'sub_category_id',
         'quantity',
+        'comment',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
