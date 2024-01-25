@@ -83,14 +83,16 @@ class CartApiController extends Controller
     public function destroy($cust_id)
     {
         abort_if(Gate::denies('cart_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        Cart::where('customer_id', $cust_id)->delete();
+		
+		DB::table('cart')->where('customer_id', $cust_id)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
 	
 	public function delete_cart_item($cust_id, $prod_id){
-		Cart::where([['customer_id', '=', $cust_id], ['product_id', '=', $prod_id]])->delete();
+		
+		DB::table('cart')->where([['customer_id', '=', $cust_id], ['product_id', '=', $prod_id]])->delete();
+		
 		return response(null, Response::HTTP_NO_CONTENT);
 	}
 }
