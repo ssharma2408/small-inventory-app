@@ -102,6 +102,7 @@ class OrdersController extends Controller
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+                $item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
                 $data[] = $item;
             }
 
@@ -191,7 +192,7 @@ class OrdersController extends Controller
                 /* ->join('categories', 'order_items.category_id', '=', 'categories.id')
                 ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
                 ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-                ->select('products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax')
+                ->select('products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax', 'order_items.comment')
                 ->where('order_items.order_id', $order->id)
                 ->get();
 
@@ -239,6 +240,7 @@ class OrdersController extends Controller
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+				$item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
                 $data[] = $item;
             }
 
@@ -273,7 +275,7 @@ class OrdersController extends Controller
            /*  ->join('categories', 'order_items.category_id', '=', 'categories.id')
             ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
             ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-            ->select('order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax')
+            ->select('order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax', 'order_items.comment')
             ->where('order_items.order_id', $order->id)
             ->get()->toArray();
 			

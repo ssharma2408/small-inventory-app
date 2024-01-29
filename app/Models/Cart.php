@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderItem extends Model
+class Cart extends Model
 {
     use SoftDeletes, HasFactory;
 
-    public $table = 'order_items';
+    public $table = 'cart';
 
     protected $dates = [
         'created_at',
@@ -20,15 +20,18 @@ class OrderItem extends Model
     ];
 
     protected $fillable = [
-        'product_id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'order_id',
+        'customer_id',
         'category_id',
         'sub_category_id',
-        'quantity',
-        'comment',
+        'sales_manager_id',
+		'product_id',
+		'price',
+		'quantity',
+		'tax_id',
+		'is_box',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -36,8 +39,18 @@ class OrderItem extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function product()
+     public function product()
     {
-        return $this->belongsTo(Inventory::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id');
+    }
+	
+	public function customer()
+    {
+        return $this->belongsTo(customer::class, 'customer_id');
     }
 }

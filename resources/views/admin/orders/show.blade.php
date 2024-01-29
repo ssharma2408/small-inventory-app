@@ -74,6 +74,9 @@
 												Tax
 											</th>
 											<th>
+												Comment
+											</th>
+											<th>
 												Amount
 											</th>
 										</tr>
@@ -92,7 +95,7 @@
 												{{ $item->maximum_selling_price }}
 												</td>												
 												<td>
-													@if(!$item->is_box)
+													@if($item->is_box)
 														Box
 													@else
 														Unit
@@ -108,9 +111,12 @@
 												{{ $item->title }}
 												</td>
 												<td>
+												{{ $item->comment }}
+												</td>
+												<td>
 													@php
 														$qty = $item->quantity;
-														if(!$item->is_box){
+														if($item->is_box){
 															$qty = $item->quantity * $item->box_size;
 														}
 														$amount = $qty * $item->sale_price;

@@ -68,6 +68,12 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	// Credit Note
     Route::apiResource('credit-notes', 'CreditNoteApiController');
 	
+	// Cart
+	Route::get('cart/{id}','CartApiController@index');
+	Route::delete('cart/{cust_id}/{prod_id}','CartApiController@delete_cart_item');
+	Route::delete('cart/{cust_id}','CartApiController@destroy');
+    Route::apiResource('cart', 'CartApiController');
+	
 	// Reports
 	Route::get('reports/get_expense_report', 'ReportsApiController@get_expense_report')->name('reports.get_expense_report');
 	Route::get('reports/get_order_report', 'ReportsApiController@get_order_report')->name('reports.get_order_report');
