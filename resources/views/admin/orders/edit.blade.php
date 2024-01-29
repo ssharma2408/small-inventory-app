@@ -99,7 +99,7 @@
                     <div class="order-container mb-2">
                         <div class="order-content">
                             <div class="row mb-1">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <b>Product</b>
                                 </div>
                                 
@@ -138,7 +138,7 @@
                                 foreach ($order_items as $order_item) {
                                     echo '<div class="row mb-1 item_row '.(($cnt!==0)?"border-top mt-3 pt-3 ":"").'">
                             
-                                                                                                                                                                									<div class="col-md-3"><div class="form-group  "><select class="form-control select2" name="item_name[]" required><option value="' .
+                                                                                                                                                                									<div class="col-md-2"><div class="form-group  "><select class="form-control select2" name="item_name[]" required><option value="' .
                                         $order_item->product_id .
                                         '">' .
                                         $order_item->name .
@@ -166,7 +166,7 @@
                                     echo '<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" ' .
                                         $checked .
                                         ' />
-                                                                                                                                                                										<label class="form-check-label ml-3">Is Unit</label>
+                                                                                                                                                                										<label class="form-check-label ml-3">Is Box</label>
                                                                                                                                                                 										<div style="font-size:12px" id="box_size">Box Size: ' .
                                         $order_item->box_size .
                                         '</div>
@@ -201,8 +201,11 @@
                                         $order_item->tax .
                                         '" />
                                                                                                                                                                 									</div>
+																																																	<div class="col-md-1">
+					<textarea name="comment[]" rows="2" cols="3" class="form-control">'.$order_item->comment.'</textarea>
+				</div>
                                                                                                                                                                 									<div class="col-md-1">';
-                                    if ( ! $order_item->is_box) {
+                                    if ( $order_item->is_box) {
                                         $order_item->quantity = $order_item->quantity * $order_item->box_size;
                                     }
                                     $item_value = $order_item->sale_price * $order_item->quantity;
@@ -399,7 +402,7 @@
         });
 
         function row_html() {
-            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-3"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Unit</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
         }
 
         $(document).on("change", ".order_item", function() {
@@ -438,7 +441,7 @@
             var in_stock = $(this).parent().parent().find(".in_stock").val();
             var quantity = 0;
 
-            if ((parseFloat(sale_price) < parseFloat(min_sale_price))) {
+            if ((parseFloat(sale_price) < parseFloat(min_sale_price)) && $(this).parent().parent().find(".cb").is(':checked')) {
                 $(this).parent().parent().find(".sale_price_err").html(
                     "Sales Price can't be less than Min Selling Price");
             } else {
@@ -446,7 +449,7 @@
             }
 
 
-            if ( ! $(this).parent().parent().find(".cb").is(':checked')) {
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 quantity = qty * $(this).parent().parent().find("#package_val").val();
             } else {
                 quantity = qty;
@@ -458,7 +461,7 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( ! $(this).parent().parent().find(".cb").is(':checked')) {
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
             }
             var tax = $(this).parent().parent().find(".tax_val").val();
@@ -493,7 +496,7 @@
             var in_stock = $(this).parent().parent().find(".in_stock").val();
             var quantity = 0;
 
-            if ((parseFloat(sale_price) < parseFloat(min_sale_price))) {
+            if ((parseFloat(sale_price) < parseFloat(min_sale_price)) && $(this).parent().parent().find(".cb").is(':checked')) {
                 $(this).parent().parent().find(".sale_price_err").html(
                     "Sales Price can't be less than Min Selling Price");
             } else {
@@ -501,7 +504,7 @@
             }
 
 
-            if ( ! $(this).parent().parent().find(".cb").is(':checked')) {
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 quantity = qty * $(this).parent().parent().find("#package_val").val();
             } else {
                 quantity = qty;
@@ -513,7 +516,7 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( ! $(this).parent().parent().find(".cb").is(':checked')) {
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
             }
 
@@ -546,7 +549,7 @@
                 var qty = $(this).find(".quantity").val();
                 var sale_price = $(this).find(".sale_price").val();
                 var amount = $(this).find(".amount").val();
-                if ( ! checkb.is(':checked')) {
+                if ( checkb.is(':checked')) {
                     qty = qty * package_val;
                 }
                 order_total_without_tax += (qty * sale_price);
@@ -653,7 +656,7 @@
             var in_stock = $(this).parents('.item_row').find(".in_stock").val();
             var quantity = 0;
 
-            if ((parseFloat(sale_price) < parseFloat(min_sale_price))) {
+            if ((parseFloat(sale_price) < parseFloat(min_sale_price)) && $(this).parent().parent().find(".cb").is(':checked')) {
                 $(this).parents('.item_row').find(".sale_price_err").html(
                     "Sales Price can't be less than Min Selling Price");
             } else {
@@ -661,7 +664,7 @@
             }
 
 
-            if ( ! $(this).parents('.item_row').find(".cb").is(':checked')) {
+            if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
                 quantity = qty *  $(this).parents('.item_row').find("#package_val").val();
             } else {
                 quantity = qty;
@@ -676,7 +679,7 @@
             //if(tax_id != "" && qty != "" && sale_price != ""){
             if (tax_id != "") {
 
-                if ( ! $(this).parents('.item_row').find(".cb").is(':checked')) {
+                if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
                     qty = qty *  $(this).parents('.item_row').find("#package_val").val();
                 }
 
