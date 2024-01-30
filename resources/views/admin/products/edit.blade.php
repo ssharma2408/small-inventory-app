@@ -194,7 +194,7 @@
 }
     $(function () {
         $.ajax({
-            url: '/admin/categories/get_sub_category/' +<? php echo $product-> category_id; ?>,
+            url: '/admin/categories/get_sub_category/' +<?php echo $product-> category_id; ?>,
                 type: 'GET',
                     success: function(data) {
                         if (data.success) {
