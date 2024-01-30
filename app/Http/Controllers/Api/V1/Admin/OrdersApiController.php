@@ -204,29 +204,27 @@ class OrdersApiController extends Controller
 	{
 		//abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-		/*$order_items = OrderItem::where('order_id', $order->id)->get();
-
-		$item_arr = [];
-
-		foreach ($order_items as $item) {
-			$item_arr[] = $item;
-		}
-		$order_details = $order->load(['sales_manager', 'customer']);
-
-		$order_details['order_items'] = $item_arr;*/
+		$user = \Auth::user();
+        $role = $user->roles()->first()->toArray();
 
 		$order = $order->load('sales_manager', 'customer');
 
 		$order['order_item'] = DB::table('order_items')
-			->join('products', 'order_items.product_id', '=', 'products.id')
-			->join('categories', 'order_items.category_id', '=', 'categories.id')
-			->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
-			->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-			->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'products.image_url', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax', 'order_items.comment', 'products.id as product_id')
-			->where('order_items.order_id', $order->id)
-			->get()->toArray();
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+			/* ->join('categories', 'order_items.category_id', '=', 'categories.id')
+            ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
+            ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
+            ->select('order_items.quantity', 'products.stock', 'products.selling_price', 'products.name', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.title', 'taxes.tax', 'order_items.comment')
+            ->where('order_items.order_id', $order->id)
+            ->get()->toArray();
+			
+		$credit_balance = CreditNoteLog::where('debit_order_id', $order->id)->sum('amount');
 
-		return new OrderResource($order);
+		return response()->json([
+			'order' => $order,
+			'role' => $role,
+			'credit_balance' => $credit_balance,
+		], 200);
 	}
 
 	public function update(UpdateOrderRequest $request, Order $order)
