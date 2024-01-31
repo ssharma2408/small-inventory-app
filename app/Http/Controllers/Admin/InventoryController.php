@@ -45,7 +45,7 @@ class InventoryController extends Controller
 
         $suppliers = Supplier::pluck('supplier_name', 'id')->prepend(trans('global.pleaseSelect'), '');        
 		
-		$products = Product::where('stock', '<>', 0)->pluck('name', 'id');
+		$products = Product::pluck('name', 'id');
 		
 		$taxes = Tax::select('title', 'id')->get();
 
@@ -145,7 +145,7 @@ class InventoryController extends Controller
 
         $inventory->load('supplier');		
 		
-		$products = Product::where('stock', '<>', 0)->pluck('name', 'id');
+		$products = Product::pluck('name', 'id');
 		
 		$expense_items = DB::table('expense_items')
                 ->join('products', 'expense_items.product_id', '=', 'products.id')
