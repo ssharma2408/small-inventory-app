@@ -48,6 +48,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     Route::get('product-category','CategoryApiController@getcategory');
     Route::get('product-subcategory/{id}','CategoryApiController@getsubcategory');
+    Route::get('get_category_detail/{id}','CategoryApiController@get_category_detail');
 
     // Tax
     Route::apiResource('taxes', 'TaxApiController');
