@@ -87,6 +87,24 @@
                             <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$product->image_url }}">
                         </td>
                     </tr>
+					
+					<tr>
+                        <th>
+                            {{ trans('cruds.product.fields.description_website') }}
+                        </th>
+                        <td>
+                            {{ $product->description_website ?? '' }}
+                        </td>
+                    </tr>
+					
+					<tr>
+                        <th>
+                            {{ trans('cruds.product.fields.description_invoice') }}
+                        </th>
+                        <td>
+                           {{ $product->description_invoice ?? '' }}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.product.fields.box_size') }}

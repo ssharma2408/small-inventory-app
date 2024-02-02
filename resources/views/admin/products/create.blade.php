@@ -89,8 +89,24 @@
                     <span class="text-danger">{{ $errors->first('product_image') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.product_image_helper') }}</span>
+            </div>            
+			<div class="form-group col-lg-6 col-md-6 col-sm-12 ">
+                <label class="required" for="description_website">{{ trans('cruds.product.fields.description_website') }}</label>
+                <textarea class="form-control {{ $errors->has('description_website') ? 'is-invalid' : '' }}" name="description_website" id="description_website" required>{{ old('description_website') }}</textarea>
+                @if($errors->has('description_website'))
+                    <span class="text-danger">{{ $errors->first('description_website') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.product.fields.description_website_helper') }}</span>
             </div>
-            <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
+			<div class="form-group col-lg-6 col-md-6 col-sm-12 ">
+                <label class="required" for="description_invoice">{{ trans('cruds.product.fields.description_invoice') }}</label>
+                <textarea class="form-control {{ $errors->has('description_invoice') ? 'is-invalid' : '' }}" name="description_invoice" id="description_invoice" required>{{ old('description_invoice') }}</textarea>
+                @if($errors->has('description_invoice'))
+                    <span class="text-danger">{{ $errors->first('description_invoice') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.product.fields.description_invoice_helper') }}</span>
+            </div>
+			<div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="box_size">{{ trans('cruds.product.fields.box_size') }}</label>
                 <input class="form-control {{ $errors->has('box_size') ? 'is-invalid' : '' }}" type="number" name="box_size" id="box_size" value="{{ old('box_size', '') }}" step="1" required>
                 @if($errors->has('box_size'))

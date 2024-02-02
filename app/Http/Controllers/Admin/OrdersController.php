@@ -314,7 +314,7 @@ class OrdersController extends Controller
 
     public function get_product_detail($id)
     {
-        $product = Product::select('id', 'name', 'stock', 'selling_price', 'maximum_selling_price', 'box_size', 'tax_id')->where('id', $id)->first();
+        $product = Product::select('id', 'name', 'stock', 'selling_price', 'maximum_selling_price', 'box_size', 'tax_id', 'description_website', 'description_invoice')->where('id', $id)->first();
 
         return response()->json(array('success' => 1, 'product' => $product), 200);
     }
