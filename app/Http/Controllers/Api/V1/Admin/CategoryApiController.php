@@ -76,4 +76,10 @@ class CategoryApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function get_category_detail($id)
+    {
+        $category = Category::where('id', $id)->get();
+		return new CategoryResource($category);
+    }
 }
