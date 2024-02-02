@@ -36,6 +36,8 @@ class Product extends Model implements HasMedia
         'sub_category_id',
         'image_url',
 		'tax_id',
+		'description_website',
+		'description_invoice',
         'created_at',
         'updated_at',
         'deleted_at',

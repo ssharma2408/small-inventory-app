@@ -342,6 +342,7 @@
                 var box_size = package_val.prev();
                 var taxt_ddl = package_val.parent().next().next().next().find('select');
                 var tax_field = package_val.parent().next().next().next().find('input[type=hidden]');
+				var comment = taxt_ddl.parent().next().find('textarea');
 
                 $.ajax({
                     url: 'get_product_detail/' + $(this).val(),
@@ -354,6 +355,7 @@
                             package_val.val(data.product.box_size);
                             box_size.html('Box Size: ' + data.product.box_size);
                             taxt_ddl.val(data.product.tax_id).change();
+							comment.val(data.product.description_website);
                         }
                     }
                 });

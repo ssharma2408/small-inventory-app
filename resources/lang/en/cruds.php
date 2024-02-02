@@ -240,6 +240,10 @@ return [
             'box_size_helper'              => ' ',
 			'tax'                             => 'Tax',
             'tax_helper'                      => ' ',
+			'description_website'             => 'Description for website',
+            'description_website_helper'	=> ' ',
+			'description_invoice'			=> 'Description for invoice',
+            'description_invoice_helper'	=> ' ',
         ],
     ],
     'category' => [
