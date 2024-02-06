@@ -47,6 +47,14 @@
                             <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$category->image_url }}">
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.category.fields.show_fe') }}
+                        </th>
+                        <td>
+                            {{ $category->show_fe == 1 ? 'Yes' : 'No' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

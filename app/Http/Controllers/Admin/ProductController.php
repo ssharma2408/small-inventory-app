@@ -62,6 +62,7 @@ class ProductController extends Controller
 			
 			$product_detail['image_url'] = $name;
 			$product_detail['stock'] = 0;
+			$product_detail['show_fe'] = isset($product_detail['show_fe']) ? 1 :0;
 
 			$product = Product::create($product_detail);			
 
@@ -103,7 +104,7 @@ class ProductController extends Controller
 			
 			$product_detail['image_url'] = $name;
 		}		
-		
+		$product_detail['show_fe'] = isset($product_detail['show_fe']) ? 1 :0;
 		$product->update($product_detail);  
 
         return redirect()->route('admin.products.index');

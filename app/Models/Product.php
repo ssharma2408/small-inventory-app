@@ -38,6 +38,7 @@ class Product extends Model implements HasMedia
 		'tax_id',
 		'description_website',
 		'description_invoice',
+		'show_fe',
         'created_at',
         'updated_at',
         'deleted_at',
