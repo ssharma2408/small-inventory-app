@@ -116,9 +116,7 @@
 												<td>
 													@php
 														$qty = $item->quantity;
-														if($item->is_box){
-															$qty = $item->quantity * $item->box_size;
-														}
+														
 														$amount = $qty * $item->sale_price;
 														
 														$total = $amount + (($amount * $item->tax)/100);
