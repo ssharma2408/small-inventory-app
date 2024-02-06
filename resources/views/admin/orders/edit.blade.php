@@ -124,6 +124,9 @@
                                 <div class="col-md-1">
                                     <b>Tax</b>
                                 </div>
+								<div class="col-md-1">
+                                    <b>Comment</b>
+                                </div>
                                 <div class="col-md-1">
                                     <b>Amount</b>
                                 </div>
@@ -205,9 +208,9 @@
 					<textarea name="comment[]" rows="2" cols="3" class="form-control">'.$order_item->comment.'</textarea>
 				</div>
                                                                                                                                                                 									<div class="col-md-1">';
-                                    if ( $order_item->is_box) {
+                                    /* if ( $order_item->is_box) {
                                         $order_item->quantity = $order_item->quantity * $order_item->box_size;
-                                    }
+                                    } */
                                     $item_value = $order_item->sale_price * $order_item->quantity;
                             
                                     $item_with_tax = $item_value + ($item_value * $order_item->tax) / 100;
@@ -463,9 +466,9 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {
+           /*  if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
-            }
+            } */
             var tax = $(this).parent().parent().find(".tax_val").val();
 
             if (qty != "" && sale_price != "") {
@@ -518,9 +521,9 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {
+            /* if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
-            }
+            } */
 
             var tax = $(this).parent().parent().find(".tax_val").val();
 
@@ -551,9 +554,9 @@
                 var qty = $(this).find(".quantity").val();
                 var sale_price = $(this).find(".sale_price").val();
                 var amount = $(this).find(".amount").val();
-                if ( checkb.is(':checked')) {
+                /* if ( checkb.is(':checked')) {
                     qty = qty * package_val;
-                }
+                } */
                 order_total_without_tax += (qty * sale_price);
                 order_total += parseFloat(amount);
             });
@@ -681,9 +684,9 @@
             //if(tax_id != "" && qty != "" && sale_price != ""){
             if (tax_id != "") {
 
-                if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
+                /* if ( $(this).parents('.item_row').find(".cb").is(':checked')) {
                     qty = qty *  $(this).parents('.item_row').find("#package_val").val();
-                }
+                } */
 
                 var tax = $(this).parent().find(".tax_val");
                 var amount = $(this).parent().parent().find(".amount");

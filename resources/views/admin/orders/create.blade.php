@@ -390,9 +390,9 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {
+            /* if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
-            }
+            } */
             var tax = $(this).parent().parent().find(".tax_val").val();
 
             if (qty != "" && sale_price != "") {
@@ -445,9 +445,9 @@
                 $(this).parent().parent().find(".qty_err").html("");
             }
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {
+            /* if ( $(this).parent().parent().find(".cb").is(':checked')) {
                 qty = qty * $(this).parent().parent().find("#package_val").val();
-            }
+            } */
 
             var tax = $(this).parent().parent().find(".tax_val").val();
 
@@ -477,9 +477,9 @@
                 var qty = $(this).find(".quantity").val();
                 var sale_price = $(this).find(".sale_price").val();
                 var amount = $(this).find(".amount").val();
-                if ( checkb.is(':checked')) {
+                /* if ( checkb.is(':checked')) {
                     qty = qty * package_val;
-                }
+                } */
                 order_total_without_tax += (qty * sale_price);
                 order_total += parseFloat(amount);
             });
@@ -601,9 +601,9 @@
             //if(tax_id != "" && qty != "" && sale_price != ""){
             if (tax_id != "") {
 
-                if ( $(this).parent().parent().find(".cb").is(':checked')) {
+                /* if ( $(this).parent().parent().find(".cb").is(':checked')) {
                     qty = qty * $(this).parent().parent().find("#package_val").val();
-                }
+                } */
 
                 var tax = $(this).parent().find(".tax_val");
                 var amount = $(this).parent().parent().find(".amount");
