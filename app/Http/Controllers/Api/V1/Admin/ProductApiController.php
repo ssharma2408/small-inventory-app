@@ -74,4 +74,13 @@ class ProductApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+	
+	public function gettrendingproducts()
+    {
+        abort_if(Gate::denies('product_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		
+		$products = Product::where('show_fe', 1)->with(['media', 'tax_details'])->get();
+
+        return new ProductResource($products);
+    }	
 }
