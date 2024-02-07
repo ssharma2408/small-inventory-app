@@ -116,7 +116,7 @@
             </div>
 			<div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                 <label class="required" for="show_fe">{{ trans('cruds.product.fields.show_fe') }}</label>
-				<input class="form-check-input ml-2" type="checkbox" name="show_fe" id="show_fe" checked />
+				<input class="form-check-input ml-2" type="checkbox" name="show_fe" id="show_fe"  />
                 @if($errors->has('show_fe'))
                     <span class="text-danger">{{ $errors->first('show_fe') }}</span>
                 @endif
