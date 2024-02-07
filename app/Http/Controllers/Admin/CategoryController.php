@@ -49,7 +49,7 @@ class CategoryController extends Controller
 			$category_detail = $request->all();
 			
 			$category_detail['image_url'] = $name;
-			
+			$category_detail['show_fe'] = isset($category_detail['show_fe']) ? 1 :0;
 			$category = Category::create($category_detail);		
 			
 			if ($request->redirect !="") {
@@ -91,7 +91,7 @@ class CategoryController extends Controller
 			
 			$category_detail['image_url'] = $name;
 		}
-		
+		$category_detail['show_fe'] = isset($category_detail['show_fe']) ? 1 :0;
 		$category->update($category_detail);
 
         return redirect()->route('admin.categories.index');

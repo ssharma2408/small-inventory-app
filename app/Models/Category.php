@@ -24,6 +24,7 @@ class Category extends Model
         'category_order',
 		'image_url',
         'category_id',
+        'show_fe',
         'created_at',
         'updated_at',
         'deleted_at',

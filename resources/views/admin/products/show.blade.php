@@ -113,6 +113,14 @@
                             {{ $product->box_size }}
                         </td>
                     </tr>
+					<tr>
+                        <th>
+                            {{ trans('cruds.product.fields.show_fe') }}
+                        </th>
+                        <td>
+                            {{ $product->show_fe == 1 ? 'Yes' : 'No' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

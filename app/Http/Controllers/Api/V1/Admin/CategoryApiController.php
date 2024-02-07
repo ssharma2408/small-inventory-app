@@ -21,8 +21,12 @@ class CategoryApiController extends Controller
      return new CategoryResource(array_merge($get_all_category,$get_only_category));
     }
 
-    public function getsubcategory($id){
-     $get_subcategory = Category::where('category_id',$id)->get();
+    public function getsubcategory($id, $show=0){
+     $query = Category::where('category_id',$id);
+	 if($show){
+		$query ->where('show_fe', 1);
+	 }
+	 $get_subcategory = $query ->get();
      return new CategoryResource($get_subcategory);
     }
 
@@ -33,12 +37,20 @@ class CategoryApiController extends Controller
         return new CategoryResource(Category::all());
     }*/
 
-    public function index($id)
+    public function index($id, $show=0)
     {
         if($id==0){
-            $category = Category::where('category_id',NULL)->get();
+            $query  = Category::where('category_id',NULL);
+			if($show){
+				$query ->where('show_fe', 1);
+			}
+			$category = $query ->get();
         }else{
-            $category = Category::where('category_id',$id)->get();
+            $query  = Category::where('category_id',$id);
+			if($show){
+				$query ->where('show_fe', 1);
+			}
+			$category = $query ->get();
         }
         return new CategoryResource($category);
     }

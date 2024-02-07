@@ -244,6 +244,8 @@ return [
             'description_website_helper'	=> ' ',
 			'description_invoice'			=> 'Description for invoice',
             'description_invoice_helper'	=> ' ',
+			'show_fe'						=> 'Display on Front End',
+            'show_fe_helper'				=> ' ',
         ],
     ],
     'category' => [
@@ -268,6 +270,8 @@ return [
             'updated_at_helper'     => ' ',
             'deleted_at'            => 'Deleted at',
             'deleted_at_helper'     => ' ',
+			'show_fe'				=> 'Display on Front End',
+            'show_fe_helper'		=> ' ',
         ],
     ],
     'tax' => [

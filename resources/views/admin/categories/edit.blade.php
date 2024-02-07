@@ -47,6 +47,15 @@
 				<span class="help-block">{{ trans('cruds.category.fields.category_image_helper') }}</span>
 			</div>
 			
+			<div class="form-group col-lg-4 col-md-4 col-sm-12 ">
+                <label class="required" for="show_fe">{{ trans('cruds.category.fields.show_fe') }}</label>
+				<input class="form-check-input ml-2" type="checkbox" name="show_fe" id="show_fe" {{ $category->show_fe == 1 ? 'checked' : '' }} />
+                @if($errors->has('show_fe'))
+                    <span class="text-danger">{{ $errors->first('show_fe') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.category.fields.show_fe_helper') }}</span>
+            </div>
+			
             <div class="form-group  col-lg-12 ">
                 <button class="btn btn-danger mr-2" type="submit">
                     {{ trans('global.save') }}

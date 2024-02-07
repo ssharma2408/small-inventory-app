@@ -26,9 +26,13 @@ class ProductApiController extends Controller
         return new ProductResource($products);
     }
 
-    public function getproductbysubcategory($id)
+    public function getproductbysubcategory($id, $show=0)
     {
-        $products = Product::where('sub_category_id',$id)->with(['media', 'tax_details'])->get();
+        $query = Product::where('sub_category_id',$id)->with(['media', 'tax_details']);
+		if($show){
+			$query ->where('show_fe', 1);
+		}
+		$products = $query ->get();
         return new ProductResource($products);
     }
 
