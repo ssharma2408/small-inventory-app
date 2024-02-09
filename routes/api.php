@@ -40,7 +40,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Product
     Route::post('products/media', 'ProductApiController@storeMedia')->name('products.storeMedia');
     Route::apiResource('products', 'ProductApiController');
-    Route::get('product-by-subcategory/{id}/{show_fe?}','ProductApiController@getproductbysubcategory');
+    Route::get('product-by-subcategory/{id}/{customer_id?}','ProductApiController@getproductbysubcategory');
 	Route::get('trending-products','ProductApiController@gettrendingproducts');
 
     // Category

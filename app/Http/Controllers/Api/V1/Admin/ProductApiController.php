@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\Admin\ProductResource;
 use App\Models\Product;
 use Gate;
+use DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,13 +27,42 @@ class ProductApiController extends Controller
         return new ProductResource($products);
     }
 
-    public function getproductbysubcategory($id, $show=0)
+    public function getproductbysubcategory($id, $cust_id=0)
     {
-        $query = Product::where('sub_category_id',$id)->with(['media', 'tax_details']);
-		if($show){
-			$query ->where('show_fe', 1);
-		}
-		$products = $query ->get();
+        $products = Product::where('sub_category_id',$id)->with(['media', 'tax_details'])->get();
+				
+		$product_arr = [];
+		
+		if($cust_id){
+			
+			$prods = DB::table('order_items')
+						->join('orders', 'order_items.order_id', '=', 'orders.id')
+						->select(DB::raw('MAX(order_items.sale_price) as sale_price'), 'order_items.product_id')
+						->whereIn('orders.status', [1, 4])
+						->where([
+								['orders.deleted_at', NULL],
+								['order_items.is_box', 1],
+								['order_items.sub_category_id', $id],
+								['orders.customer_id', $cust_id]
+						])
+						->groupBy('order_items.product_id')
+						->get();
+						
+			foreach($prods as $prod){
+				$product_arr[$prod->product_id] = $prod->sale_price;
+			}			
+		}		
+		
+		$i = 0;
+		foreach($products as $product){
+			if(array_key_exists($product->id, $product_arr)){
+				$products[$i]['sales_price'] = $product_arr[$product->id];
+			}else{
+				$products[$i]['sales_price'] = null;
+			}
+			$i++;
+		}		
+		
         return new ProductResource($products);
     }
 
