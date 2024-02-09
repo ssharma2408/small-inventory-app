@@ -58,7 +58,7 @@ class ProductApiController extends Controller
 			if(array_key_exists($product->id, $product_arr)){
 				$products[$i]['sales_price'] = $product_arr[$product->id];
 			}else{
-				$products[$i]['sales_price'] = null;
+				$products[$i]['sales_price'] = $product->maximum_selling_price;
 			}
 			$i++;
 		}		
