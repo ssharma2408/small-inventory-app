@@ -50,7 +50,7 @@
                     </li>
                 </ul>
             @endif
-			<span class="text-right">{{Auth::user()->name}}</span>
+			<span class="text-right">Welcome {{Auth::user()->name}}</span>
         </nav>
 
         @include('partials.menu')
