@@ -442,7 +442,7 @@ class OrdersController extends Controller
 				'public'
 				);
 
-        return $pdf->download('invoice.pdf');
+        return $pdf->download('invoice_'.$order->id.'.pdf');
     }
 	
 	public function get_credit_balance($cust_id){
