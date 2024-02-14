@@ -97,8 +97,8 @@ class OrdersController extends Controller
                 $item['product_id'] = $request['item_name'][$i];
                 $item['order_id'] = $order->id;
                 $item['quantity'] = $request['item_quantity'][$i];
-               /*  $item['category_id'] = $request['item_category'][$i];
-                $item['sub_category_id'] = $request['item_subcategory'][$i]; */
+				$item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i];
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
@@ -189,10 +189,10 @@ class OrdersController extends Controller
 
             $order_items = DB::table('order_items')
                 ->join('products', 'order_items.product_id', '=', 'products.id')
-                /* ->join('categories', 'order_items.category_id', '=', 'categories.id')
-                ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id') */
+                ->join('categories', 'order_items.category_id', '=', 'categories.id')
+                ->join('categories as c', 'order_items.sub_category_id', '=', 'c.id')
                 ->join('taxes', 'taxes.id', '=', 'order_items.tax_id')
-                ->select('products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax', 'order_items.comment')
+                ->select('c.name as sub_category_name', 'c.id as sub_category_id', 'categories.name as category_name', 'categories.id as category_id', 'products.name', 'order_items.product_id', 'order_items.quantity', 'products.stock', 'products.selling_price', 'products.maximum_selling_price', 'order_items.is_box', 'order_items.sale_price', 'order_items.tax_id', 'products.box_size', 'taxes.tax', 'order_items.comment')
                 ->where('order_items.order_id', $order->id)
                 ->get();
 
@@ -235,8 +235,8 @@ class OrdersController extends Controller
                 $item['product_id'] = $request['item_name'][$i];
                 $item['order_id'] = $order->id;
                 $item['quantity'] = $request['item_quantity'][$i];
-                /* $item['category_id'] = $request['item_category'][$i];
-                $item['sub_category_id'] = $request['item_subcategory'][$i]; */
+                $item['category_id'] = $request['item_category'][$i];
+                $item['sub_category_id'] = $request['item_subcategory'][$i];
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
                 $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
@@ -314,7 +314,7 @@ class OrdersController extends Controller
 
     public function get_product_detail($id)
     {
-        $product = Product::select('id', 'name', 'stock', 'selling_price', 'maximum_selling_price', 'box_size', 'tax_id', 'description_website', 'description_invoice')->where('id', $id)->first();
+        $product = Product::select('id', 'name', 'stock', 'selling_price', 'maximum_selling_price', 'box_size', 'tax_id', 'description_website', 'description_invoice', 'category_id', 'sub_category_id')->where('id', $id)->first();
 
         return response()->json(array('success' => 1, 'product' => $product), 200);
     }

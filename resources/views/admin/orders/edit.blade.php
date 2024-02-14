@@ -145,7 +145,8 @@
                                         $order_item->product_id .
                                         '">' .
                                         $order_item->name .
-                                        '</option></select></div></div>
+                                        '</option></select><input type="hidden" class="item_category" name="item_category[]" value="'.$order_item->category_id.'" />
+											<input type="hidden" class="item_subcategory" name="item_subcategory[]" value="'.$order_item->sub_category_id.'" /></div></div>
                                                                                                                                                                 									<div class="col-md-1">
                                                                                                                                                                 										<input class="form-control in_stock" type="number" name="item_stock[]" disabled value="' .
                                         $order_item->stock .
@@ -405,11 +406,13 @@
         });
 
         function row_html() {
-            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?><input type="hidden" class="item_category" name="item_category[]" value="" /><input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" /></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
         }
 
         $(document).on("change", ".order_item", function() {
             if ($(this).val() != "") {
+				var cat_id = $(this).parent().find(".item_category");
+				var subcat_id = $(this).parent().find(".item_subcategory");
                 var stock = $(this).parents('.item_row').find('.in_stock');
                 var min_selling_price = stock.parent().next().find('input');
                 var max_selling_price = min_selling_price.parent().next().find('input');
@@ -431,6 +434,8 @@
                             box_size.html('Box Size: ' + data.product.box_size);
                             taxt_ddl.val(data.product.tax_id).change();
 							comment.val(data.product.description_website);
+							cat_id.val(data.product.category_id);
+							subcat_id.val(data.product.sub_category_id);
                         }
                     }
                 });
