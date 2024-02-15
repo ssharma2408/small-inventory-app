@@ -95,7 +95,7 @@
 												{{ $item->maximum_selling_price }}
 												</td>												
 												<td>
-													@if(!$item->is_box)
+													@if($item->is_box)
 														Box
 													@else
 														Unit
