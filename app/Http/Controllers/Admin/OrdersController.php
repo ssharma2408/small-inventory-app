@@ -101,7 +101,7 @@ class OrdersController extends Controller
                 $item['sub_category_id'] = $request['item_subcategory'][$i];
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
-                $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+                $item['is_box'] = $request['box_or_unit'][$i];
                 $item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
                 $data[] = $item;
             }
@@ -239,7 +239,7 @@ class OrdersController extends Controller
                 $item['sub_category_id'] = $request['item_subcategory'][$i];
                 $item['sale_price'] = $request['item_sale_priec'][$i];
                 $item['tax_id'] = $request['item_tax_id'][$i];
-                $item['is_box'] = isset($request['is_box'][$i]) ? 1 : 0;
+                $item['is_box'] = $request['box_or_unit'][$i];
 				$item['comment'] = isset($request['comment'][$i]) ? $request['comment'][$i] : "";
                 $data[] = $item;
             }
