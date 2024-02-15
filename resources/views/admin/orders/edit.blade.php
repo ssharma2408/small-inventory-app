@@ -164,7 +164,7 @@
                                                                                                                                                                 									</div>
                                                                                                                                                                 									<div class="col-md-1">';
                                     $checked = '';
-                                    if ($order_item->is_box) {
+                                    if (!$order_item->is_box) {
                                         $checked = 'checked';
                                     }
                                     echo '<input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" ' .
