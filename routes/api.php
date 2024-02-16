@@ -33,9 +33,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('supplier-dashboard','OrdersApiController@getsupplierdash');
     Route::get('sales-manager','OrdersApiController@get_supplier');
 	Route::get('orders/payment/{id?}', 'OrdersApiController@payment')->name('orders.payment');
-    Route::apiResource('orders', 'OrdersApiController');
-
+    Route::apiResource('orders', 'OrdersApiController');	
     Route::get('driver-dashboard', 'OrdersApiController@driver_dashboard');
+	Route::get('delivery_index/{id}/{status?}', 'OrdersApiController@delivery_index')->name('orders.delivery_index');
 
     // Product
     Route::post('products/media', 'ProductApiController@storeMedia')->name('products.storeMedia');

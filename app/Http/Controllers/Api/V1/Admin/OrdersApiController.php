@@ -336,4 +336,17 @@ class OrdersApiController extends Controller
 			'order_id' => $order_id,
 		], 200);
 	}
+	
+	public function delivery_index($id, $status=0)
+	{
+		$query = Order::where('delivery_agent_id', $id);
+		
+		if($status){
+			$query->where('status', $status);
+		}
+
+		$order = $query->with(['sales_manager', 'customer'])->get();
+
+		return new OrderResource($order);
+	}
 }
