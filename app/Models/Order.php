@@ -21,9 +21,9 @@ class Order extends Model implements HasMedia
 		'order_date' => 'datetime',
 	];
 	
-	protected $appends = [
+	/* protected $appends = [
         'delivery_pic',
-    ];
+    ]; */
 
     protected $dates = [
         'order_date',
@@ -90,8 +90,8 @@ class Order extends Model implements HasMedia
         return $this->belongsTo(OrderPaymentMaster::class, 'id', 'order_number');
     }
 	
-	 public function getDeliveryPicAttribute()
+	/*  public function getDeliveryPicAttribute()
     {
         return $this->getMedia('delivery_pic')->last();
-    }
+    } */
 }
