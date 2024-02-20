@@ -213,7 +213,7 @@ class OrdersController extends Controller
         $params = $request->all();
 
         $params['extra_discount'] = ($params['extra_discount'] == null) ? 0.00 : $params['extra_discount'];
-        $params['delivery_agent_id'] = ($params['status'] == 4) ? $params['delivery_agent_id'] : null;
+        $params['delivery_agent_id'] = ($params['status'] == 4 || $params['status'] == 1) ? $params['delivery_agent_id'] : null;
 
         
 		if (($order->order_total != $request->order_total)) {
