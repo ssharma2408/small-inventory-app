@@ -240,6 +240,21 @@
 						</div>
 					</div>
 				@endif
+				@if($order->status == 1 && (($role['title'] == 'Delivery Agent' && $order->delivery_agent_id == \Auth::user()->id) || $role['title'] == 'Admin' || $role['title'] == 'Website Admin'))
+					<div class="form-group">
+						<label for="">
+							{{ trans('cruds.order.fields.delivery_pic') }}
+						</label>
+							<img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$order->delivery_pic }}" />
+						
+					</div>
+					<div class="form-group">
+						<label for="">
+							Customer Sign
+						</label>							
+							{{ $order->customer_sign }}						
+					</div>
+				@endif
 				<div class="form-group">					
 					<a class="btn btn-default" href="{{ route('admin.orders.index') }}">
 						{{ trans('global.back_to_list') }}
@@ -274,8 +289,7 @@
 			return false;            
         }
 		
-	  });
-	
+	  });	
 	
 	
 </script>

@@ -254,7 +254,11 @@ class OrdersController extends Controller
         if ($params['status'] == 4) {
             foreach ($data as $ord_item) {
                 $product = Product::find($ord_item['product_id']);
-                $product->decrement('stock', $ord_item['quantity']);
+				$qty = $ord_item['quantity'];
+				if($ord_item['is_box']){
+					$qty = $ord_item['quantity'] * $product->box_size;
+				}
+                $product->decrement('stock', $qty);
             }
         }        
 
