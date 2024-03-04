@@ -90,6 +90,11 @@ class Order extends Model implements HasMedia
         return $this->belongsTo(OrderPaymentMaster::class, 'id', 'order_number');
     }
 	
+	public function delivery_agent()
+    {
+        return $this->belongsTo(User::class, 'delivery_agent_id');
+    }
+	
 	/*  public function getDeliveryPicAttribute()
     {
         return $this->getMedia('delivery_pic')->last();

@@ -349,7 +349,7 @@ class OrdersApiController extends Controller
 			$query->where('status', $status);
 		}
 
-		$order = $query->with(['sales_manager', 'customer'])->get();
+		$order = $query->with(['sales_manager', 'customer', 'delivery_agent'])->get();
 
 		return new OrderResource($order);
 	}
