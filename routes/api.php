@@ -83,7 +83,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	
 	
     // Reports
-	Route::get('get_sales_person_orderreport', 'ReportsApiController@get_sales_person_orderreport');
+	Route::get('get_sales_person_orderreport/{customer?}/{start_date?}/{end_date?}', 'ReportsApiController@get_sales_person_orderreport');
 
 
     // Profile
