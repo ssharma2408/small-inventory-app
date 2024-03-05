@@ -81,7 +81,7 @@ class OrdersApiController extends Controller
 		//abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		$order_id_arr = $this->get_payments();
 		$ord_arr = [];
-		$order = Order::with(['sales_manager', 'customer'])->get();
+		$order = Order::with(['sales_manager', 'customer', 'delivery_agent'])->get();
 
 		foreach ($order as $rw) {
 			$rw['edit_key'] = in_array($rw->id, $order_id_arr) ? 1 : 0;
@@ -207,7 +207,7 @@ class OrdersApiController extends Controller
 		$user = \Auth::user();
         $role = $user->roles()->first()->toArray();
 
-		$order = $order->load('sales_manager', 'customer');
+		$order = $order->load('sales_manager', 'customer', 'delivery_agent');
 
 		$order['order_item'] = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
