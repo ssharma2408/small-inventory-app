@@ -48,7 +48,7 @@ class ReportsApiController extends Controller
                 ], 200);
         }
 
-        public function get_sales_person_orderreport()
+        public function get_sales_person_orderreport($customer = "", $start_date="", $end_date="")
         {
                 $status = [];
                 $customers = [];
@@ -60,8 +60,17 @@ class ReportsApiController extends Controller
                         $status_code = 200;
                         $status = ['Due', 'Closed',  'Overdue'];
                         $customers = Customer::select('name', 'id')->get();
-			$orders = Order::where('sales_manager_id',$user->id)->with(['sales_manager', 'customer', 'payment'])->get();
-		}
+						//$orders = Order::where('sales_manager_id',$user->id)->with(['sales_manager', 'customer', 'payment'])->get();
+						$query = Order::select("orders.*")->leftJoin('customers', 'customers.id', '=', 'orders.customer_id')->where('sales_manager_id', $user->id);
+						if($customer != "null"){
+							$query->whereRaw(DB::raw("(customers.name like '%".$customer."%' OR customers.company_name like '%".$customer."%' OR customers.contact_name like '%".$customer."%')"));
+						}
+						if($start_date != "" && $end_date != ""){
+							$query->where("orders.order_date", "<=", $end_date." 00:00:00");
+							$query->where("orders.order_date", ">=", $start_date." 00:00:00");
+						}
+						$orders = $query->with(['sales_manager', 'customer', 'payment'])->get();					
+					}
                 return response()->json([
                         'orders' => $orders,
                         'status' => $status,
