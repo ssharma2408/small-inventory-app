@@ -66,7 +66,7 @@ class ReportsApiController extends Controller
 							$query->whereRaw(DB::raw("(customers.name like '%".$request->customer."%' OR customers.company_name like '%".$request->customer."%' OR customers.contact_name like '%".$request->customer."%')"));
 						}
 						if($request->start_date != "" && $request->end_date != ""){
-							$query->where("orders.order_date", "<=", $request->end_date." 00:00:00");
+							$query->where("orders.order_date", "<=", $request->end_date." 23:59:59");
 							$query->where("orders.order_date", ">=", $request->start_date." 00:00:00");
 						}
 						$orders = $query->with(['sales_manager', 'customer', 'payment'])->get();					
