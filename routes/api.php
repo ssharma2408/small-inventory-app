@@ -82,8 +82,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 	Route::get('reports/get_product_expiry_report', 'ReportsApiController@get_product_expiry_report')->name('reports.get_product_expiry_report');
 	
 	
-    // Reports
-	Route::get('get_sales_person_orderreport/{customer?}/{start_date?}/{end_date?}', 'ReportsApiController@get_sales_person_orderreport');
+    // Reports	
+	Route::post('get_sales_person_orderreport', 'ReportsApiController@get_sales_person_orderreport');
 
 
     // Profile
