@@ -59,9 +59,8 @@ class ReportsApiController extends Controller
                 if ($role['title'] == 'Sales Manager') {
                         $status_code = 200;
                         $status = ['Due', 'Closed',  'Overdue'];
-                        $customers = Customer::select('name', 'id')->get();
-						//$orders = Order::where('sales_manager_id',$user->id)->with(['sales_manager', 'customer', 'payment'])->get();
-						$query = Order::select("orders.*")->leftJoin('customers', 'customers.id', '=', 'orders.customer_id')->where('sales_manager_id', $user->id);
+                        $customers = Customer::select('name', 'id')->get();						
+						/* $query = Order::select("orders.*")->leftJoin('customers', 'customers.id', '=', 'orders.customer_id')->where('sales_manager_id', $user->id);
 						if($request->customer != ""){
 							$query->whereRaw(DB::raw("(customers.name like '%".$request->customer."%' OR customers.company_name like '%".$request->customer."%' OR customers.contact_name like '%".$request->customer."%')"));
 						}
@@ -69,7 +68,20 @@ class ReportsApiController extends Controller
 							$query->where("orders.order_date", "<=", $request->end_date." 23:59:59");
 							$query->where("orders.order_date", ">=", $request->start_date." 00:00:00");
 						}
-						$orders = $query->with(['sales_manager', 'customer', 'payment'])->get();					
+						$orders = $query->with(['sales_manager', 'customer', 'payment'])->get(); */
+						
+						$sql = 'SELECT orders.* FROM orders LEFT JOIN customers ON customers.id = orders.customer_id WHERE orders.deleted_at is NULL AND sales_manager_id = '.$user->id;
+						
+						if($request->customer != ""){
+							$sql .= " AND (customers.name like '%".$request->customer."%' OR customers.company_name like '%".$request->customer."%' OR customers.contact_name like '%".$request->customer."%') ";
+						}
+						if($request->start_date != "" && $request->end_date != ""){
+							$sql .= ' AND orders.order_date <= "'.$request->end_date.' 23:59:59"';
+							$sql .= ' AND orders.order_date >= "'.$request->start_date.' 00:00:00"';
+						}
+						
+						$orders = DB::select($sql);						
+						
 					}
                 return response()->json([
                         'orders' => $orders,
