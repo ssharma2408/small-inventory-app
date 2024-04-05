@@ -19,7 +19,7 @@ class SliderApiController extends Controller
     public function index()
     {
         abort_if(Gate::denies('slider_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-		$slider = Slider::orderBy('slider_order', 'ASC')->get();
+		$slider = Slider::where('slider_status', '1')->orderBy('slider_order', 'ASC')->get();
         return new SliderResource($slider);
     }
 
