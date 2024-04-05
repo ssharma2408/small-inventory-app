@@ -45,6 +45,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Category
     Route::get('categories/{id}/{show_fe?}','CategoryApiController@index');
+    Route::get('popular_brands','CategoryApiController@get_popular_brands');
     Route::apiResource('categories', 'CategoryApiController');
 
     Route::get('product-category','CategoryApiController@getcategory');
