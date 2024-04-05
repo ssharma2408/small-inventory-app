@@ -62,7 +62,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Category
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');	
+    Route::get('categories/get_category_products/{id}', 'CategoryController@get_category_product')->name('categories.get_category_product');
 	Route::get('categories/get_sub_category/{id}', 'CategoryController@get_sub_category')->name('categories.get_sub_category');
+    Route::post('product/reorder', 'CategoryController@reorder');
     Route::resource('categories', 'CategoryController');
 
     // Tax

@@ -84,6 +84,12 @@
                                     </form>
                                 @endcan
 
+                                @can('category_product_show')
+                                    <a class="btn btn-xs btn-warning" href="{{ route('admin.categories.get_category_product', $category->id) }}">
+                                        Go to products
+                                    </a>
+                                @endcan
+
                             </td>
 
                         </tr>

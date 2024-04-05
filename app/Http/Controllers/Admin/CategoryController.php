@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyCategoryRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Models\Product;
 use Gate;
 use Storage;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class CategoryController extends Controller
         abort_if(Gate::denies('category_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $categories = Category::all();
-
+        
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -132,4 +133,34 @@ class CategoryController extends Controller
 		
 		return response()->json(array('success'=>1, 'subcategories'=>$sub_categories), 200);		
 	}
+
+    public function get_category_product($id){
+        $category = Category::find($id);
+        if($category->category_id==''){
+            $products = Product::where('category_id',$category->id)->orderBy('product_order','ASC')->get();
+        }else{
+            $products = Product::where('sub_category_id',$category->id)->orderBy('product_order','ASC')->get();
+        }
+        
+        return view('admin.categories.showProducts', compact('products'));
+    }
+
+    public function reorder(Request $request)
+    {
+       /* $products = Product::whereIn('id',$request->ids)->get();
+        foreach ($products as $product) {
+            foreach ($request->order as $order) {
+                if ($order['id'] == $product->id) {
+                    Product::where('id',$product->id)->update(['product_order' => $order['position']]);
+                }
+            }
+        }*/
+            foreach ($request->order as $order) {
+                if (in_array($order['id'],$request->ids)) {
+                    Product::where('id',$order['id'])->update(['product_order' => $order['position']]);
+                }
+            }
+        return response('Update Successfully.', 200);
+       
+    }
 }
