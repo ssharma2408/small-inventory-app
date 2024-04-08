@@ -418,4 +418,27 @@ return [
         ],
     ],
 
+    'slider' => [
+        'title'          => 'Slider',
+        'title_singular' => 'Slider',
+        'fields'         => [
+            'id'                   => 'ID',
+            'id_helper'            => ' ',
+            'slider_text'          => 'Slider Text',
+            'slider_text_helper'   => ' ',
+            'slider_img'           => 'Slider Img',
+            'slider_img_helper'    => ' ',
+            'slider_order'         => 'Slider Order',
+            'slider_order_helper'  => ' ',
+            'slider_status'        => 'Slider Status',
+            'slider_status_helper' => ' ',
+            'created_at'           => 'Created at',
+            'created_at_helper'    => ' ',
+            'updated_at'           => 'Updated at',
+            'updated_at_helper'    => ' ',
+            'deleted_at'           => 'Deleted at',
+            'deleted_at_helper'    => ' ',
+        ],
+    ],
+
 ];

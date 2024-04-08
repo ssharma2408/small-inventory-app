@@ -94,4 +94,9 @@ class CategoryApiController extends Controller
         $category = Category::where('id', $id)->get();
 		return new CategoryResource($category);
     }
+	
+	public function get_popular_brands(){
+		$category = Category::whereNotNull('category_id')->where('show_fe', 1)->get();
+		return new CategoryResource($category);
+	}
 }

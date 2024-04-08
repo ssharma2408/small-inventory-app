@@ -1,41 +1,41 @@
 @extends('layouts.admin')
 @section('content')
-@can('category_create')
+@can('slider_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.categories.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.category.title_singular') }}
+            <a class="btn btn-success" href="{{ route('admin.sliders.create') }}">
+                {{ trans('global.add') }} {{ trans('cruds.slider.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.category.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.slider.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Category">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-Slider">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.category.fields.id') }}
+                            {{ trans('cruds.slider.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.category.fields.name') }}
+                            {{ trans('cruds.slider.fields.slider_text') }}
                         </th>
-						<th>
-							{{ trans('cruds.category.fields.category') }}
-						</th>
-						<th>
-                            {{ trans('cruds.category.fields.category_image') }}
+                        <th>
+                            {{ trans('cruds.slider.fields.slider_img') }}
                         </th>
-						<th>
-                            {{ trans('cruds.category.fields.show_fe') }}
+                        <th>
+                            {{ trans('cruds.slider.fields.slider_order') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.slider.fields.slider_status') }}
                         </th>
                         <th>
                             &nbsp;
@@ -43,51 +43,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($categories as $key => $category)
-                        <tr data-entry-id="{{ $category->id }}">
+                    @foreach($sliders as $key => $slider)
+                        <tr data-entry-id="{{ $slider->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $category->id ?? '' }}
+                                {{ $slider->id ?? '' }}
                             </td>
                             <td>
-                                {{ $category->name ?? '' }}
-                            </td>
-							 <td>
-                                {{ $category->category->name ?? '' }}
-                            </td>
-							<td>
-                                <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$category->image_url }}">
-                            </td>
-							<td>
-                                {{ $category->show_fe == 1 ? 'Yes' : 'No' }}
+                                {{ $slider->slider_text ?? '' }}
                             </td>
                             <td>
-                                @can('category_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.categories.show', $category->id) }}">
+                                <img width = "100" height="100" src="{{ $_ENV['DO_CDN_URL'].$slider->slider_img_url }}">
+                            </td>
+                            <td>
+                                {{ $slider->slider_order ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Slider::SLIDER_STATUS_SELECT[$slider->slider_status] ?? '' }}
+                            </td>
+                            <td>
+                                @can('slider_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.sliders.show', $slider->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
-                                @can('category_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.categories.edit', $category->id) }}">
+                                @can('slider_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.sliders.edit', $slider->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
-                                @can('category_delete')
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                @can('slider_delete')
+                                    <form action="{{ route('admin.sliders.destroy', $slider->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
-                                @endcan
-
-                                @can('category_product_show')
-                                    <a class="btn btn-xs btn-warning" href="{{ route('admin.categories.get_category_product', $category->id) }}">
-                                        Go to products
-                                    </a>
                                 @endcan
 
                             </td>
@@ -108,11 +102,11 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('category_delete')
+@can('slider_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.categories.massDestroy') }}",
+    url: "{{ route('admin.sliders.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -143,7 +137,7 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Category:not(.ajaxTable)').DataTable({ buttons: [] })
+  let table = $('.datatable-Slider:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

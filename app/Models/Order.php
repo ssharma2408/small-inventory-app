@@ -53,6 +53,7 @@ class Order extends Model implements HasMedia
 		'delivery_pic',
 		'order_date',
 		'due_date',
+        'product_order',
         'created_at',
         'updated_at',
         'deleted_at',

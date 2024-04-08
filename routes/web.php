@@ -62,7 +62,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Category
     Route::delete('categories/destroy', 'CategoryController@massDestroy')->name('categories.massDestroy');	
+    Route::get('categories/get_category_products/{id}', 'CategoryController@get_category_product')->name('categories.get_category_product');
 	Route::get('categories/get_sub_category/{id}', 'CategoryController@get_sub_category')->name('categories.get_sub_category');
+    Route::post('product/reorder', 'CategoryController@reorder');
     Route::resource('categories', 'CategoryController');
 
     // Tax
@@ -98,6 +100,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	// Credit Note
     Route::delete('credit-notes/destroy', 'CreditNoteController@massDestroy')->name('credit-notes.massDestroy');
     Route::resource('credit-notes', 'CreditNoteController');
+
+    // Slider
+    Route::delete('sliders/destroy', 'SliderController@massDestroy')->name('sliders.massDestroy');
+    Route::post('sliders/media', 'SliderController@storeMedia')->name('sliders.storeMedia');
+    Route::post('sliders/ckmedia', 'SliderController@storeCKEditorImages')->name('sliders.storeCKEditorImages');
+    Route::resource('sliders', 'SliderController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
