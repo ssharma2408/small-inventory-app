@@ -21,9 +21,9 @@ class UpdateSliderRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'slider_img' => [
+           /* 'slider_img' => [
                 'required',
-            ],
+            ],*/
             'slider_order' => [
                 'nullable',
                 'integer',
