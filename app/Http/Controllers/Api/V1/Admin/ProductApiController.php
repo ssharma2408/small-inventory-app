@@ -29,7 +29,7 @@ class ProductApiController extends Controller
 
     public function getproductbysubcategory($id, $cust_id=0)
     {
-        $products = Product::where('sub_category_id',$id)->with(['media', 'tax_details'])->get();
+        $products = Product::where('sub_category_id',$id)->with(['media', 'tax_details'])->orderBy('product_order', 'ASC')->get();
 				
 		$product_arr = [];
 		
