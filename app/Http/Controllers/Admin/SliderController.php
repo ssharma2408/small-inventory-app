@@ -64,6 +64,7 @@ class SliderController extends Controller
 
     public function update(UpdateSliderRequest $request, Slider $slider)
     {
+        $slider_detail = $request->all();
         if($request->hasFile('slider_img')){
 			$file = $request->file('slider_img');
 			
