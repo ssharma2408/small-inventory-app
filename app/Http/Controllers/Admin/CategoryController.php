@@ -57,7 +57,7 @@ class CategoryController extends Controller
 			   if(request()->redirect == "add-product"){
 				  return redirect()->route('admin.products.create'); 
 			   }else{
-				   return redirect("admin/products/".request()->redirect_id."/edit");			   
+				   return redirect("admin/products/".request()->redirect_id."/edit");
 			   }
 			}
 
@@ -142,7 +142,7 @@ class CategoryController extends Controller
             $products = Product::where('sub_category_id',$category->id)->orderBy('product_order','ASC')->get();
         }
         
-        return view('admin.categories.showProducts', compact('products'));
+        return view('admin.categories.showProducts', compact('products', 'id'));
     }
 
     public function reorder(Request $request)
