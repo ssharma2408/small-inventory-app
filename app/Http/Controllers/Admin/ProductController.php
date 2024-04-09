@@ -12,7 +12,7 @@ use App\Models\Category;
 use App\Models\Tax;
 use Gate;
 use Storage;
-use Illuminate\Http\Request;
+use Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,11 +33,28 @@ class ProductController extends Controller
     {
         abort_if(Gate::denies('product_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		
+		$redirect = Request::input('redirect');
+		$rid = Request::input('id');
+		$cat_id = "";
+		$subcat_id = "";
+		
+		if(isset($redirect) && isset($rid)){
+			$cat_detail = Category::where('id', $rid)->get()[0];
+			$parent_cat_id = $cat_detail->category_id;			
+			if($parent_cat_id == null){
+				$cat_id = $rid;
+				$subcat_id = null;
+			}else{
+				$cat_id = $parent_cat_id;
+				$subcat_id = $rid;
+			}			
+		}		
+
 		$categories = Category::where('category_id', null)->pluck('name', 'id');
 		
 		$taxes = Tax::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.products.create', compact('categories', 'taxes'));
+        return view('admin.products.create', compact('categories', 'taxes', 'cat_id', 'subcat_id', 'rid', 'redirect'));
     }
 
     public function store(StoreProductRequest $request)
@@ -52,11 +69,7 @@ class ProductController extends Controller
 				'/'.$_ENV['DO_FOLDER'].'/'.$name,
 				file_get_contents($request->file('product_image')->getRealPath()),
 				'public'
-				);
-			
-			/* $url = Storage::disk('do')->url('/'.$_ENV['DO_FOLDER'].'/'.$name);
-			
-			$cdn_url = str_replace('digitaloceanspaces', 'cdn.digitaloceanspaces', $url); */
+				);			
 			
 			$product_detail = $request->all();
 			
@@ -64,7 +77,11 @@ class ProductController extends Controller
 			$product_detail['stock'] = 0;
 			$product_detail['show_fe'] = isset($product_detail['show_fe']) ? 1 :0;
 
-			$product = Product::create($product_detail);			
+			$product = Product::create($product_detail);
+
+			if ($request->redirect !="") {
+				return redirect("admin/categories/get_category_products/".$request->cat_id);
+			}
 
 			return redirect()->route('admin.products.index');
 		}

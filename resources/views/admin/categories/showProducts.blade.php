@@ -5,7 +5,7 @@
 @can('product_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.products.create') }}">
+            <a class="btn btn-success" href="{{ route('admin.products.create') }}/?redirect=add-product&id={{$id}}">
                 {{ trans('global.add') }} {{ trans('cruds.product.title_singular') }}
             </a>
         </div>

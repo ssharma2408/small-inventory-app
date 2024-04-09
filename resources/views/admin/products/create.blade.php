@@ -11,11 +11,11 @@
             @csrf
 			<div class="row">
             <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
-                <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>
-                <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
-                    <option value="" >Select Option</option> 
-                    @foreach($categories as $id => $entry)                     
-                       <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>                        
+                <label class="required" for="category_id">{{ trans('cruds.category.fields.category') }}</label>                
+				<select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
+                    <option value="" >Select Option</option>
+					@foreach($categories as $id => $entry)                     
+                       <option value="{{ $id }}" {{ (old('category_id') == $id || $cat_id == $id) ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
 				<div><a href="{{ route("admin.categories.create") }}/?redirect=add-product">Add Category</a></div>
@@ -126,6 +126,8 @@
                 <button class="btn btn-danger mr-2" type="submit">
                     {{ trans('global.save') }}
                 </button>
+				<input type="hidden" name="redirect" value="{{$redirect}}">
+				<input type="hidden" name="cat_id" value="{{$rid}}">
                 <a href="{{url()->previous()}}" class="btn btn-default ">{{ trans('global.cancel') }}</a>
             </div>
 </div>
@@ -192,6 +194,10 @@
     }
 }
 
+$(function() {
+    $("#category_id").trigger("change");
+});
+
 $("#category_id").change(function (){
 	if($(this).val() !=""){
 		$.ajax({
@@ -202,7 +208,13 @@ $("#category_id").change(function (){
 					var html = '<option value="">Please select</option>';
 					if(data.subcategories.length > 0){						
 						$.each(data.subcategories, function (key, val) {
-							html += '<option value="'+val.id+'">'+val.name+'</option>';
+							var selected = "";
+							
+							if(val.id == '<?php echo $subcat_id; ?>'){
+								selected = "selected"
+							}
+							
+							html += '<option value="'+val.id+'" '+selected+'>'+val.name+'</option>';
 						});						
 					}
 					$("#sub_category_id").html(html);
