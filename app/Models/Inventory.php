@@ -37,6 +37,11 @@ class Inventory extends Model implements HasMedia
         '2' => '45 Days',
         '4' => '60 Days',
     ];
+	
+	public const BOX_OR_UNIT_RADIO = [
+        '0' => 'Box',
+        '1' => 'Unit',
+    ];
 
     protected $fillable = [
         'supplier_id',        
