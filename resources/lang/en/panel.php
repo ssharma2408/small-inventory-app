@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'site_title' => 'Small Inventory System',
+    'site_title' => 'True Leaf Retail : Small Inventory System',
 
 ];

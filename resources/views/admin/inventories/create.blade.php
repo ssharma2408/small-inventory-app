@@ -106,8 +106,10 @@
 
                 <div class="form-group">
                     <label class="required" for="order_items">Expense Items</label>
-                    <div class="help-block h6">* If you are selecting BOX, then add Box price in Purchase Price<br>* If you
+                    <!-- 
+					<div class="help-block h6">* If you are selecting BOX, then add Box price in Purchase Price<br>* If you
                         are selecting UNIT, then add Unit price in Purchase Price</div>
+						-->
                     <div class="order-container mb-2">
                         <div class="order-content">
                             <div class="row mb-1">
@@ -163,7 +165,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <input class="form-control exp_date" type="date" name="item_exp_date[]"
-                                            required />
+                                             />
                                     </div>
                                     <div class="col-md-1">
                                         <input class="form-control amount" type="text" name="item_amount[]"
