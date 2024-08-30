@@ -20,7 +20,7 @@
         margin: 0 !important;
         padding: 0 !important;
         height: 100%;
-        font-size: 16px !important;
+        font-size: 20px !important;
         color: #000000;
         font-family: Arial, sans-serif;
     }
