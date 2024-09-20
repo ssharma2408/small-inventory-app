@@ -122,7 +122,7 @@
                                 <b>Stock</b>
                             </div>
                             <div class="col-md-1">
-                                <b>Purchase Price</b>
+                                <b>Purchase Price per Unit</b>
                             </div>
                             <div class="col-md-2">
                                 <b>Tax</b>

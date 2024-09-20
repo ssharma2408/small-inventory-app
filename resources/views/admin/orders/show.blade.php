@@ -58,9 +58,9 @@
 											<th>
 												{{ trans('cruds.order.fields.min_usp') }}
 											</th>
-											<th>
+											<!--th>
 												{{ trans('cruds.order.fields.max_usp') }}
-											</th>											
+											</th-->											
 											<th>
 												Box or unit
 											</th>
@@ -91,9 +91,9 @@
 												<td>
 												{{ $item->selling_price }}
 												</td>
-												<td>
+												<!--td>
 												{{ $item->maximum_selling_price }}
-												</td>												
+												</td-->												
 												<td>
 													@if($item->is_box)
 														Box
@@ -116,6 +116,9 @@
 												<td>
 													@php
 														$qty = $item->quantity;
+														if($item->is_box){
+															$qty = $qty * $item->box_size;
+														}
 														
 														$amount = $qty * $item->sale_price;
 														
