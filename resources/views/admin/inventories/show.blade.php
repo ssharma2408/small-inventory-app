@@ -57,7 +57,7 @@
 											Stock
 										</th>
 										<th>
-											Purchase Price
+											Purchase Price per Unit
 										</th>											
 										<th>
 											Tax

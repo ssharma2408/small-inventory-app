@@ -102,9 +102,9 @@
                                 <div class="col-md-1">
                                     <b>{{ trans('cruds.order.fields.min_usp') }}</b>
                                 </div>
-                                <div class="col-md-1">
+                                <!--div class="col-md-1">
                                     <b>{{ trans('cruds.order.fields.max_usp') }}</b>
-                                </div>
+                                </div-->
                                 <div class="col-md-1">
                                     <b>Box or unit</b>
                                 </div>
@@ -145,9 +145,9 @@
                                     <div class="col-md-1">
                                         <input class="form-control min" type="text" name="item_price[]" disabled />
                                     </div>
-                                    <div class="col-md-1">
+                                    <!--div class="col-md-1">
                                         <input class="form-control max" type="text" name="item_max_price[]" disabled />
-                                    </div>
+                                    </div-->
                                     <div class="col-md-1">
                                         <input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked />
                                         <label class="form-check-label ml-3">Is Box</label>
@@ -333,7 +333,7 @@
         });
 
         function row_html() {
-            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?><input type="hidden" class="item_category" name="item_category[]" value="" /><input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" /></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?><input type="hidden" class="item_category" name="item_category[]" value="" /><input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" /></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><!--div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div--><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
         }
 
         $(document).on("change", ".order_item", function() {
@@ -342,8 +342,8 @@
 				var subcat_id = $(this).parent().find(".item_subcategory");
                 var stock = $(this).parents('.item_row').find('.in_stock');
                 var min_selling_price = stock.parent().next().find('input');
-                var max_selling_price = min_selling_price.parent().next().find('input');
-                var package_val = max_selling_price.parent().next().find('input[type=hidden]');
+                //var max_selling_price = min_selling_price.parent().next().find('input');
+                var package_val = min_selling_price.parent().next().find('input[type=hidden]');
                 var box_size = package_val.prev();
                 var taxt_ddl = package_val.parent().next().next().next().find('select');
                 var tax_field = package_val.parent().next().next().next().find('input[type=hidden]');
@@ -356,7 +356,7 @@
                         if (data.success) {
                             stock.val(data.product.stock);
                             min_selling_price.val(data.product.selling_price);
-                            max_selling_price.val(data.product.maximum_selling_price);
+                            //max_selling_price.val(data.product.maximum_selling_price);
                             package_val.val(data.product.box_size);
                             box_size.html('Box Size: ' + data.product.box_size);
                             taxt_ddl.val(data.product.tax_id).change();
@@ -385,10 +385,10 @@
             }
 
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {
-                quantity = qty * $(this).parent().parent().find("#package_val").val();
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {                
+				quantity = qty * $(this).parent().parent().find("#package_val").val();
             } else {
-                quantity = qty;
+                quantity = qty;				
             }
 
             if ((parseFloat(quantity) > parseFloat(in_stock))) {
@@ -403,11 +403,11 @@
             var tax = $(this).parent().parent().find(".tax_val").val();
 
             if (qty != "" && sale_price != "") {
-                $(this).parent().parent().find(".amount").val(qty * sale_price);
+                $(this).parent().parent().find(".amount").val(quantity * sale_price);
             }
 
             if (tax != "") {
-                var amount = qty * sale_price;
+                var amount = quantity * sale_price;
 
                 amount = amount + ((amount * tax) / 100);
 
@@ -493,9 +493,9 @@
                 var qty = $(this).find(".quantity").val();
                 var sale_price = $(this).find(".sale_price").val();
                 var amount = $(this).find(".amount").val();
-                /* if ( checkb.is(':checked')) {
+                if ( checkb.is(':checked')) {
                     qty = qty * package_val;
-                } */
+                }
                 order_total_without_tax += (qty * sale_price);
                 order_total += parseFloat(amount);
             });
