@@ -162,10 +162,10 @@ div.dt-button-collection {
     display: none;
 }
 
-.add_row,
+/* .add_row,
 .remove_row {
     font-size: 25px;
-}
+} */
 .credit_note_err {
     color: #dc3545 !important;
 }

@@ -3,7 +3,7 @@
 
     <?php
     $ddl_html = 'No Product Found';
-    
+
     if (!empty($products)) {
         $ddl_html = '<select class="order_item form-control select2" name="item_name[]" required>';
         $ddl_html .= '<option value="" >Select Product</option>';
@@ -12,9 +12,9 @@
         }
         $ddl_html .= '</select>';
     }
-    
+
     $tax_ddl_html = 'No Tax Found';
-    
+
     if (!empty($taxes)) {
         $tax_ddl_html = '<select class="form-control select2 tax_id" name="item_tax_id[]" required>';
         $tax_ddl_html .= '<option value="" >Please Select</option>';
@@ -23,7 +23,7 @@
         }
         $tax_ddl_html .= '</select>';
     }
-    
+
     ?>
 
     <div class="card">
@@ -95,7 +95,7 @@
                             <div class="row mb-1">
                                 <div class="col-md-2">
                                     <b>Product</b>
-                                </div>                             
+                                </div>
                                 <div class="col-md-1">
                                     <b>In Stock</b>
                                 </div>
@@ -129,7 +129,7 @@
                             </div>
                             <div class="item_container">
                                 <div class="row mb-1 item_row">
-                                    <div class="cat_container col-md-2">                                        
+                                    <div class="cat_container col-md-2">
                                         <div class="form-group">
                                             <?php
 												echo $ddl_html;
@@ -138,7 +138,7 @@
 											<input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" />
                                         </div>
                                     </div>
-                                  
+
                                     <div class="col-md-1">
                                         <input class="form-control in_stock" type="number" name="item_stock[]" disabled />
                                     </div>
@@ -182,12 +182,12 @@
                                 </div>
                             </div>
 							<div class="text-center">
-								<span class="add_row" id="add_row" data-key ="">+</span>
+								<button class="btn btn-success add_row" id="add_row" data-key ="">Add</button>
 							</div>
                         </div>
                     </div>
                 </div>
-            <div class="row">                
+            <div class="row">
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         <label class="required"
                             for="order_total_without_tax">{{ trans('cruds.order.fields.order_total_without_tax') }}</label>
@@ -333,7 +333,7 @@
         });
 
         function row_html() {
-            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?><input type="hidden" class="item_category" name="item_category[]" value="" /><input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" /></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><!--div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div--><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><span class="remove_row" id="remove_row">-</span></div></div>';
+            return '<div class="row mb-3 mt-3 pt-3 item_row border-top"><div class="cat_container col-md-2"><div class="form-group"><?php echo $ddl_html; ?><input type="hidden" class="item_category" name="item_category[]" value="" /><input type="hidden" class="item_subcategory" name="item_subcategory[]" value="" /></div></div><div class="col-md-1"><input class="form-control in_stock" type="number" name="item_stock[]" disabled /></div><div class="col-md-1"><input class="form-control min" type="text" name="item_price[]" disabled /></div><!--div class="col-md-1"><input class="form-control max" type="text" name="item_max_price[]" disabled /></div--><div class="col-md-1"><input class="form-check-input cb ml-0" type="checkbox" name="is_box[]" checked /><label class="form-check-label ml-3">Is Box</label><div style="font-size:12px" id="box_size"></div><input type="hidden" id="package_val" value="" name="package_val" /><input type="hidden" id="box_or_unit" value="1" name="box_or_unit[]" /></div><div class="col-md-1"><input class="form-control quantity" type="number" name="item_quantity[]" min="1" required /><span class="text-danger qty_err"></span></div><div class="col-md-1"><input class="form-control sale_price" type="text" name="item_sale_priec[]"  required /><span class="text-danger sale_price_err"></span></div><div class="col-md-1"><?php echo $tax_ddl_html; ?><input type="hidden" class="tax_val" value="" /></div><div class="col-md-1"><textarea name="comment[]" rows="2" cols="3" class="form-control"></textarea></div><div class="col-md-1"><input class="form-control amount" type="text" name="item_amount[]" disabled /></div><div class="col-md-1"><button class="btn btn-danger remove_row" id="remove_row">Remove</button></div></div>';
         }
 
         $(document).on("change", ".order_item", function() {
@@ -385,10 +385,10 @@
             }
 
 
-            if ( $(this).parent().parent().find(".cb").is(':checked')) {                
+            if ( $(this).parent().parent().find(".cb").is(':checked')) {
 				quantity = qty * $(this).parent().parent().find("#package_val").val();
             } else {
-                quantity = qty;				
+                quantity = qty;
             }
 
             if ((parseFloat(quantity) > parseFloat(in_stock))) {
@@ -469,7 +469,7 @@
 
                 $(this).parent().parent().find(".amount").val(amount.toFixed(2));
             }
-			
+
 			var box_unit = $(this).parent().find("#box_or_unit");
 
             if ($(this).is(":checked")) {
@@ -477,7 +477,7 @@
             } else {
                 box_unit.val(0);
             }
-			
+
             calculate_total();
         });
 
